@@ -9,13 +9,18 @@ just for me, at the moment.
 ## Bots
 - The primary object is a `Bot`, which has a set of topics (see below)
 - Each Bot can have multiple `BotInstance` objects, which are a single
-speaker.
+speaker sharing the same chat data (but having some private, perhaps).
+Thus you could have a whole lot of "soldier" or "shopkeeper" BotInstances,
+all based on one Bot.
+- The users are represented by `Source` objects, and each conversation
+between a `BotInstance` and a `Source` has some private data, called
+"conversation data".
 
 ## Creating a bot
 Typically goes like this:
 ```java
-Substitutions subs = new Substitutions(Paths.get("/home/white/testbot"),"subs.subs");
-Bot b = new Bot(Paths.get("/home/white/testbot"),subs);
+Substitutions subs = new Substitutions(Paths.get("/some/directory/or/other"),"subs.subs");
+Bot b = new Bot(Paths.get("/some/directory/or/other",subs);
 instance = new BotInstance(b);
 source = new Source();
 ```
