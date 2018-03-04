@@ -1,0 +1,7 @@
+# Todo
+- pattern/action pairs which always run, even in subpats?
+- categories
+- conv var setting (conv var getting is done?)
+- bot instance var get/set
+- implement as ChatCitizensSimple
+- try to write Shopkeeper and Soldier

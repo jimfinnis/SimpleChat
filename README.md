@@ -6,6 +6,8 @@ usecase is Minecraft chatbots, so I can't use that.
 So this is a simplified (hah) thing. This documentation is really 
 just for me, at the moment.
 
+THIS IS VERY EARLY WORK.
+
 ## Bots
 - The primary object is a `Bot`, which has a set of topics (see below)
 - Each Bot can have multiple `BotInstance` objects, which are a single
@@ -44,6 +46,15 @@ The `#include` directive has a file argument and will include a file
 of substitutions. The `#sep` directive has a string (actually regex)
 argument and changes the separator for this file. The argument is separated
 by a space. All other `#` lines are comments.
+A (very brief) example:
+```
+[iI]'m:Iam
+[Ii]\s+am:Iam
+[yY]ou\s+are:youre
+[yY]ou're:youre
+include more.subst
+```
+
 
 ## Topics
 All bots load a `main.topic` file from their directory. This
