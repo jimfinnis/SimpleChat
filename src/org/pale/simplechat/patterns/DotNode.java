@@ -1,0 +1,25 @@
+package org.pale.simplechat.patterns;
+
+import org.pale.simplechat.Pattern;
+
+// matches one of any word
+public class DotNode extends Node {
+
+	public DotNode(Pattern p, String lab) {
+		super(p, lab);
+		p.iter.next();
+	}
+
+	@Override
+	public void parse(MatchData m) {
+		if(m.invalid){log("early return");return;}
+		
+		if(m.allConsumed()){
+			m.invalid=true;
+			return;
+		}
+		m.consumed = m.consume();
+		if(label!=null)m.setLabel(label, m.consumed);
+	}
+
+}

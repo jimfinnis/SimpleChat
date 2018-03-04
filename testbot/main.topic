@@ -1,0 +1,13 @@
+name main
+
++"([hello hi] .*)"
+    "hi how are you?"
+    {
+        "(?Iam [good fine well] .*)"
+            "Glad to hear it.";
+        "(?Iam [bad (not too)] .*)"
+            "Oh, I'm sorry";
+    } next;
+
++"$foo=.*"
+    "I don't know how to respond to " $foo +;
