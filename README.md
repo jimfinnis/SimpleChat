@@ -1,3 +1,5 @@
+# SimpleChat
+
 AIML is terribly verbose, and writing complex conversational structures
 is a nightmare. Yes, you can do it - and it's really powerful - but
 the XML nature of everything and the way topics work really burns my
@@ -6,7 +8,7 @@ usecase is Minecraft chatbots, so I can't use that.
 So this is a simplified (hah) thing. This documentation is really 
 just for me, at the moment.
 
-THIS IS VERY EARLY WORK.
+THIS IS VERY EARLY WORK. (See the [todo list](TODO.md))
 
 ## Bots
 - The primary object is a `Bot`, which has a set of topics (see below)
