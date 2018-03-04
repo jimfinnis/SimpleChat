@@ -86,16 +86,28 @@ priority 1000
     "hi how are you?"
     {
         # each subpattern is a pattern/action pair.
-        # the pattern is this bit...
+        # the pattern is this bit. It matches:
+        # - possibly "Iam" (substituted for "I am" or "I'm")
+        # - then either good, fine or well
+        # - then everything else.
 
-        "([good fine well] .*)"
+        "(?Iam [good fine well] .*)"
 
             # and this is the action, which just stacks an output
+
             "Glad to hear it.";
 
-        "([bad (not too)] .*)"
+        # This pattern matches
+        # - "Iam" optionally
+        # - then "bad" or the sequence "not too"
+        # - then everything else
+        
+        "(?Iam [bad (not too)] .*)"
             "Oh, I'm sorry";
-    } next;
+    }
+    # "next" tells the system to try to match from the subpattern list
+    # we have just put on the stack, the next time we get input.
+    next; 
     
 # this anonymous pattern catches everything, and runs when nothing
 # else in the topic has matched. It captures the input as "$foo"
