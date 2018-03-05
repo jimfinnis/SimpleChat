@@ -181,8 +181,4 @@ defined in curly brackets:
             "Oh, I'm sorry";
     }
 ```
-Other actions:
-- `?var` : get a conversation variable
-- `$var` : get a pattern variable (i.e. one matched by a label in the pattern)
-- binops : for manipulating numbers and concatenating strings
-
+More details on the action language [here](ACTIONS.md).
