@@ -12,6 +12,7 @@ import java.util.TreeMap;
 
 import org.pale.simplechat.patterns.MatchData;
 import org.pale.simplechat.actions.ActionException;
+import org.pale.simplechat.actions.ActionLog;
 import org.pale.simplechat.actions.Runtime;
 import org.pale.simplechat.actions.Value;
 
@@ -24,7 +25,7 @@ import org.pale.simplechat.actions.Value;
  */
 public class Conversation extends Runtime {
 	private Source source;
-	private BotInstance instance;
+	public BotInstance instance;
 	
 	// each topic has a priority, and topics are tried in descending priority order. By
 	// default the priority is 1. This is the map of default priority, loaded from the topic
@@ -107,8 +108,9 @@ public class Conversation extends Runtime {
 			} catch (IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | ActionException e) {
 				// TODO Auto-generated catch block
-				Logger.log("Error in run: "+e.getClass().getSimpleName()+","+e.getMessage());
 				e.printStackTrace();
+				Logger.log("Error in run: "+e.getClass().getSimpleName()+","+e.getMessage());
+				ActionLog.show();
 				return("ERROR in action");
 			}
 		}

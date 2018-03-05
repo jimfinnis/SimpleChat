@@ -1,15 +1,12 @@
 name main
 
-+"(test $foo=.+)"
-    $foo int !max
-    0 !ct
-    ""
-    loop 
-        ?ct ?max >= ifleave
-        ?ct 1 + !ct
-        ?ct + " " +
-    endloop trim;
-        
++"(foo is $foo=.*)"
+    $foo !@foo
+    "You're telling me that foo is " ?@foo + "." +
+    ;
+
++"(what is foo)"
+    "foo is " ?@foo +;
     
 
 +"([hello hi] .*)"

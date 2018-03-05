@@ -3,6 +3,8 @@ package org.pale.simplechat;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.pale.simplechat.actions.Value;
+
 /**
  * An actual chatting entity, which is backed by a Bot. There may be many BotInstances for one bot;
  * they will all talk the same way but may have different variables set.
@@ -17,6 +19,20 @@ public class BotInstance extends Source { // extends Source so bots can talk to 
 	
 	public BotInstance(Bot b){
 		bot = b;
+	}
+	
+	/// variables private (haha) to this instance.
+	private Map<String,Value> vars = new HashMap<String,Value>();
+	
+	public Value getVar(String s){
+		if(vars.containsKey(s))
+			return vars.get(s);
+		else
+			return new Value("??");
+	}
+	
+	public void setVar(String s,Value v){
+		vars.put(s, v);
 	}
 	
 	public String handle(String s,Source p){

@@ -67,11 +67,40 @@ public class Action {
 				insts.add(new LiteralInstruction(new Value(tok.sval)));
 				break;
 			case '$':
-			case '?':
 				if(tok.nextToken()!=StreamTokenizer.TT_WORD)
-					throw new TopicSyntaxException("expected a varname after $ or ?");
-				insts.add(new GetVarInstruction(tok.sval,
-						t == '$' ? GetVarInstruction.Type.PATVAR : GetVarInstruction.Type.CONVVAR));
+					throw new TopicSyntaxException("expected a varname after $");
+				insts.add(new GetVarInstruction(tok.sval,GetVarInstruction.Type.PATVAR));
+				break;
+			case '?':
+				switch(tok.nextToken()){
+				case StreamTokenizer.TT_WORD:
+					insts.add(new GetVarInstruction(tok.sval,GetVarInstruction.Type.CONVVAR));
+					break;
+				case '@':
+					if(tok.nextToken()!=StreamTokenizer.TT_WORD)
+						throw new TopicSyntaxException("expected a varname after ?@");
+					insts.add(new GetVarInstruction(tok.sval,GetVarInstruction.Type.INSTVAR));
+					break;
+					default: throw new TopicSyntaxException("expected a varname or sigil after ?");
+				}
+				break;
+			case '!':
+				if(tok.nextToken()=='=')
+					insts.add(new BinopInstruction(BinopInstruction.Type.NEQUAL));
+				else {
+					tok.pushBack();
+					switch(tok.nextToken()){
+					case StreamTokenizer.TT_WORD:
+						insts.add(new SetVarInstruction(tok.sval,SetVarInstruction.Type.CONVVAR));
+						break;
+					case '@':
+						if(tok.nextToken()!=StreamTokenizer.TT_WORD)
+							throw new TopicSyntaxException("expected a varname after !@");
+						insts.add(new SetVarInstruction(tok.sval,SetVarInstruction.Type.INSTVAR));
+						break;
+					default: throw new TopicSyntaxException("expected a varname or sigil after !");
+					}
+				}
 				break;
 			case StreamTokenizer.TT_NUMBER:
 				// this is a real pain, but there's no way of knowing whether the tokeniser got (say) 2 or 2.0.
@@ -97,16 +126,6 @@ public class Action {
 				break;
 			case '{': // parse a subpattern list to deal with responses!
 				insts.add(new LiteralInstruction(new Value(parseSubPatterns(tok))));
-				break;
-			case '!':
-				if(tok.nextToken()=='=')
-					insts.add(new BinopInstruction(BinopInstruction.Type.NEQUAL));
-				else {
-					tok.pushBack();
-					if(tok.nextToken()!=StreamTokenizer.TT_WORD)
-						throw new TopicSyntaxException("expected a varname after !");
-					insts.add(new SetVarInstruction(tok.sval));
-				}
 				break;
 			case '=':
 				insts.add(new BinopInstruction(BinopInstruction.Type.EQUAL));
@@ -217,7 +236,7 @@ public class Action {
 		c.exitflag = false;
 		c.reset(); // reset runtime
 		while(i<insts.size() && !c.exitflag){
-			Logger.log("Running instruction at "+i+": "+insts.get(i).getClass().getSimpleName());
+			ActionLog.write("Running instruction at "+i+": "+insts.get(i).getClass().getSimpleName());
 
 			// each instruction returns the next execution address's offset (usually 1!)
 			i += insts.get(i).execute(c);

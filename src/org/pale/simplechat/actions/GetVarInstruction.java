@@ -4,7 +4,7 @@ import org.pale.simplechat.Conversation;
 
 public class GetVarInstruction extends Instruction {
 	enum Type {
-		PATVAR,CONVVAR;
+		PATVAR,CONVVAR, INSTVAR;
 	}
 	private String name;
 	public Type type;
@@ -21,6 +21,9 @@ public class GetVarInstruction extends Instruction {
 			break;
 		case CONVVAR:
 			c.push(c.getVar(name));
+			break;
+		case INSTVAR:
+			c.push(c.instance.getVar(name));
 			break;
 		default:break;
 		}
