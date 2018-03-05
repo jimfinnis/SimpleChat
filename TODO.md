@@ -1,7 +1,8 @@
 # Todo
-- loop/endloop/leave/ifleave
 - cases/case/otherwise, or a better switch!
-- lists (and hashes)? with random choice operator
+- lists (and hashes)?
+- loop random choice
+- loop iterator
 - functions?
 - pattern/action pairs which always run, even in subpats?
 - categories
