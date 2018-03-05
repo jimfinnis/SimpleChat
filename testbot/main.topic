@@ -1,5 +1,9 @@
 name main
 
++"(test $foo=.+)"
+    $foo int 10 > if "big" else "small" then;
+    
+
 +"([hello hi] .*)"
     "hi how are you?"
     {

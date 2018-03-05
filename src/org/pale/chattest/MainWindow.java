@@ -7,6 +7,7 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.swing.JTextArea;
@@ -45,8 +46,9 @@ public class MainWindow implements ActionListener {
 	 * Create the application.
 	 */
 	public MainWindow() {
-		Substitutions subs = new Substitutions(Paths.get("/home/white/testbot"),"subs.subs");
-		Bot b = new Bot(Paths.get("/home/white/testbot"),subs);
+		Path homedir = Paths.get("/home/white/git/SimpleChat/testbot");
+		Substitutions subs = new Substitutions(homedir,"subs.subs");
+		Bot b = new Bot(homedir,subs);
 		instance = new BotInstance(b);
 		source = new Source();
 		initialize();

@@ -2,6 +2,7 @@ package org.pale.simplechat.actions;
 import java.util.List;
 import java.util.Stack;
 
+import org.pale.simplechat.Logger;
 import org.pale.simplechat.Pair;
 
 public class Runtime {
@@ -33,7 +34,11 @@ public class Runtime {
 	
 	public String getResult(){
 		try {
-			return pop().str();
+			String s = pop().str();
+			if(!stack.empty()){
+				Logger.log("oops - stuff still on the stack (depth is "+stack.size()+")");
+			}
+			return s;
 		} catch (ActionException e) {
 			return "no result from action";
 		}

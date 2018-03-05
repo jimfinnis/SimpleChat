@@ -1,13 +1,12 @@
 package org.pale.simplechat.actions;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.pale.simplechat.Conversation;
 
-public class BinopInstruction implements Instruction {
+public class BinopInstruction extends Instruction {
 
 	public enum Type {
-		ADD, SUB, DIV, MUL, MOD
+		ADD, SUB, DIV, MUL, MOD, EQUAL, NEQUAL,
+		GT, LT, GE, LE
 	}
 
 	private Type type;
@@ -17,7 +16,7 @@ public class BinopInstruction implements Instruction {
 	}
 	
 	@Override
-	public void execute(Conversation c) throws ActionException {
+	public int execute(Conversation c) throws ActionException {
 		Value b = c.pop();
 		Value a = c.pop();
 		
@@ -64,6 +63,41 @@ public class BinopInstruction implements Instruction {
 				c.push(new Value(a.toInt()%b.toInt()));
 			} else throw new ActionException("bad operands for %");
 			break;
+		case EQUAL:
+			c.push(new Value(a.equals(b)));
+			break;
+		case NEQUAL:
+			c.push(new Value(!a.equals(b)));
+			break;
+		case GT:
+			if(a.t == Value.Type.DOUBLE || b.t == Value.Type.DOUBLE){
+				c.push(new Value(a.toDouble()>b.toDouble()));
+			} else if(a.t == Value.Type.INT || b.t == Value.Type.INT){
+				c.push(new Value(a.toInt()>b.toInt()));
+			} else throw new ActionException("bad operands for %");
+			break;
+		case LT:
+			if(a.t == Value.Type.DOUBLE || b.t == Value.Type.DOUBLE){
+				c.push(new Value(a.toDouble()<b.toDouble()));
+			} else if(a.t == Value.Type.INT || b.t == Value.Type.INT){
+				c.push(new Value(a.toInt()<b.toInt()));
+			} else throw new ActionException("bad operands for %");
+			break;
+		case GE:
+			if(a.t == Value.Type.DOUBLE || b.t == Value.Type.DOUBLE){
+				c.push(new Value(a.toDouble()>=b.toDouble()));
+			} else if(a.t == Value.Type.INT || b.t == Value.Type.INT){
+				c.push(new Value(a.toInt()>=b.toInt()));
+			} else throw new ActionException("bad operands for %");
+			break;
+		case LE:
+			if(a.t == Value.Type.DOUBLE || b.t == Value.Type.DOUBLE){
+				c.push(new Value(a.toDouble()<=b.toDouble()));
+			} else if(a.t == Value.Type.INT || b.t == Value.Type.INT){
+				c.push(new Value(a.toInt()<=b.toInt()));
+			} else throw new ActionException("bad operands for %");
+			break;
 		}
+		return 1;
 	}
 }

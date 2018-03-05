@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.TreeMap;
 
 import org.pale.simplechat.Conversation;
@@ -50,6 +51,8 @@ public class Action {
 	public Action(StreamTokenizer tok) throws TopicSyntaxException, IOException, PatternParseException {
 		// here we go, the action parser. This builds an executable list of instructions which operate
 		// on a stack.
+		
+		Stack<Integer> cstack = new Stack<Integer>();
 
 		for(;;){
 			int t = tok.nextToken();
@@ -88,14 +91,69 @@ public class Action {
 			case '{': // parse a subpattern list to deal with responses!
 				insts.add(new LiteralInstruction(new Value(parseSubPatterns(tok))));
 				break;
+			case '!':
+				if(tok.nextToken()=='=')
+					insts.add(new BinopInstruction(BinopInstruction.Type.NEQUAL));
+				else {
+					tok.pushBack(); // we'll use the next token for something, but not yet
+					throw new TopicSyntaxException("!= badly formed");
+				}
+				break;
+			case '=':
+				insts.add(new BinopInstruction(BinopInstruction.Type.EQUAL));
+				break;
+			case '>':
+				if(tok.nextToken()=='=')
+					insts.add(new BinopInstruction(BinopInstruction.Type.GE));
+				else {
+					tok.pushBack();
+					insts.add(new BinopInstruction(BinopInstruction.Type.GT));
+				}
+				break;
+			case '<':
+				if(tok.nextToken()=='=')
+					insts.add(new BinopInstruction(BinopInstruction.Type.LE));
+				else {
+					tok.pushBack();
+					insts.add(new BinopInstruction(BinopInstruction.Type.LT));
+				}
+				break;
+					
+				
 			case StreamTokenizer.TT_WORD:
+				if(tok.sval.equals("if")){
+					cstack.push(insts.size());
+					insts.add(new Flow.IfInstruction());
+				} else if(tok.sval.equals("else")){
+					int refToIf = cstack.pop();
+					resolveJumpForwards(refToIf,1);
+					cstack.push(insts.size());
+					insts.add(new Flow.JumpInstruction());
+				} else if(tok.sval.equals("then")){
+					int ref = cstack.pop();
+					resolveJumpForwards(ref,0);
+				} else if(tok.sval.equals("loop")){
+					// TODO loops
+				} else if(tok.sval.equals("endloop")){
+					// TODO loops
+				} else if(tok.sval.equals("leave")){
+					// TODO loops
+				} else if(tok.sval.equals("ifleave")){
+					// TODO loops					
+				}
 				// TODO if .. else .. then and loops!
-				if(cmds.containsKey(tok.sval)){
-					insts.add(new MethodCallInstruction(cmds.get(tok.sval)));
+				else if(cmds.containsKey(tok.sval)){
+					insts.add(new MethodCallInstruction(tok.sval,cmds.get(tok.sval)));
 				} else
 					throw new TopicSyntaxException("cannot find action cmd: "+tok.sval);
 			}
 		}
+	}
+
+	/// used to fix up an existing jump instruction to jump to the current instruction
+	/// with an offset. 
+	private void resolveJumpForwards(int refToIf, int i) throws TopicSyntaxException {
+		insts.get(refToIf).setJump((insts.size()-refToIf)+i);
 	}
 
 	/**
@@ -125,8 +183,10 @@ public class Action {
 	public void run(Conversation c) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, ActionException {
 		int i=0; // instruction number (there might be jumps, see)
 		while(i<insts.size()){
-			insts.get(i).execute(c);
-			i++;
+			Logger.log("Running instruction at "+i+": "+insts.get(i).getClass().getSimpleName());
+
+			// each instruction returns the next execution address's offset (usually 1!)
+			i += insts.get(i).execute(c);
 		}
 	}
 }

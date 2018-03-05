@@ -104,7 +104,7 @@ public class Conversation extends Runtime {
 			} catch (IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | ActionException e) {
 				// TODO Auto-generated catch block
-				Logger.log("Error in run: "+e.getMessage());
+				Logger.log("Error in run: "+e.getClass().getSimpleName()+","+e.getMessage());
 				e.printStackTrace();
 				return("ERROR in action");
 			}
@@ -118,7 +118,6 @@ public class Conversation extends Runtime {
 		 * - if there is a special "topic", try to match the patterns in that first.
 		 * - otherwise, go through the topics in weight order attempting matches on their patterns.
 		 */
-		
 		
 		// dialogue tree or special topic
 		if(specialpats!=null){

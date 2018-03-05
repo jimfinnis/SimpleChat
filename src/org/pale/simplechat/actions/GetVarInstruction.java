@@ -1,10 +1,8 @@
 package org.pale.simplechat.actions;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.pale.simplechat.Conversation;
 
-public class GetVarInstruction implements Instruction {
+public class GetVarInstruction extends Instruction {
 	enum Type {
 		PATVAR,CONVVAR;
 	}
@@ -16,9 +14,7 @@ public class GetVarInstruction implements Instruction {
 		type = t;
 	}
 	@Override
-	public void execute(Conversation c) throws IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException,
-			ActionException {
+	public int execute(Conversation c) throws ActionException {
 		switch(type){
 		case PATVAR:
 			c.push(new Value(c.getPatVar(name)));
@@ -28,5 +24,6 @@ public class GetVarInstruction implements Instruction {
 			break;
 		default:break;
 		}
+		return 1;
 	}
 }

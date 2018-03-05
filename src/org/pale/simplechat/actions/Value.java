@@ -37,6 +37,10 @@ public class Value {
 		this.subpats = p;
 		t = Type.SUBPATS;
 	}
+	Value(boolean b){
+		this.i = b?1:0;
+		t = Type.INT;
+	}
 	
 	String str(){
 		switch(t){
@@ -76,5 +80,13 @@ public class Value {
 			throw new ActionException("cannot convert value to double");
 		}
 	}
-	
+	boolean equals(Value b){
+		if(t != b.t)return false;
+		switch(t){
+		case INT:return i==b.i;
+		case DOUBLE:return d==b.d;
+		case STRING:return s.equals(b.s);
+		default:return false;
+		}
+	}
 }

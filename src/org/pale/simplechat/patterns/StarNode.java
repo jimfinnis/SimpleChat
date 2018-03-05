@@ -49,7 +49,7 @@ public class StarNode extends Node {
 		if(n<minCount || n>maxCount){
 			m.invalid=true;
 		} else {
-			m.consumed=sb.toString();
+			m.consumed=sb.toString().trim();
 			if(label!=null){
 				m.setLabel(label, m.consumed);
 				// we also add the count
