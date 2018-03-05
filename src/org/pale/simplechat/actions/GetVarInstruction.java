@@ -17,10 +17,10 @@ public class GetVarInstruction extends Instruction {
 	public int execute(Conversation c) throws ActionException {
 		switch(type){
 		case PATVAR:
-			c.push(new Value(c.getPatVar(name)));
+			c.push(new Value(c.getPatVar(name))); // always strings
 			break;
 		case CONVVAR:
-			c.push(new Value(c.getVar(name)));
+			c.push(c.getVar(name));
 			break;
 		default:break;
 		}

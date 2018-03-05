@@ -1,7 +1,15 @@
 name main
 
 +"(test $foo=.+)"
-    $foo int 10 > if "big" else "small" then;
+    $foo int !max
+    0 !ct
+    ""
+    loop 
+        ?ct ?max >= ifleave
+        ?ct 1 + !ct
+        ?ct + " " +
+    endloop trim;
+        
     
 
 +"([hello hi] .*)"
