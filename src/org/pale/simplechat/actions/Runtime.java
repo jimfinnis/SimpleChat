@@ -6,7 +6,21 @@ import org.pale.simplechat.Logger;
 import org.pale.simplechat.Pair;
 
 public class Runtime {
-	private Stack<Value> stack = new Stack<Value>();
+	// this interface will hold iterator data for iterable things.
+	interface LoopIterator {
+		// empty for the moment
+	}
+	
+	private Stack<Value> stack; // the main stack
+	public boolean exitflag; // set to quit code early. Cleared at start of run.
+	// stack of iterators
+	public Stack<LoopIterator> iterStack;
+	
+	public void reset(){
+		iterStack = new Stack<LoopIterator>();
+		stack = new Stack<Value>();
+		exitflag = false;
+	}
 	
 	public Value pop() throws ActionException{
 		if(stack.empty())
@@ -18,6 +32,12 @@ public class Runtime {
 		if(stack.size()>100) // some kind of limit
 			throw new ActionException("stack overflow");
 		stack.push(v);
+	}
+	
+	public Value peek() throws ActionException {
+		if(stack.empty())
+			throw new ActionException("stack underflow");
+		return stack.peek();
 	}
 	
 	public List<Pair> popSubpats() throws ActionException {

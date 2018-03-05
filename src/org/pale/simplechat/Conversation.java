@@ -34,13 +34,13 @@ public class Conversation extends Runtime {
 	private ArrayList<Topic> topicsSortedByPriority;
 
 	/// variables private to this conversation
-	private Map<String,String> vars = new TreeMap<String,String>();
+	private Map<String,Value> vars = new TreeMap<String,Value>();
 
-	public String getVar(String s){
+	public Value getVar(String s){
 		if(vars.containsKey(s))
 			return vars.get(s);
 		else
-			return "??";
+			return new Value("??");
 	}
 	
 	/// variables which came out of the last pattern match
@@ -50,7 +50,10 @@ public class Conversation extends Runtime {
 			return patvars.get(s);
 		else
 			return "??";
-		
+	}
+	
+	public void setVar(String name, Value v) {
+		vars.put(name,v);
 	}
 	
 	Conversation(BotInstance i,Source p){
@@ -144,7 +147,6 @@ public class Conversation extends Runtime {
 		
 		return "??";
 	}
-
 
 
 }

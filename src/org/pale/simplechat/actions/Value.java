@@ -21,28 +21,28 @@ public class Value {
 	Type t;
 	
 	
-	Value(String s){
+	public Value(String s){
 		this.s = s;
 		t = Type.STRING;
 	}
-	Value(int i){
+	public Value(int i){
 		this.i = i;
 		t = Type.INT;
 	}
-	Value(double d){
+	public Value(double d){
 		this.d = d;
 		t = Type.DOUBLE;
 	}
-	Value(List<Pair> p){
+	public Value(List<Pair> p){
 		this.subpats = p;
 		t = Type.SUBPATS;
 	}
-	Value(boolean b){
+	public Value(boolean b){
 		this.i = b?1:0;
 		t = Type.INT;
 	}
 	
-	String str(){
+	public String str(){
 		switch(t){
 		case INT:
 			return Integer.toString(i);
