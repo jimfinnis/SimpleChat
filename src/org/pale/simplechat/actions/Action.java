@@ -23,6 +23,9 @@ import org.pale.simplechat.TopicSyntaxException;
  */
 public class Action {
 
+	// limit on how many instructions can run
+	private static final int LIMIT = 10000;
+	
 	static TreeMap<String,Method> cmds = new TreeMap<String,Method>();
 	static {
 		register(Action.class);
@@ -235,11 +238,13 @@ public class Action {
 		int i=0; // instruction number (there might be jumps, see)
 		c.exitflag = false;
 		c.reset(); // reset runtime
+		int totalinsts = 0;
 		while(i<insts.size() && !c.exitflag){
 			ActionLog.write("Running instruction at "+i+": "+insts.get(i).getClass().getSimpleName());
 
 			// each instruction returns the next execution address's offset (usually 1!)
 			i += insts.get(i).execute(c);
+			if(totalinsts++ > LIMIT)throw new ActionException("Instruction limit exceeded");
 		}
 	}
 }

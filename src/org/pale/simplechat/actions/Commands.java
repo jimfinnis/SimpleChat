@@ -1,6 +1,7 @@
 package org.pale.simplechat.actions;
 
 import org.pale.simplechat.Conversation;
+import org.pale.simplechat.Logger;
 
 public class Commands {
 
@@ -9,6 +10,11 @@ public class Commands {
 	 */
 	@Cmd public static void dup(Conversation c) throws ActionException{
 		c.push(c.peek());
+	}
+	
+	@Cmd public static void dp(Conversation c) throws ActionException{
+		String s = c.pop().str();
+		Logger.log("DP: "+s);
 	}
 
 	/*

@@ -4,6 +4,16 @@ name main
     $foo !@foo
     "You're telling me that foo is " ?@foo + "." +
     ;
+    
++"(count to $n=.*)"
+    0!ct
+    ""
+    loop
+        ?ct 1+ !ct
+        ?ct + " " +
+        ?ct $n int = ifleave
+    endloop trim;
+    
 
 +"(what is foo)"
     "foo is " ?@foo +;

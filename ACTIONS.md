@@ -47,6 +47,12 @@ These all have the picture `(a -- b)`, like unary operators, and convert between
 ### String functions
 - `trim` `(a -- b)` trims leading and trailing whitespace from a string
 
+### Stack manipulation
+- `dup` `(a -- a a)` duplicates the item on the stack
+
+### Debugging
+- `dp` `(a --)` prints a value to the system logger
+
 ### Variable access
 There are three sets of variables
 - *instance* variables are private to each `BotInstance`, each communicating entity.
@@ -69,6 +75,11 @@ it has not been set.
 it has not been set.
 - `$varname` will push the value of pattern variable `varname`, or `"??"` if not set - note
 that there is no `?` here, because you cannot set a pattern variable.
+
+## Pattern manipulation
+- `recurse` `(s --)` feeds the string back into the conversation system as if it were
+spoken to the bot, and stacks the result. Take care you don't recurse infinitely!
+- `next` `(p --)` specifies the subpattern block to use for preferential matching of the next input.
 
 ## Flow control
 
@@ -98,9 +109,20 @@ will check if instance variable `foo` is 5. If it is, it will stack "Five!", oth
 it will stack "Not five!" These statements can be nested.
 
 
-### Infinite loops
+### "Infinite" loops
 The words `loop` and `endloop` enclose a loop, which is notionally infinite.
 The `leave` and `ifleave` words leave the enclosing loop. `ifleave` pops an integer
 from the stack and leaves the loop if it is non-zero; as such it is equivalent to
-`if leave then`.
+`if leave then`. Loops may be nested.
+This example counts to the number user specifies:
+```+"(count to $n=.*)"
+    0!ct
+    ""
+    loop
+        ?ct 1+ !ct
+        ?ct + " " +
+        ?ct $n int = ifleave
+    endloop trim;
+```
+
 
