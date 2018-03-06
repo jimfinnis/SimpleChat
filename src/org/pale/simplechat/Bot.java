@@ -9,7 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.pale.simplechat.actions.Action;
+import org.pale.simplechat.actions.InstructionCompiler;
+import org.pale.simplechat.actions.InstructionStream;
 
 /**
  * encapsulates a bot - a style of conversation loaded from a file.
@@ -24,7 +25,7 @@ public class Bot {
 
 	Substitutions subs = new Substitutions(); // substitutions to run before topics
 
-	public Action initAction; // an Action to initialise bot variables etc.
+	public InstructionStream initAction; // an Action to initialise bot variables etc.
 	
 	// this is a list of topic lists.
 	// When matching, we run through each topic list in turn.
@@ -46,12 +47,18 @@ public class Bot {
 			for(;;) {
 				int t = tok.nextToken();
 				if(t == StreamTokenizer.TT_EOF)break;
-				else if(t == StreamTokenizer.TT_WORD){
+				else if(t == ':') {
+					try {
+						InstructionCompiler.parseFunction(tok);
+					} catch (BotConfigException|PatternParseException e){
+						throw new BotConfigException("error in a config file function: "+e.getMessage());
+					}
+				} else if(t == StreamTokenizer.TT_WORD){
 					if(tok.sval.equals("topics")){
 						List<Topic> list = parseTopicList(p,tok);
 						topicLists.add(list);
 					} else if(tok.sval.equals("init")){
-						initAction = new Action(tok);
+						initAction = new InstructionStream(tok);
 					} else if(tok.sval.equals("subs")){
 						if(tok.nextToken()!='"')
 							throw new BotConfigException("subs should be followed by a subs file name in \"quotes\"");
@@ -61,7 +68,7 @@ public class Bot {
 			}
 		} catch (IOException e) {
 			throw new BotConfigException("cannot open config file config.conf in "+p.getFileName());
-		} catch (TopicSyntaxException|PatternParseException e) {
+		} catch (BotConfigException|PatternParseException e) {
 			throw new BotConfigException("error in init action : "+e.getMessage());
 		}
 	}

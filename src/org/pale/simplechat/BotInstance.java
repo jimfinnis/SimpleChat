@@ -25,7 +25,7 @@ public class BotInstance extends Source { // extends Source so bots can talk to 
 		try {
 			// during the init action, the instance is "talking to itself" as it were.
 			if(b.initAction!=null)
-				b.initAction.run(new Conversation(this,this));
+				b.initAction.run(new Conversation(this,this),true);
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
 			throw new BotConfigException("error running initialisation action: "+e.getMessage());

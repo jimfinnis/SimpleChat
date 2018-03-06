@@ -1,6 +1,6 @@
 package org.pale.simplechat;
 
-import org.pale.simplechat.actions.Action;
+import org.pale.simplechat.actions.InstructionStream;
 
 /**
  * A pair of pattern and action; each pattern has an action is runs
@@ -10,8 +10,8 @@ import org.pale.simplechat.actions.Action;
  */
 public class Pair {
 	Pattern pat;
-	Action act;
-	public Pair(Pattern p,Action a){
+	InstructionStream act;
+	public Pair(Pattern p,InstructionStream a){
 		pat = p; act = a;
 	}
 }

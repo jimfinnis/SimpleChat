@@ -13,13 +13,16 @@ public class Runtime {
 	
 	private Stack<Value> stack; // the main stack
 	public boolean exitflag; // set to quit code early. Cleared at start of run.
+	public int totalinsts; // number of instructions run.
 	// stack of iterators
 	public Stack<LoopIterator> iterStack;
 	
+	// clears everything at the start of a top-level call
 	public void reset(){
 		iterStack = new Stack<LoopIterator>();
 		stack = new Stack<Value>();
 		exitflag = false;
+		totalinsts = 0;
 	}
 	
 	public Value pop() throws ActionException{

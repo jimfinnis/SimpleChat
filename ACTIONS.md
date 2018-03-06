@@ -152,3 +152,39 @@ This example counts to the number user specifies:
 We can exit from an action early using the `stop` word. Note that we must still
 leave a string on the stack for the action to sent to the user. This word will
 work inside loops and other control structures.
+
+## User functions
+It's possible to define user functions in `config.conf` or any
+topic file. To do this, use a function definition of the form
+```
+:name |arg1,arg2...,local1,local2...|
+    function body in action language
+```
+The arguments will we popped off the stack, and local variables
+will be allocated. Inside a function, accessing local variables and
+arguments is done the same way as accessing conversation variables,
+using the '!' and '?' sigils. Locals/args take precedence over
+conversation variables: if no local/arg exists of that name,
+the function will try to access the conversation variable.
+Here's an example function:
+```
+:addints |s1,s2:|
+    ?s1 int ?s2 int +;
+```
+
+You may omit the args and locals if you wish, and you can use values on
+the stack. Functions can also call other functions, and can recurse,
+so you can have a function and pattern like this:
+```
+:fac |n:|
+    ?n 1 = if
+        1
+    else
+        ?n 1 - fac ?n *
+    then   
+;
+
++"(fac $n=.)
+```
+Important: functions are global to all files - a function defined in a
+config file or a topic will be there for all subsequent topics.

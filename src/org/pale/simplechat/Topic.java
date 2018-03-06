@@ -10,7 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.pale.simplechat.actions.Action;
+import org.pale.simplechat.actions.InstructionCompiler;
+import org.pale.simplechat.actions.InstructionStream;
 
 /** a Topic is a list of patterns in the order they were read in a file,
  *  with their associated actions.
@@ -33,22 +34,22 @@ public class Topic {
 	String name;
 	StreamTokenizer tok;
 
-	private double getNextDouble() throws TopicSyntaxException, IOException{
+	private double getNextDouble() throws BotConfigException, IOException{
 		if(tok.nextToken()!=StreamTokenizer.TT_NUMBER)
-			throw new TopicSyntaxException("Expected a number");
+			throw new BotConfigException("Expected a number");
 		return (double)tok.nval;
 	}
 
-	private String getNextString() throws TopicSyntaxException, IOException{
+	private String getNextString() throws BotConfigException, IOException{
 		int tt = tok.nextToken();
 		if(tt != '\'' && tt != '\"')
-			throw new TopicSyntaxException("Expected a string");
+			throw new BotConfigException("Expected a string");
 		return tok.sval;
 	}
 
-	private String getNextIdent() throws TopicSyntaxException, IOException{
+	private String getNextIdent() throws BotConfigException, IOException{
 		if(tok.nextToken()!=StreamTokenizer.TT_WORD)
-			throw new TopicSyntaxException("Expected an identifier");
+			throw new BotConfigException("Expected an identifier");
 		return tok.sval;
 	}
 	/**
@@ -58,9 +59,9 @@ public class Topic {
 	 * @param bot
 	 * @throws PatternParseException 
 	 * @throws IOException 
-	 * @throws TopicSyntaxException 
+	 * @throws BotConfigException 
 	 */
-	public Topic(String name,Path f) {
+	public Topic(String name,Path f) throws BotConfigException {
 		try {
 			this.name = name;
 			BufferedReader r = Files.newBufferedReader(f); 
@@ -72,7 +73,8 @@ public class Topic {
 			for(;;){
 				int t = tok.nextToken();
 				if(t == StreamTokenizer.TT_EOF)break;
-				if(t == '+'){
+				else if(t == ':')InstructionCompiler.parseFunction(tok);
+				else if(t == '+'){
 					// pattern line is +"pattern" .. OR +name "pattern"
 					String pname,pstring;
 					int tt = tok.nextToken();
@@ -85,23 +87,28 @@ public class Topic {
 						pname = null;
 						pstring = tok.sval;
 					} else
-						throw new TopicSyntaxException("badly formed pattern definition");
+						throw new BotConfigException("badly formed pattern definition");
 					Pattern pat = new Pattern(pname,pstring);
-					Action act = new Action(tok);
+					InstructionStream act = new InstructionStream(tok);
 					Pair pair = new Pair(pat,act);
 					if(pname!=null)
 						pairMap.put(pname,pair);
 					pairList.add(pair);
 					Logger.log("pattern/action pair parsed");
 				} else
-					throw new TopicSyntaxException("badly formed topic file, expected '+'");
+					throw new BotConfigException("badly formed topic file, expected '+'");
 			}
-		} catch (TopicSyntaxException e){
+		} catch (BotConfigException e){
 			Logger.log("syntax error in topic file "+f.toString()+" : "+e.getMessage());
+			throw e; // log and rethrow
 		} catch (IOException e) {
-			Logger.log("IO error in topic file "+f.toString());
+			String s ="IO error in topic file "+f.toString();
+			Logger.log(s);
+			throw new BotConfigException(s);
 		} catch(PatternParseException e){
-			Logger.log("Pattern parse error in topic file "+f.toString()+" : "+e.getMessage());
+			String s = "Pattern parse error in topic file "+f.toString()+" : "+e.getMessage();
+			Logger.log(s);
+			throw new BotConfigException(s);
 		}
 
 		tok = null; // discard tokeniser when done

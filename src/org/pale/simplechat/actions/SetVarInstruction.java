@@ -18,8 +18,6 @@ public class SetVarInstruction extends Instruction {
 		Value v = c.pop();
 		switch(type){
 		case CONVVAR:
-			if(c.source == c.instance)
-				throw new ActionException("cannot set a conversation variable in an init block");
 			c.setVar(name,v);break;
 		case INSTVAR:
 			c.instance.setVar(name,v);break;

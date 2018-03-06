@@ -33,13 +33,27 @@ public class Conversation extends Runtime {
 
 	/// variables private to this conversation
 	private Map<String,Value> vars = new TreeMap<String,Value>();
+	/// variables local to any function, none by default
+	public Map<String,Value> funcVars = null; 
 
+	// gets a function local if it exists, failing that a conversation local.
 	public Value getVar(String s){
-		if(vars.containsKey(s))
+		if(funcVars!=null && funcVars.containsKey(s))
+			return funcVars.get(s);
+		else if(vars.containsKey(s))
 			return vars.get(s);
 		else
 			return new Value("??");
 	}
+
+	// sets a function local if it exists, failing that a conversation local.
+	public void setVar(String name, Value v) {
+		if(funcVars!=null && funcVars.containsKey(name))
+			funcVars.put(name,v);
+		else
+			vars.put(name,v);
+	}
+
 
 	/// variables which came out of the last pattern match
 	private Map<String,String> patvars;
@@ -48,10 +62,6 @@ public class Conversation extends Runtime {
 			return patvars.get(s);
 		else
 			return "??";
-	}
-
-	public void setVar(String name, Value v) {
-		vars.put(name,v);
 	}
 
 	Conversation(BotInstance i,Source p){
@@ -93,7 +103,7 @@ public class Conversation extends Runtime {
 				// clear subpatterns here. We might set them in the resulting action,
 				// but if we don't we should default to the top level search.
 				specialpats = null; 
-				p.act.run(this);
+				p.act.run(this,true);
 				// at this point there should be something on the stack, and subpatterns
 				// may have been set.
 				return getResult();
