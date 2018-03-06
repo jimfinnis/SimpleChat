@@ -74,12 +74,13 @@ public class Bot {
 			else tok.pushBack();
 			
 			if(tok.nextToken() == StreamTokenizer.TT_WORD){
-				Topic t = new Topic(p,tok.sval+".topic");
-				if(topicsByName.containsKey(t.name)){
+				String name = tok.sval;
+				Topic t = new Topic(name,p.resolve(name+".topic"));
+				if(topicsByName.containsKey(name)){
 					throw new BotConfigException("topic already exists: "+t.name);
 				}
 				topicList.add(t);
-				topicsByName.put(t.name, t);
+				topicsByName.put(name, t);
 			}
 		}
 		return topicList;

@@ -7,7 +7,16 @@
         ?n 2 = if "Two" case
     "Something else" otherwise;
 
-
++test1 "wibble"
+    "main" "test1" disablepattern
+    "main" "test2" enablepattern
+    "Test 1 fires";
+    
++test2 "wibble
+    "main" "test1" enablepattern
+    "main" "test2" disablepattern
+    "Test 2 fires";
+    
 +"(foo is $foo=.*)"
     $foo !@foo
     "You're telling me that foo is " ?@foo + "." +
@@ -25,12 +34,6 @@
 +"(what is foo)"
     "foo is " ?@foo +;
 
-+"([hello hi] .*)"
-    "hi how are you?"
-    {
-        "(?Iam [good fine well] .*)"
-            "Glad to hear it.";
-        "(?Iam [bad (not too)] .*)"
-            "Oh, I'm sorry";
-    } next;
 
++"([hello hi] .*)"
+    "Wotcher!" "main" demote;

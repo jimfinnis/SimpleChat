@@ -15,7 +15,7 @@ public class MethodCallInstruction extends Instruction {
 	}
 
 	@Override
-	public int execute(Conversation c) {
+	public int execute(Conversation c) throws ActionException {
 		try {
 			method.invoke(null, c);
 		} catch (IllegalAccessException | IllegalArgumentException e) {
@@ -25,7 +25,8 @@ public class MethodCallInstruction extends Instruction {
 		} catch (InvocationTargetException e) {
 			Throwable t = e.getCause();
 			Logger.log("Command "+name+" caused an error: "+t.getClass().getSimpleName()+", "+t.getMessage());
-			t.printStackTrace();
+			throw new ActionException("Command "+name+" caused an error: "+t.getClass().getSimpleName()+", "+t.getMessage());
+			
 		}
 		return 1;
 	}

@@ -57,15 +57,15 @@ public class Commands {
 	private static void doPromoteDemote(Conversation c,String name,boolean demote) throws ActionException{
 		Topic t = c.instance.bot.getTopic(name);
 		if(t!=null)
-			c.promoteDemote(t, false);
+			c.promoteDemote(t, demote);
 		else
 			throw new ActionException("unknown topic: "+name);		
 	}
 	
-	private static void doEnableDisableTopic(Conversation c,String name,boolean demote) throws ActionException{
+	private static void doEnableDisableTopic(Conversation c,String name,boolean disable) throws ActionException{
 		Topic t = c.instance.bot.getTopic(name);
 		if(t!=null)
-			c.enableDisableTopic(t, false);
+			c.enableDisableTopic(t, disable);
 		else
 			throw new ActionException("unknown topic: "+name);		
 	}
@@ -86,12 +86,14 @@ public class Commands {
 	}
 	
 	@Cmd public static void enablepattern(Conversation c) throws ActionException {
+		// (topname patname -- )
 		String patname = c.popString();
 		String topname = c.popString();
 		c.enableDisablePattern(topname, patname, false);
 	}
 
 	@Cmd public static void disablepattern(Conversation c) throws ActionException {
+		// (topname patname -- )
 		String patname = c.popString();
 		String topname = c.popString();
 		c.enableDisablePattern(topname, patname, true);

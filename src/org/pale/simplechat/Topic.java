@@ -60,11 +60,9 @@ public class Topic {
 	 * @throws IOException 
 	 * @throws TopicSyntaxException 
 	 */
-	public Topic(Path path,String name) {
-		Path f = null;
+	public Topic(String name,Path f) {
 		try {
 			this.name = name;
-			f = path.resolve(name);
 			BufferedReader r = Files.newBufferedReader(f); 
 			tok = new StreamTokenizer(r);
 			tok.commentChar('#');
@@ -101,10 +99,7 @@ public class Topic {
 		} catch (TopicSyntaxException e){
 			Logger.log("syntax error in topic file "+f.toString()+" : "+e.getMessage());
 		} catch (IOException e) {
-			if(f==null)
-				Logger.log("IO error in topic dir "+path.toString());
-			else
-				Logger.log("IO error in topic file "+f.toString());
+			Logger.log("IO error in topic file "+f.toString());
 		} catch(PatternParseException e){
 			Logger.log("Pattern parse error in topic file "+f.toString()+" : "+e.getMessage());
 		}
