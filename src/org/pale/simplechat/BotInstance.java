@@ -1,8 +1,11 @@
 package org.pale.simplechat;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.pale.simplechat.actions.ActionException;
+import org.pale.simplechat.actions.ActionLog;
 import org.pale.simplechat.actions.Value;
 
 /**
@@ -12,13 +15,24 @@ import org.pale.simplechat.actions.Value;
  *
  */
 public class BotInstance extends Source { // extends Source so bots can talk to each other, maybe.
-	Bot bot;
+	public Bot bot;
 	
 	// this is a map of each instance to each possible conversational partner.
 	private Map<Source,Conversation> conversations = new HashMap<Source,Conversation>();
 	
-	public BotInstance(Bot b){
+	public BotInstance(Bot b) throws BotConfigException{
 		bot = b;
+		try {
+			// during the init action, the instance is "talking to itself" as it were.
+			if(b.initAction!=null)
+				b.initAction.run(new Conversation(this,this));
+		} catch (IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			throw new BotConfigException("error running initialisation action: "+e.getMessage());
+		} catch (ActionException e) {
+			ActionLog.show();
+			throw new BotConfigException("error running initialisation action: "+e.getMessage());
+		}
 	}
 	
 	/// variables private (haha) to this instance.

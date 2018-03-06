@@ -60,29 +60,21 @@ public class Topic {
 	 * @throws IOException 
 	 * @throws TopicSyntaxException 
 	 */
-	public Topic(Path path,String file, Bot bot) {
+	public Topic(Path path,String name) {
 		Path f = null;
 		try {
-			f = path.resolve(file);
+			this.name = name;
+			f = path.resolve(name);
 			BufferedReader r = Files.newBufferedReader(f); 
 			tok = new StreamTokenizer(r);
 			tok.commentChar('#');
 			tok.ordinaryChar('/');
 			
-			// top level parsing
-			if(!getNextIdent().equals("name"))throw new TopicSyntaxException("'name' must be first token in topic");
-			name = getNextIdent();
-			double priority = 1;
-
 			// we got the name of the topic, so parse a list of pattern/action pairs, or possibly other topic includes
 			for(;;){
 				int t = tok.nextToken();
 				if(t == StreamTokenizer.TT_EOF)break;
-				else if(t == StreamTokenizer.TT_WORD){
-					if(tok.sval.equals("topic"))new Topic(path,getNextString(),bot);
-					else if(tok.sval.equals("priority"))priority = getNextDouble();
-				}
-				else if(t == '+'){
+				if(t == '+'){
 					// pattern line is +"pattern" .. OR +name "pattern"
 					String pname,pstring;
 					int tt = tok.nextToken();
@@ -103,12 +95,9 @@ public class Topic {
 						pairMap.put(pname,pair);
 					pairList.add(pair);
 					Logger.log("pattern/action pair parsed");
-				}
+				} else
+					throw new TopicSyntaxException("badly formed topic file, expected '+'");
 			}
-			// add this topic to the bot.
-			bot.addTopic(name,this,priority);
-			
-		
 		} catch (TopicSyntaxException e){
 			Logger.log("syntax error in topic file "+f.toString()+" : "+e.getMessage());
 		} catch (IOException e) {
@@ -121,6 +110,5 @@ public class Topic {
 		}
 
 		tok = null; // discard tokeniser when done
-
 	}
 }

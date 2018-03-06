@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 import javax.swing.JTextArea;
 
 import org.pale.simplechat.Bot;
+import org.pale.simplechat.BotConfigException;
 import org.pale.simplechat.BotInstance;
 import org.pale.simplechat.Source;
 import org.pale.simplechat.Substitutions;
@@ -47,11 +48,15 @@ public class MainWindow implements ActionListener {
 	 */
 	public MainWindow() {
 		Path homedir = Paths.get("/home/white/git/SimpleChat/testbot");
-		Substitutions subs = new Substitutions(homedir,"subs.subs");
-		Bot b = new Bot(homedir,subs);
-		instance = new BotInstance(b);
-		source = new Source();
-		initialize();
+		Bot b;
+		try {
+			b = new Bot(homedir);
+			instance = new BotInstance(b);
+			source = new Source();
+			initialize();
+		} catch (BotConfigException e) {
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 
 	/**

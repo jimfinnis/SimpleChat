@@ -1,5 +1,3 @@
-name main
-
 +"(case test $n=.)"
     $n int !n
     "case is "
@@ -36,5 +34,3 @@ name main
             "Oh, I'm sorry";
     } next;
 
-+"$foo=.*"
-    "I don't know how to respond to " $foo +;

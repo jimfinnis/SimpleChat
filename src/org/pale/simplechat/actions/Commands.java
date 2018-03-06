@@ -2,6 +2,7 @@ package org.pale.simplechat.actions;
 
 import org.pale.simplechat.Conversation;
 import org.pale.simplechat.Logger;
+import org.pale.simplechat.Topic;
 
 public class Commands {
 
@@ -17,18 +18,7 @@ public class Commands {
 		Logger.log("DP: "+s);
 	}
 
-	/*
-	 * Pattern handling
-	 */
-	@Cmd public static void next(Conversation c) throws ActionException{
-		// tell the conversation to use the patterns we just specified to match first.
-		c.specialpats =  c.popSubpats();
-	}
 
-	@Cmd public static void recurse(Conversation c) throws ActionException {
-		// recurse the entire string (like SRAI in AIML)
-		c.push(new Value(c.handle(c.popString())));
-	}
 
 	/*
 	 * Type conversion
@@ -49,5 +39,61 @@ public class Commands {
 	 */
 	@Cmd public static void trim(Conversation c) throws ActionException{
 		c.push(new Value(c.pop().str().trim()));
+	}
+	
+	/*
+	 * Pattern handling and topic manipulation
+	 */
+	@Cmd public static void next(Conversation c) throws ActionException{
+		// tell the conversation to use the patterns we just specified to match first.
+		c.specialpats =  c.popSubpats();
+	}
+
+	@Cmd public static void recurse(Conversation c) throws ActionException {
+		// recurse the entire string (like SRAI in AIML)
+		c.push(new Value(c.handle(c.popString())));
+	}
+	
+	private static void doPromoteDemote(Conversation c,String name,boolean demote) throws ActionException{
+		Topic t = c.instance.bot.getTopic(name);
+		if(t!=null)
+			c.promoteDemote(t, false);
+		else
+			throw new ActionException("unknown topic: "+name);		
+	}
+	
+	private static void doEnableDisableTopic(Conversation c,String name,boolean demote) throws ActionException{
+		Topic t = c.instance.bot.getTopic(name);
+		if(t!=null)
+			c.enableDisableTopic(t, false);
+		else
+			throw new ActionException("unknown topic: "+name);		
+	}
+
+	@Cmd public static void promote(Conversation c) throws ActionException {
+		doPromoteDemote(c,c.popString(),false);
+	}
+
+	@Cmd public static void demote(Conversation c) throws ActionException {
+		doPromoteDemote(c,c.popString(),true);
+	}
+	@Cmd public static void enabletopic(Conversation c) throws ActionException {
+		doEnableDisableTopic(c,c.popString(),false);
+	}
+
+	@Cmd public static void disabletopic(Conversation c) throws ActionException {
+		doEnableDisableTopic(c,c.popString(),true);
+	}
+	
+	@Cmd public static void enablepattern(Conversation c) throws ActionException {
+		String patname = c.popString();
+		String topname = c.popString();
+		c.enableDisablePattern(topname, patname, false);
+	}
+
+	@Cmd public static void disablepattern(Conversation c) throws ActionException {
+		String patname = c.popString();
+		String topname = c.popString();
+		c.enableDisablePattern(topname, patname, true);
 	}
 }

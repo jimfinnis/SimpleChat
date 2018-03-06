@@ -23,8 +23,7 @@ between a `BotInstance` and a `Source` has some private data, called
 ## Creating a bot
 Typically goes like this:
 ```java
-Substitutions subs = new Substitutions(Paths.get("/some/directory/or/other"),"subs.subs");
-Bot b = new Bot(Paths.get("/some/directory/or/other",subs);
+Bot b = new Bot(Paths.get("/some/directory/or/other");
 instance = new BotInstance(b);
 source = new Source();
 ```
@@ -36,12 +35,64 @@ is done by repeatedly calling
 String reply = instance.handle(string,source);
 ```
 
+## Bot directory
+The bot directory should contain
+- `config.conf` file listing the topics, substitutions etc.
+- `.sub` files with substitutions
+- `.topic` files each containing a topic
+
+## The configuration file
+The config file must be called `config.conf`. It contains the following:
+- `topics` entries each giving a list of topics, each of which is loaded
+from a `.topic` file. A topic is a set of pattern/action pairs: when a
+pattern is matched, the action fires and pattern matching stops.
+- `subs` entries each giving the name of a substitution set, which is loaded
+from a `.sub` file
+- an optional `init` entry followed by a block of Action language (see below)
+which will set up initial values for conversation variables and maybe do
+some other things. A `#` starts a comment.
+
+Here is an example:
+```
+# This is a test bot!
+
+# here are some substitution files.
+
+subs "subs1.sub"
+subs "subs2.sub"
+
+# primary topics, which can be rearranged in priority
+
+topics {main cats dogs}
+
+# topics in different lists can be promoted and demoted but not
+# outside their list, so these will always run after the topics
+# above. The last topic list is generally for "catch-all" patterns.
+
+topics {bottom}
+
+# and here's an init block which just sets the instance variable
+# `foo` to zero.
+init
+    0 int !@foo
+;
+```
+
 ## Regex substitutions
 Each bot can have a file (or set of files) containing regex substitutions
 associated with it. These will be processed before any other input,
 and are always processed. They are typically used to substitute
 things like "I'm" and "I am" with "IAM" to make parsing easier.
-Multiple bots can share substitution sets. The format for the files is
+Multiple bots can share substitution sets.
+
+A substitution file is appended to a bot's substitutions by using a line
+of the form
+```
+subs <subfilename>
+```
+in the config file. The file path is relative to the bot directory.
+
+The format for the files is
 lines consisting of a regex and a replacement string, separated by default
 by a colon. Two directives exist, which should be on their own lines.
 The `#include` directive has a file argument and will include a file
@@ -58,25 +109,48 @@ include more.subst
 ```
 
 
-## Topics
-All bots load a `main.topic` file from their directory. This
-may include other topic files with an `include` line.
-The topic file must start with its name in a `name` line,
-and consists of pattern/action pairs.
-Each topic is run in descending priority order, and tries to match
-its patterns in turn. When it matches a pattern, it runs the action
-associated. If a "special" set of pattern/action pairs is in operation
-(such as returned from an action subpattern, see below) that will
-be tried first.
+### Initial action
+This is written in the action language (see below and 
+[here](ACTIONS.md)) and runs when an instance of this bot
+is created, but just throws away the output. It is typically
+used to initialise instance variables. Setting a conversation
+variable will cause a runtime error, because the bot isn't in
+a conversation.
 
-Initially all topics are at the same priority, so matching can be
-a bit random. Priorities are set with a `priority` command within
-a topic file. Here's a topic file:
+### Topics
+Topics are (loosely speaking) subjects of conversation.
+Each topic consists of a list of pattern/action pairs, which
+are run through in order when the user provides input.
+When a pattern matches, the action runs and produces some
+output which is passed to the user (as well as perhaps doing other
+things). All processing then stops.
+More specific patterns should therefore be at the top of the topic file,
+so they get a chance to match first.
 
+Sometimes a special "pseudotopic" can be in play, such as when
+the `next` command is used in action code to specify a set
+of patterns to try to match with the next input. This is done
+to produce dialogue tree effects. In this case, the pseudotopic
+will try to match its patterns before any real topics.
+
+Topics are arranged into lists. Within each list, topics can
+be promoted or demoted to the top and bottom of the list by
+actions. There can be any number of lists, but the example config
+above is a typical case, using only two: a main list for all
+the general conversational topics, and a bottom list for catch-all
+phrases. The topics are processed within their list, and their
+lists are processed in order. This is so that you can (say) demote
+a topic, but have it still try to match its patterns before any
+catch-all patterns try.
+
+The `topics` command in the config file specifies a new topic
+list. Following it, in curly braces, are the topic names. These
+are loaded from `.topic` files in the same directory as the bot,
+so the line
+`topics {main}` will load the `main.topic` file.
+
+Here is an example topic file:
 ```
-name main
-priority 1000
-
 # this is a named pattern/action pair. The string is the the pattern,
 # the bit between it and the semicolon is the action. This one stacks
 # the output "Hi, how are you?", and then sets up a subpattern tree
@@ -116,7 +190,13 @@ priority 1000
 +"$foo=.*"
     "I don't know how to respond to " $foo +;
 ```
+Note that each pair is preceded by `+` and an optional name, followed
+by the pattern string in quotes, followed by the actions and a semicolon.
+The pattern name can be used to disable and enable a pattern in a topic
+from inside an action.
 
+Whole topics can also be enabled and disable, as well as being 
+promoted and demoted to the top or bottom of their list.
 
 ## Patterns
 For matching, the input is lower-cased, all punctuation is removed

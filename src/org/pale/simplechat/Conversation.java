@@ -4,10 +4,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.pale.simplechat.patterns.MatchData;
@@ -24,15 +28,8 @@ import org.pale.simplechat.actions.Value;
  *
  */
 public class Conversation extends Runtime {
-	private Source source;
 	public BotInstance instance;
-	
-	// each topic has a priority, and topics are tried in descending priority order. By
-	// default the priority is 1. This is the map of default priority, loaded from the topic
-	// files (topics can set their priority). It is copied to each new conversation, which
-	// can increase or decrease priorities.
-	Map<Topic,Double> topicPriorities = new HashMap<Topic,Double>();
-	private ArrayList<Topic> topicsSortedByPriority;
+	public  Source source;
 
 	/// variables private to this conversation
 	private Map<String,Value> vars = new TreeMap<String,Value>();
@@ -43,7 +40,7 @@ public class Conversation extends Runtime {
 		else
 			return new Value("??");
 	}
-	
+
 	/// variables which came out of the last pattern match
 	private Map<String,String> patvars;
 	public String getPatVar(String s){
@@ -52,37 +49,32 @@ public class Conversation extends Runtime {
 		else
 			return "??";
 	}
-	
+
 	public void setVar(String name, Value v) {
 		vars.put(name,v);
 	}
-	
+
 	Conversation(BotInstance i,Source p){
 		source = p;
 		instance = i;
-		topicPriorities = new HashMap<Topic,Double>(instance.bot.topicPriorities); // clone topic weights
-		topicsSortedByPriority = new ArrayList<Topic>(topicPriorities.keySet()); // this will get sorted..
-		sortTopics();
+		cloneTopicLists();
 	}
-	
-	/**
-	 * Change a topic weight and reorder the topics
-	 */
-	void setTopicWeight(Topic t,double w){
-		if(topicPriorities.containsKey(t)){
-			topicPriorities.put(t, w);
-			sortTopics();
+
+	// our private copy of the bot topic lists, so we can rearrange them for this conversation only. 
+	List<Deque<Topic>> topicLists;
+
+	// we need to clone the topic lists, because we need to be free to promote and demote topics.
+	// Note that in the clones, we actually create deques because of the need to promote/demote.
+	void cloneTopicLists(){
+		topicLists = new ArrayList<Deque<Topic>>();
+		for(List<Topic> list: instance.bot.topicLists){
+			Deque<Topic> newlist = new LinkedList<Topic>();
+			topicLists.add(newlist);
+			for(Topic t: list)
+				newlist.add(t);
 		}
 	}
-	
-	private void sortTopics(){
-		Collections.sort(topicsSortedByPriority,new Comparator<Topic>() {
-			public int compare(Topic a,Topic b){
-				return topicPriorities.get(a).compareTo(topicPriorities.get(b));
-			}
-		});		
-	}
-	
+
 	/// if not null, the action we ran before has set explicit patterns
 	//// perhaps a dialog tree in subpatterns.
 	public List<Pair> specialpats = null;
@@ -117,13 +109,72 @@ public class Conversation extends Runtime {
 		else
 			return null;
 	}
-	
+
+	// This is a list giving which topics to promote/demote based on the last actions run.
+	// It's a list, not a set - and it's a single list of structures with a flag rather than than
+	// two lists. This is because the order of the operations must be preserved.
+	class PromoteDemote {
+		Topic t;
+		boolean demote;
+		PromoteDemote(Topic t,boolean demote){
+			this.t = t;
+			this.demote=demote;
+		}
+	}
+	private List<PromoteDemote> toPromoteDemote = new LinkedList<PromoteDemote>();
+
+	public void promoteDemote(Topic t,boolean demote){
+		toPromoteDemote.add(new PromoteDemote(t,demote));
+	}
+
+	// this is a set of disabled topics - these will never run. Again, this isn't a flag
+	// in Topic because Topics are shared. This only enabled/disables in this conversation.
+	private Set<Topic> disabledTopics = new HashSet<Topic>();
+	public void enableDisableTopic(Topic t, boolean disable) {
+		if(disable && !disabledTopics.contains(t)){
+			disabledTopics.add(t);
+		} else if(!disable && disabledTopics.contains(t))
+			disabledTopics.remove(t);
+	}
+
+	// this is a set of disabled pattern/action pairs for this convo
+	private Set<Pair> disabledPairs = new HashSet<Pair>();
+	public void enableDisablePattern(String topicName, String patName, boolean disable) throws ActionException{
+		Topic t = instance.bot.getTopic(topicName);
+		if(t==null)
+			throw new ActionException("cannot find topic: "+topicName);
+		if(!t.pairMap.containsKey(patName))
+			throw new ActionException("cannot find named pattern '"+patName+"' in topic '"+topicName+"'");
+		Pair p = t.pairMap.get(patName);
+		if(disable && !disabledPairs.contains(p))
+			disabledPairs.add(p);
+		else if(!disable && disabledPairs.contains(p))
+			disabledPairs.remove(p);
+	}
+
 	public String handle(String s) {
-		/*TODO
-		 * - if there is a special "topic", try to match the patterns in that first.
-		 * - otherwise, go through the topics in weight order attempting matches on their patterns.
-		 */
-		
+		// The previous interaction may have promoted or demoted topics. We need to reorder the lists
+		// before we try to process them. Demotions or promotions must run in the order they were performed.
+
+		for(PromoteDemote p: toPromoteDemote){
+			// find the topic in a list and then move it. We can't just store the list in the topic,
+			// because the topic data is shared among all instances and conversations.
+			for(Deque<Topic> list : topicLists){
+				if(list.contains(p.t)){
+					if(p.demote){
+						list.remove(p.t);
+						list.addLast(p.t);
+					} else {
+						list.remove(p.t);
+						list.addFirst(p.t);
+					}
+				}
+			}
+		}
+		// promotes and demotes done, now clear them.
+		toPromoteDemote.clear();
+
+
 		// dialogue tree or special topic
 		if(specialpats!=null){
 			for(Pair p : specialpats){
@@ -134,21 +185,27 @@ public class Conversation extends Runtime {
 				}
 			}
 		}
-		
-		// last resort - run through topics
-		for(Topic t: topicsSortedByPriority){
-			Logger.log("Testing topic patterns"+t.name);
-			for(Pair p: t.pairList){
-				String res = handle(s,p);
-				if(res!=null){
-					Logger.log("done pattern "+p.pat.getName());
-					return res;
+
+		// if that failed, we run through the topics in the topic lists.
+
+		for(Deque<Topic> list : topicLists){
+			for(Topic t: list){
+				if(!disabledTopics.contains(t)){ // only run enabled topics
+					Logger.log("Testing topic patterns"+t.name);
+					for(Pair p: t.pairList){
+						if(!disabledPairs.contains(p)){
+							String res = handle(s,p);
+							if(res!=null){
+								Logger.log("done pattern "+p.pat.getName());
+								return res;
+							}
+						}
+					}
 				}
 			}
 		}
-		
-		return "??";
-	}
 
+		return "??"; // match failed for any topic.
+	}
 
 }

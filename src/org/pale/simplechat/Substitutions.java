@@ -19,10 +19,6 @@ import java.util.List;
  *
  */
 public class Substitutions {
-	public Substitutions(Path p,String file){
-		parseFile(p,file);
-	}
-	
 	public String process(String in){
 		for(SubstPair p: substs){
 			in = p.repl(in);
@@ -43,7 +39,7 @@ public class Substitutions {
 	}
 	private List<SubstPair> substs = new ArrayList<SubstPair>();
 	
-	private void parseFile(Path p,String file){
+	public void parseFile(Path p,String file){
 		Path f = p.resolve(file);
 		String sep = ":";
 		try {
