@@ -1,5 +1,15 @@
 name main
 
++"(case test $n=.)"
+    $n int !n
+    "case is "
+    cases
+        ?n 0 = if "Zero" case
+        ?n 1 = if "One" case
+        ?n 2 = if "Two" case
+    "Something else" otherwise;
+
+
 +"(foo is $foo=.*)"
     $foo !@foo
     "You're telling me that foo is " ?@foo + "." +
@@ -14,10 +24,8 @@ name main
         ?ct $n int = ifleave
     endloop trim;
     
-
 +"(what is foo)"
     "foo is " ?@foo +;
-    
 
 +"([hello hi] .*)"
     "hi how are you?"

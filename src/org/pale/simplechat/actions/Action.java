@@ -15,6 +15,7 @@ import org.pale.simplechat.Pattern;
 import org.pale.simplechat.Pair;
 import org.pale.simplechat.PatternParseException;
 import org.pale.simplechat.TopicSyntaxException;
+import org.pale.simplechat.actions.Flow.JumpInstruction;
 
 /**
  * An action to be performed when a pattern is matched.
@@ -152,17 +153,22 @@ public class Action {
 					
 				
 			case StreamTokenizer.TT_WORD:
+				// "if .. (else ..) then" handling
 				if(tok.sval.equals("if")){
-					cstack.push(insts.size()); // remember we we are..
+					cstack.push(insts.size()); // remember where we are..
 					insts.add(new Flow.IfInstruction()); // .. and compile an IF to fixup later
 				} else if(tok.sval.equals("else")){
-					int refToIf = cstack.pop(); // pop the IF..
-					resolveJumpForwards(refToIf,1); // .. and resolve it to jump to just past here
+					int ref = cstack.pop(); // pop the IF..
+					if(ref<0)throw new TopicSyntaxException("'else' matching with 'cases'?");
+					resolveJumpForwards(ref,1); // .. and resolve it to jump to just past here
 					cstack.push(insts.size()); // push where we are
 					insts.add(new Flow.JumpInstruction()); // and compile a jump to the end
 				} else if(tok.sval.equals("then")){
 					int ref = cstack.pop(); // pop the IF or ELSE location
+					if(ref<0)throw new TopicSyntaxException("'then' matching with 'cases'?");
 					resolveJumpForwards(ref,0); // and resolve it to jump here (there is no THEN instruction)
+					
+				// "loop..endloop" and leave handling
 				} else if(tok.sval.equals("loop")){
 					insts.add(new Flow.LoopStartInstruction()); // compile a loop start
 					cstack.push(insts.size()); // remember the instruction after the loop start point
@@ -179,7 +185,6 @@ public class Action {
 					leaveList = loopStack.pop();
 					// now compile the jump back to the loop start, using the value stacked on the cstack.
 					insts.add(new Flow.JumpInstruction(cstack.pop() - insts.size()));
-					
 				} else if(tok.sval.equals("leave")){
 					if(leaveList==null)throw new TopicSyntaxException("leave when not in a loop");
 					leaveList.add(insts.size()); // add to the leave list to fixup in endloop
@@ -188,6 +193,40 @@ public class Action {
 					if(leaveList==null)throw new TopicSyntaxException("ifleave when not in a loop");
 					leaveList.add(insts.size()); // add to the leave list to fixup in endloop
 					insts.add(new Flow.IfLeaveInstruction());
+					
+				// "cases {..if..case} {..if..case} {.. otherwise}" handling
+				// we construct a linked list of case jumps through the offset pointer of the jumps,
+				// terminated by the end list marker -1.
+				} else if(tok.sval.equals("cases")){
+					cstack.push(-1); // push the end list marker - the first "case" will pop it.
+				} else if(tok.sval.equals("case")){
+					int ref = cstack.pop(); // get the corresponding "if"
+					if(ref<0)throw new TopicSyntaxException("'case' should have an 'if'");
+					resolveJumpForwards(ref,1); // resolve the "if"
+					ref = cstack.pop(); // this will pop the marker the first time round, then the next thing in the list.
+					cstack.push(insts.size()); // push the location we're about to write..
+					// .. which is a specially marked jump to be fixed up (analogous to OP_DUMMYCASE in Angort)
+					Flow.JumpInstruction j = new Flow.JumpInstruction(ref); // "offset" is actually index of next item in liked list
+					j.isCaseJump = true;
+					insts.add(j);
+				} else if(tok.sval.equals("otherwise")){
+					// pop the first case jump
+					int ref = cstack.pop();
+					while(ref>=0){
+						// follow the list made through case jumps
+						// make sure it's a jump, and the right kind of jump
+						if(!(insts.get(ref) instanceof Flow.JumpInstruction))
+							throw new TopicSyntaxException("bad case construction");
+						Flow.JumpInstruction j = (Flow.JumpInstruction)insts.get(ref);
+						if(!j.isCaseJump)
+							throw new TopicSyntaxException("bad case construction");
+						int next = j.offset; // get the next location in the list.
+						j.isCaseJump = false; // turn it back into an ordinary jump
+						resolveJumpForwards(ref,0); // resolve the jump destination
+						ref = next; // get the next jump to resolve.
+					}
+					
+				// "stop" and other quick flow control stuff
 				} else if(tok.sval.equals("stop")){
 					insts.add(new Flow.StopInstruction());
 				}

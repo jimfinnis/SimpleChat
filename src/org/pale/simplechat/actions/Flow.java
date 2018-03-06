@@ -9,7 +9,11 @@ import org.pale.simplechat.Conversation;
  */
 public class Flow {
 	public static class JumpInstruction extends Instruction {
-		int offset;
+		// how far to jump.
+		// 0 is used as a default to be fixed up
+		int offset; 
+		// but if this is set, it's a case jump to be fixed up. Different to permit syntax checking.
+		public boolean isCaseJump=false;
 		
 		JumpInstruction(){ // default ctor for jumps which get fixed up later
 			offset=0;
@@ -80,4 +84,5 @@ public class Flow {
 			return 0;
 		}
 	}
+	
 }

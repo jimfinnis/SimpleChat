@@ -108,6 +108,28 @@ For example
 will check if instance variable `foo` is 5. If it is, it will stack "Five!", otherwise
 it will stack "Not five!" These statements can be nested.
 
+### `cases`: or, how to do `else if`
+We don't have `else if` in this language because of the way it's parsed (how would you separate
+the condition part from the action part of the previous `if`?). Instead, the `cases` construction
+serves the same role. It has the form
+```
+cases
+    <condition> if <action> case
+    <condition> if <action> case
+    ...
+    <action> otherwise
+```
+Here's an example which converts the string obtained from the pattern, `$n`, into an integer conversation variable for testing.
+```        
+    +"(case test $n=.)"
+    $n int !n
+    ?n 0 = if "Zero" case
+    ?n 1 = if "One" case
+    ?n 2 = if "Two" case
+    ?n 10 < if "Between three and nine" case
+    "Something else" otherwise;
+```
+    
 
 ### "Infinite" loops
 The words `loop` and `endloop` enclose a loop, which is notionally infinite.
@@ -115,7 +137,8 @@ The `leave` and `ifleave` words leave the enclosing loop. `ifleave` pops an inte
 from the stack and leaves the loop if it is non-zero; as such it is equivalent to
 `if leave then`. Loops may be nested.
 This example counts to the number user specifies:
-```+"(count to $n=.*)"
+```
+    +"(count to $n=.*)"
     0!ct
     ""
     loop
@@ -125,4 +148,7 @@ This example counts to the number user specifies:
     endloop trim;
 ```
 
-
+### Early exit 
+We can exit from an action early using the `stop` word. Note that we must still
+leave a string on the stack for the action to sent to the user. This word will
+work inside loops and other control structures.
