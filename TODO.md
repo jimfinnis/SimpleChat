@@ -1,11 +1,9 @@
 # Todo
-- cases/case/otherwise, or a better switch!
 - lists (and hashes)?
-- loop random choice
+- list random choice
 - loop iterator
 - functions?
 - pattern/action pairs which always run, even in subpats?
 - categories
-- bot instance var get/set
 - implement as ChatCitizensSimple
 - try to write Shopkeeper and Soldier
