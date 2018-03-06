@@ -61,7 +61,8 @@ Here is an example:
 subs "subs1.sub"
 subs "subs2.sub"
 
-# primary topics, which can be rearranged in priority
+# primary topics, which can be rearranged in priority from within
+# action code.
 
 topics {main cats dogs}
 
@@ -185,7 +186,8 @@ Here is an example topic file:
     
 # this anonymous pattern catches everything, and runs when nothing
 # else in the topic has matched. It captures the input as "$foo"
-# and this gets used to generate the output.
+# and this gets used to generate the output. You'd normally
+# put this in a topic in the bottom topic list.
 
 +"$foo=.*"
     "I don't know how to respond to " $foo +;
@@ -195,7 +197,7 @@ by the pattern string in quotes, followed by the actions and a semicolon.
 The pattern name can be used to disable and enable a pattern in a topic
 from inside an action.
 
-Whole topics can also be enabled and disable, as well as being 
+Whole topics can also be enabled and disabled, as well as being 
 promoted and demoted to the top or bottom of their list.
 
 ## Patterns
@@ -223,7 +225,7 @@ and so fail. Make sure your end pattern is not the start of a star sequence
 pattern. I'm sure there's a clever way around this.
 
 ### Other gotchas
-- Negate nodes are "fun".
+Negate nodes are "fun".
 
 ### Labels
 Putting `$labelname=` before a pattern element marks it so that
@@ -245,7 +247,7 @@ which should always leave a string on the stack. They are always terminated
 by a semicolon. The simplest is just a string:
 ```
 +([hello hi] $name=.*)
-"Hi, how are you";
+"Hi, how are you?";
 ```
 One special and complex instruction is an entire set of subpatterns and
 actions. When these are set using the `next` command, the conversation will
