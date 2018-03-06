@@ -184,7 +184,7 @@ so you can have a function and pattern like this:
     then   
 ;
 
-+"(fac $n=.)
++"(fac $n=.)"
 ```
 Important: functions are global to all files - a function defined in a
 config file or a topic will be there for all subsequent topics.
