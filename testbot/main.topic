@@ -10,8 +10,13 @@
 +test1 "wibble"
     "test1" di
     "test2" en
-    :[1,2,3,4]; dp
-    "Test 1 fires";
+    :[1,2,3,4]; !f
+    ""
+    loop
+        ?f pop dup isnone ifleave +
+    endloop
+    drop
+    "Test 1 fires " swap +;
     
 +test2 "wibble"
     "test1" en
@@ -29,11 +34,6 @@
 +"(fac $n=.)"
     $n int fac
 ;
-
-:divints int swap int swap /;
-+"(div $a=. $b=.)"
-    $a $b divints;
-
 
 +"(get $n=.)" "result is " $n int ?@list get +;
 

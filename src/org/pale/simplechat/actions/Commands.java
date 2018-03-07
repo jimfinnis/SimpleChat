@@ -8,6 +8,7 @@ import org.pale.simplechat.Topic;
 import org.pale.simplechat.values.DoubleValue;
 import org.pale.simplechat.values.IntValue;
 import org.pale.simplechat.values.ListValue;
+import org.pale.simplechat.values.NoneValue;
 import org.pale.simplechat.values.StringValue;
 
 public class Commands {
@@ -17,6 +18,10 @@ public class Commands {
 	 */
 	@Cmd public static void dup(Conversation c) throws ActionException{
 		c.push(c.peek());
+	}
+	
+	@Cmd public static void drop(Conversation c) throws ActionException{
+		c.pop();
 	}
 	
 	@Cmd public static void swap(Conversation c) throws ActionException {
@@ -48,6 +53,17 @@ public class Commands {
 	}
 	@Cmd (name="double") public static void todouble(Conversation c) throws ActionException {
 		c.push(new DoubleValue(c.pop().toDouble()));
+	}
+	
+	/*
+	 * None handling
+	 */
+	@Cmd public static void isnone(Conversation c) throws ActionException {
+		c.push(new IntValue((c.pop().equals(NoneValue.instance))));
+	}
+	
+	@Cmd public static void none(Conversation c) throws ActionException {
+		c.push(NoneValue.instance);
 	}
 
 	/*
@@ -125,9 +141,51 @@ public class Commands {
 		if(key>=0 && key<lst.size())
 			c.push(lst.get(key));
 		else
-			c.push(new StringValue("??"));
+			c.push(NoneValue.instance);
 	}
 	
+	@Cmd public static void set(Conversation c) throws ActionException {
+		// (val idx list -- )
+		List<Value> lst = c.popList();
+		int key = c.pop().toInt();
+		Value v = c.pop();
+		if(key>=0 && key<lst.size())
+			lst.set(key, v);
+	}
+	
+	@Cmd public static void pop(Conversation c) throws ActionException {
+		// (list -- val)
+		List<Value> lst = c.popList();
+		if(lst.size()>0)
+			c.push(lst.remove(lst.size()-1));
+		else
+			c.push(NoneValue.instance);
+	}
+	
+	@Cmd public static void shift(Conversation c) throws ActionException {
+		// (list -- val)
+		List<Value> lst = c.popList();
+		if(lst.size()>0)
+			c.push(lst.remove(0));
+		else
+			c.push(NoneValue.instance);
+	}
+
+	@Cmd public static void push(Conversation c) throws ActionException {
+		// (val list --)
+		List<Value> lst = c.popList();
+		Value v = c.pop();
+		lst.add(v);
+	}
+
+	@Cmd public static void unshift(Conversation c) throws ActionException {
+		// (list -- val)
+		List<Value> lst = c.popList();
+		Value v = c.pop();
+		lst.add(0, v);
+	}
+
 	@Cmd public static void len(Conversation c) throws ActionException {
+		c.push(new IntValue(c.popList().size()));
 	}
 }

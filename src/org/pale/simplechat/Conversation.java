@@ -16,6 +16,7 @@ import org.pale.simplechat.actions.ActionLog;
 import org.pale.simplechat.actions.Runtime;
 import org.pale.simplechat.actions.Value;
 import org.pale.simplechat.patterns.MatchData;
+import org.pale.simplechat.values.NoneValue;
 import org.pale.simplechat.values.StringValue;
 
 /**
@@ -41,7 +42,7 @@ public class Conversation extends Runtime {
 		else if(vars.containsKey(s))
 			return vars.get(s);
 		else
-			return new StringValue("??");
+			return NoneValue.instance;
 	}
 
 	// sets a function local if it exists, failing that a conversation local.
@@ -55,11 +56,11 @@ public class Conversation extends Runtime {
 
 	/// variables which came out of the last pattern match
 	private Map<String,String> patvars;
-	public String getPatVar(String s){
+	public Value getPatVar(String s){
 		if(patvars.containsKey(s))
-			return patvars.get(s);
+			return new StringValue(patvars.get(s));
 		else
-			return "??";
+			return NoneValue.instance;
 	}
 
 	// used for creating "dummy" conversations for constant blocks 

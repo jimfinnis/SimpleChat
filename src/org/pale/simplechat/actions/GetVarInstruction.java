@@ -18,7 +18,7 @@ public class GetVarInstruction extends Instruction {
 	public int execute(Conversation c) throws ActionException {
 		switch(type){
 		case PATVAR:
-			c.push(new StringValue(c.getPatVar(name))); // always strings
+			c.push(c.getPatVar(name)); 
 			break;
 		case CONVVAR:
 			c.push(c.getVar(name));

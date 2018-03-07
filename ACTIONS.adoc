@@ -86,9 +86,9 @@ These all have the picture `(a -- b)`, like unary operators, and convert between
 - `trim` `(a -- b)` trims leading and trailing whitespace from a string
 
 === Stack manipulation
-- `dup` `(a -- a a)` duplicates the item on the stack
+- `dup` `(a -- a a)` duplicates the item on top of the stack
 - `swap` `(a b -- b a)` swap the top two items
-
+- `drop` `(a --)` discard the top stack value
 === Debugging
 - `dp` `(a --)` prints a value to the system logger
 
@@ -116,7 +116,7 @@ in scope, the function variable hides the conversation variable
 
 ==== Fetching variables
 - `!varname` will pop the stack and store into the conversation/function variable `varname`. 
-- `?varname` will push the value of conversation/function variable `varname`, or the string `"??"` if 
+- `?varname` will push the value of conversation/function variable `varname`, or the string `none` if 
 it has not been set.
 - `?@varname` will pop the stack and store into the instance  variable `varname`. 
 - `?@varname` will push the value of instance variable `varname`, or the string `"??"` if 
@@ -186,6 +186,7 @@ Here's an example which converts the string obtained from the pattern, `$n`, int
     
 
 === "Infinite" loops
+
 The words `loop` and `endloop` enclose a loop, which is notionally infinite.
 The `leave` and `ifleave` words leave the enclosing loop. `ifleave` pops an integer
 from the stack and leaves the loop if it is non-zero; as such it is equivalent to
@@ -207,6 +208,13 @@ We can exit from an action early using the `stop` word. Note that we must still
 leave a string on the stack for the action to sent to the user. This word will
 work inside loops and other control structures.
 
+== The `none` value
+Some operations may return this special value when they fail in some way,
+for example popping an item from the end of a list of zero length or reading
+an unset local variable. You
+can test if the value on the stack is none with `isnone` `(val -- 0 or 1)`,
+and you can stack none yourself with `none`.
+
 == User functions
 It's possible to define user functions in `config.conf` or any
 topic file. To do this, use a function definition of the form
@@ -226,7 +234,7 @@ Here's an example function:
 :addints |s1,s2:|
     ?s1 int ?s2 int +;
 ----
-
+All local variables are initialised to `none`.
 You may omit the args and locals if you wish, and you can use values 
 already on the stack on entry to the function:
 ----
@@ -258,7 +266,6 @@ so you can have a function and pattern like this:
 ----
 Important: functions are global to all files - a function defined in a
 config file or a topic will be there for all subsequent topics.
-
 
 == Lists
 Lists are created using the `[`, `]` and `,` stack operators.
@@ -295,6 +302,22 @@ a *constant expression* or
 setting up large constant lists in instance variables in your config file's `init` action.
 ====
 
+Operations on lists are:
+
+- `get` `(idx list -- val)` gets an item from a list, or `none`
+- `set` `(val idx list --)` sets an item in a list which must be of the required length; it will not grow the list
+- `push` `(val list --)` appends an item to the end of the list
+- `pop` `(list -- val)` removes an item from the end of the list and stacks it, or `none` if there were no items
+- `unshift` `(val list --)` appends an item to the start of the list
+- `shift` `(list -- val)` removes an item from the start of the list and stacks it, or `none` if there were no items
+
+[NOTE]
+====
+Lists are implemented as Java ArrayList objects, which means that the `unshift` and
+`shift` operations will be slower than `push` and `pop`.
+====
+
+
 == Constant expressions
 Sometimes it is useful to write code which manipulates constants: a trivial
 example might be:
@@ -307,7 +330,7 @@ example might be:
 Although the above example is fine, complex list-building expressions can
 take a large number of operations just to build a constant list. Action language
 has no optimizer, but it is possible to optimize such code by enclosing it in
-a *constant expression block*. This is started with a ':' and terminated by a ';'
+a *constant expression block*. This is started with a `:` and terminated by a `;`
 just like a function, but appears inside a block of code. The compiler will
 build the enclosed code, run it immediately, and compile an instruction which
 just stacks the returned value (i.e. the value left on top of the stack of the code

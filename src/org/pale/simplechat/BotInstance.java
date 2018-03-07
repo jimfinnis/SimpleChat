@@ -7,7 +7,7 @@ import java.util.Map;
 import org.pale.simplechat.actions.ActionException;
 import org.pale.simplechat.actions.ActionLog;
 import org.pale.simplechat.actions.Value;
-import org.pale.simplechat.values.StringValue;
+import org.pale.simplechat.values.NoneValue;
 
 /**
  * An actual chatting entity, which is backed by a Bot. There may be many BotInstances for one bot;
@@ -43,7 +43,7 @@ public class BotInstance extends Source { // extends Source so bots can talk to 
 		if(vars.containsKey(s))
 			return vars.get(s);
 		else
-			return new StringValue("??");
+			return NoneValue.instance;
 	}
 	
 	public void setVar(String s,Value v){
