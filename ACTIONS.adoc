@@ -29,6 +29,7 @@ integer 2. This is due to how the tokeniser works, sorry.
 === Maths and comparison operators
 Binary operations have the stack picture `(a b -- c)`: that is, they remove two items
 from the stack and replace them with a single item.
+
 - `+` adds the values. If either is a string, will convert both to strings and concatenate them; if both are lists will create a new list of the two joined together.
 - `-` subtracts `b` from `a`, both must be numbers, result double if either is a double
 - `/` divides `b` by `a`, both must be numbers, result double if either is a double
