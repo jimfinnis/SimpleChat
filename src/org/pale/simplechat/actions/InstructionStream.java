@@ -5,6 +5,7 @@ import java.io.StreamTokenizer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.pale.simplechat.Bot;
 import org.pale.simplechat.Conversation;
 import org.pale.simplechat.PatternParseException;
 import org.pale.simplechat.BotConfigException;
@@ -15,8 +16,8 @@ public class InstructionStream {
 	
 	private List<Instruction> insts;
 
-	public InstructionStream(StreamTokenizer toks) throws IOException, BotConfigException, PatternParseException{
-		insts = new InstructionCompiler(toks).insts;
+	public InstructionStream(Bot bot,StreamTokenizer toks) throws IOException, BotConfigException, PatternParseException{
+		insts = new InstructionCompiler(bot,toks).insts;
 	}
 	
 	// if reset is true, will clear lots of things - do this for a top-level call. Otherwise it's a user function call.

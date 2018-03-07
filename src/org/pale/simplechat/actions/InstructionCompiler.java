@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.pale.simplechat.Bot;
 import org.pale.simplechat.BotConfigException;
 import org.pale.simplechat.Conversation;
 import org.pale.simplechat.Logger;
@@ -38,9 +39,6 @@ public class InstructionCompiler {
 	private Stack<List<Integer>> loopStack = new Stack<List<Integer>>();
 
 
-	/// map of functions we might use,
-	private static Map<String, Function> funcMap = new HashMap<String,Function>();
-	
 	private static Map<String,Method> cmds = new HashMap<String,Method>();
 	static {
 		register(Commands.class);
@@ -64,7 +62,7 @@ public class InstructionCompiler {
 	}
 
 
-	InstructionCompiler(StreamTokenizer tok) throws IOException, BotConfigException, PatternParseException{
+	InstructionCompiler(Bot bot,StreamTokenizer tok) throws IOException, BotConfigException, PatternParseException{
 		for(;;){
 			int t = tok.nextToken();
 			if(t == ';')
@@ -133,7 +131,7 @@ public class InstructionCompiler {
 				insts.add(new BinopInstruction(BinopInstruction.Type.MOD));
 				break;
 			case '{': // parse a subpattern list to deal with responses!
-				insts.add(new LiteralInstruction(new SubPatValue(parseSubPatterns(tok))));
+				insts.add(new LiteralInstruction(new SubPatValue(parseSubPatterns(bot,tok))));
 				break;
 			case '=':
 				insts.add(new BinopInstruction(BinopInstruction.Type.EQUAL));
@@ -164,7 +162,7 @@ public class InstructionCompiler {
 				break;
 			case ':':
 			{
-				InstructionStream str = new InstructionStream(tok);
+				InstructionStream str = new InstructionStream(bot,tok);
 				try {
 					Conversation c = new Conversation(); // create dummy convo
 					str.run(c, true);
@@ -257,8 +255,8 @@ public class InstructionCompiler {
 					insts.add(new MethodCallInstruction(tok.sval,cmds.get(tok.sval)));
 				}
 				// and finally user functions
-				else if(funcMap.containsKey(tok.sval)){
-					insts.add(new FuncCallInstruction(funcMap.get(tok.sval)));
+				else if(bot.funcMap.containsKey(tok.sval)){
+					insts.add(new FuncCallInstruction(bot.funcMap.get(tok.sval)));
 				}
 				else
 					throw new BotConfigException("cannot find action cmd or function: "+tok.sval);
@@ -286,14 +284,14 @@ public class InstructionCompiler {
 	/// parses functions and adds them to the function list. Assumes the function introducer (probably ':')
 	/// has been read and we're ready for the name.
 	
-	public static void parseFunction(StreamTokenizer tok) throws IOException, BotConfigException, PatternParseException{
+	public static void parseFunction(Bot bot,StreamTokenizer tok) throws IOException, BotConfigException, PatternParseException{
 		if(tok.nextToken()!=StreamTokenizer.TT_WORD)
 			throw new BotConfigException("expected name of function after ':'");
 		String name = tok.sval;
 		String[] argarray = null;
 		String[] locarray = null;
 		
-		if(funcMap.containsKey(name))
+		if(bot.funcMap.containsKey(name))
 			throw new BotConfigException("function already exists: "+name);
 				
 		if(tok.nextToken()=='|'){
@@ -306,9 +304,9 @@ public class InstructionCompiler {
 		}
 		// define the function (before compiling, so we can recurse)
 		Function f = new Function(name,argarray,locarray);
-		funcMap.put(name,f);
+		bot.funcMap.put(name,f);
 		// now compile it
-		InstructionStream insts = new InstructionStream(tok);
+		InstructionStream insts = new InstructionStream(bot,tok);
 		// and set the instructions
 		f.setInsts(insts);
 	}
@@ -328,7 +326,7 @@ public class InstructionCompiler {
 	 * @throws IOException 
 	 * @throws PatternParseException 
 	 */
-	private List<Pair> parseSubPatterns(StreamTokenizer tok) throws BotConfigException, IOException, PatternParseException {
+	private List<Pair> parseSubPatterns(Bot bot,StreamTokenizer tok) throws BotConfigException, IOException, PatternParseException {
 		List<Pair> subpatterns = new ArrayList<Pair>();
 		for(;;){
 			int tt = tok.nextToken();
@@ -336,7 +334,7 @@ public class InstructionCompiler {
 			if(tt != '\"' && tt != '\'')
 				throw new BotConfigException("error in parsing subpattern, expected a pattern string");
 			Pattern pat = new Pattern(null,tok.sval);
-			InstructionStream act = new InstructionStream(tok);
+			InstructionStream act = new InstructionStream(bot,tok);
 			Pair p = new Pair(pat,act);
 			subpatterns.add(p);
 		}

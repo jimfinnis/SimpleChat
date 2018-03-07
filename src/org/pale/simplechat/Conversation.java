@@ -28,7 +28,7 @@ import org.pale.simplechat.values.StringValue;
  */
 public class Conversation extends Runtime {
 	public BotInstance instance;
-	public  Source source;
+	public Object source;
 
 	/// variables private to this conversation
 	private Map<String,Value> vars = new TreeMap<String,Value>();
@@ -71,7 +71,7 @@ public class Conversation extends Runtime {
 	}
 	
 	// the usual ctor for creating real conversations (and also the init conversation with myself)
-	Conversation(BotInstance i,Source p){
+	Conversation(BotInstance i,Object p){
 		source = p;
 		instance = i;
 		cloneTopicLists();

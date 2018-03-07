@@ -6,9 +6,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.pale.simplechat.actions.Function;
 import org.pale.simplechat.actions.InstructionCompiler;
 import org.pale.simplechat.actions.InstructionStream;
 
@@ -37,6 +40,20 @@ public class Bot {
 	// This list, and sublists, gets cloned into each conversation so that the promoted/demoted topics
 	// are per-conversation.
 	List<List<Topic>> topicLists = new ArrayList<List<Topic>>();
+
+	/// map of user functions we might use,
+	public Map<String, Function> funcMap = new HashMap<String,Function>();
+	
+
+	// this is a set of options which can be turned on by "opt" in the config. Their use
+	// is entirely up to the library user.
+	Set<String> opts = new HashSet<String>();
+	public boolean hasOpt(String s){
+		return opts.contains(s);
+	}
+
+	private String name;
+	public String getName(){return name;}
 	
 	// parse a config.conf in the directory Path
 	private void parseConfig(Path p) throws BotConfigException{
@@ -49,7 +66,7 @@ public class Bot {
 				if(t == StreamTokenizer.TT_EOF)break;
 				else if(t == ':') {
 					try {
-						InstructionCompiler.parseFunction(tok);
+						InstructionCompiler.parseFunction(this,tok);
 					} catch (BotConfigException|PatternParseException e){
 						throw new BotConfigException("error in a config file function: "+e.getMessage());
 					}
@@ -58,12 +75,18 @@ public class Bot {
 						List<Topic> list = parseTopicList(p,tok);
 						topicLists.add(list);
 					} else if(tok.sval.equals("init")){
-						initAction = new InstructionStream(tok);
+						initAction = new InstructionStream(this,tok);
 					} else if(tok.sval.equals("subs")){
 						if(tok.nextToken()!='"')
 							throw new BotConfigException("subs should be followed by a subs file name in \"quotes\"");
 						subs.parseFile(p,tok.sval+".sub");
+					} else if(tok.sval.equals("opt")){
+						if(tok.nextToken()!=StreamTokenizer.TT_WORD)
+							throw new BotConfigException("config opt should be a word");
+						opts.add(tok.sval);
+						
 					}
+					else throw new BotConfigException("unknown word in config: "+tok.sval);
 				}
 			}
 		} catch (IOException e) {
@@ -82,7 +105,7 @@ public class Bot {
 			
 			if(tok.nextToken() == StreamTokenizer.TT_WORD){
 				String name = tok.sval;
-				Topic t = new Topic(name,p.resolve(name+".topic"));
+				Topic t = new Topic(this,name,p.resolve(name+".topic"));
 				if(topicsByName.containsKey(name)){
 					throw new BotConfigException("topic already exists: "+t.name);
 				}
@@ -102,6 +125,7 @@ public class Bot {
 
 	public Bot(Path path) throws BotConfigException{
 		// read the configuration data
+		name = path.getFileName().toString();
 		parseConfig(path);
 
 		Logger.log("Created bot OK");

@@ -9,7 +9,7 @@ import org.pale.simplechat.Logger;
 import org.pale.simplechat.values.NoneValue;
 
 // this is a list of user functions
-class Function {
+public class Function {
 	String name;
 	String[] args;	// argument names
 	String[] locals;	// local names

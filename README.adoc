@@ -22,8 +22,9 @@ For SimpleChat itself, there are two Maven manifests POMs provided:
 - *pom.xml* just builds the library
 - *pom-test.xml* builds a test program with a simple interface.
 
-There are no dependencies. The Minecraft plugin is a separate
-project which uses the library, and *isn't written yet :)*
+There are no dependencies. The Minecraft plugin is a 
+http://github.com/jimfinnis/ChatCitizens2[separate project]
+which uses the library, and is in the very early days.
 
 == Bots
 
@@ -32,9 +33,10 @@ project which uses the library, and *isn't written yet :)*
 speaker sharing the same chat data (but having some private, perhaps).
 Thus you could have a whole lot of "soldier" or "shopkeeper" BotInstances,
 all based on one Bot.
-- The users are represented by `Source` objects, and each conversation
-between a `BotInstance` and a `Source` has some private data, called
-"conversation data".
+- The users are represented by `Object` objects, and each conversation
+between a `BotInstance` and a source has some private data, called
+"conversation data". It's a raw `Object` because it's likely to be something
+in your code.
 
 == Creating a bot
 Typically goes like this:
@@ -43,11 +45,8 @@ Typically goes like this:
 ----
 Bot b = new Bot(Paths.get("/some/directory/or/other");
 instance = new BotInstance(b);
-source = new Source();
+source = new Object(); // could be anything, it's for you to use.
 ----
-
-The `Source` object is something to associate a conversation with.
-It will typically be embedded in some entity in your code.
 Typically a conversation
 is done by repeatedly calling
 [source,java]
@@ -61,9 +60,17 @@ your command code:
 [source,java]
 ----
 Bot b = new Bot(Paths.get("/some/directory/or/other");
-instance = new BotInstance(b,someObjectOrOther);
-source = new Source();
+instance = new BotInstance(b,mythingy);
+source = new Object();
 ----
+
+[NOTE]
+====
+Don't get confused with the source and the instance object. The source
+is your user, the instance object is something attached to individual
+bots.
+====
+
 Be careful with the casting you'll have to do inside
 the commands!
 
@@ -85,10 +92,17 @@ from a `.sub` file
 - an optional `init` entry followed by a block of Action language (see below)
 which will set up initial values for conversation variables and maybe do
 some other things. A `#` starts a comment.
+- `opt` settings - each is a word. Adding an opt setting sets the option
+to true. It can be accessed by your application code to determine certain
+properties of the entire bot quickly with the `Bot.hasOpt(String)` call.
 
 Here is an example:
 ----
 # This is a test bot!
+
+# just a thing to say we have a greet pattern, perhaps.
+
+opt hasGreet
 
 # here are some substitution files.
 

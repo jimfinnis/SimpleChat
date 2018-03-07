@@ -108,7 +108,7 @@ These all have the picture `(a -- b)`, like unary operators, and convert between
 There are four sets of variables:
 
 - *instance* variables are private to each `BotInstance`, each communicating entity.
-- *conversation* variables are private to each `BotInstance/Source` pair, that is,
+- *conversation* variables are private to each `BotInstance/source` pair, that is,
 each conversation between a bot and a user.
 - *pattern* variables are those matched in a pattern, such as `foo` and `bar` in the example
 above.

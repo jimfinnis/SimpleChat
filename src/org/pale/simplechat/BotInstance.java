@@ -15,11 +15,11 @@ import org.pale.simplechat.values.NoneValue;
  * @author white
  *
  */
-public class BotInstance extends Source { // extends Source so bots can talk to each other, maybe.
+public class BotInstance  {
 	public Bot bot;
 	
 	// this is a map of each instance to each possible conversational partner.
-	private Map<Source,Conversation> conversations = new HashMap<Source,Conversation>();
+	private Map<Object,Conversation> conversations = new HashMap<Object,Conversation>();
 
 	private Object data; // data connected to the bot instance, could be anything
 	
@@ -63,20 +63,26 @@ public class BotInstance extends Source { // extends Source so bots can talk to 
 		return data;
 	}
 	
-	public String handle(String s,Source p){
+	public Conversation getConversation(Object source){
+		// make a new conversation or get the existing one for this source
 		Conversation c;
+		if(conversations.containsKey(source))
+			c = conversations.get(source);
+		else {
+			c = new Conversation(this,source);
+			conversations.put(source, c);
+		}
+		return c;
+	}
+	
+	public String handle(String s,Object source){
+		Conversation c = getConversation(source);
 		
 		// run any regex substitutions
 		s = bot.subs.process(s);
 		Logger.log("after subs: "+s);
 		
-		// make a new conversation or get the existing one for this source
-		if(conversations.containsKey(p))
-			c = conversations.get(p);
-		else {
-			c = new Conversation(this,p);
-			conversations.put(p, c);
-		}
+
 		// pass through to the conversation
 		return c.handle(s);
 	}

@@ -61,7 +61,7 @@ public class Topic {
 	 * @throws IOException 
 	 * @throws BotConfigException 
 	 */
-	public Topic(String name,Path f) throws BotConfigException {
+	public Topic(Bot bot,String name,Path f) throws BotConfigException {
 		try {
 			this.name = name;
 			BufferedReader r = Files.newBufferedReader(f); 
@@ -73,7 +73,7 @@ public class Topic {
 			for(;;){
 				int t = tok.nextToken();
 				if(t == StreamTokenizer.TT_EOF)break;
-				else if(t == ':')InstructionCompiler.parseFunction(tok);
+				else if(t == ':')InstructionCompiler.parseFunction(bot,tok);
 				else if(t == '+'){
 					// pattern line is +"pattern" .. OR +name "pattern"
 					String pname,pstring;
@@ -89,7 +89,7 @@ public class Topic {
 					} else
 						throw new BotConfigException("badly formed pattern definition");
 					Pattern pat = new Pattern(pname,pstring);
-					InstructionStream act = new InstructionStream(tok);
+					InstructionStream act = new InstructionStream(bot,tok);
 					Pair pair = new Pair(pat,act);
 					if(pname!=null)
 						pairMap.put(pname,pair);

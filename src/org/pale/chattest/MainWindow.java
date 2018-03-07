@@ -1,22 +1,19 @@
 package org.pale.chattest;
 
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JTextField;
 import java.awt.BorderLayout;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import javax.swing.JFrame;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import org.pale.simplechat.Bot;
 import org.pale.simplechat.BotConfigException;
 import org.pale.simplechat.BotInstance;
-import org.pale.simplechat.Source;
-import org.pale.simplechat.Substitutions;
 
 public class MainWindow implements ActionListener {
 
@@ -24,7 +21,7 @@ public class MainWindow implements ActionListener {
 	private JTextField textField;
 	private JTextArea textArea;
 	private BotInstance instance;
-	private Source source;
+	private Object source;
 	
 	/**
 	 * Launch the application.
@@ -52,7 +49,7 @@ public class MainWindow implements ActionListener {
 		try {
 			b = new Bot(homedir);
 			instance = new BotInstance(b);
-			source = new Source();
+			source = new Object();
 			initialize();
 		} catch (BotConfigException e) {
 			throw new RuntimeException(e.getMessage());
