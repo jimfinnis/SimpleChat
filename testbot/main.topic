@@ -25,10 +25,11 @@
     then   
 ;
 
-
 +"(fac $n=.)"
     $n int fac
 ;
+
++"(get $n=.)" "result is " $n int ?@list get +;
 
 +"(foo is $foo=.*)"
     $foo !@foo

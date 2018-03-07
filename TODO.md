@@ -1,4 +1,5 @@
 # Todo
+- document pattern/topic manipulation commands
 - lists (and hashes)?
 - list random choice
 - loop iterator

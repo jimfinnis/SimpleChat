@@ -1,5 +1,6 @@
 package org.pale.simplechat.actions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.pale.simplechat.Pair;
@@ -11,15 +12,25 @@ import org.pale.simplechat.Pair;
  */
 public class Value {
 	public enum Type {
-		STRING,INT,DOUBLE,SUBPATS
+		STRING,INT,DOUBLE,SUBPATS,LIST
 	}
 	int i;
 	double d;
 	String s;
 	List<Pair> subpats;
+	List<Value> list;
 	
 	Type t;
 	
+	private Value(){
+		// private ctor for newList etc.
+	}
+	public static Value newList(){
+		Value v = new Value();
+		v.t = Type.LIST;
+		v.list = new ArrayList<Value>();
+		return v;
+	}
 	
 	public Value(String s){
 		this.s = s;
@@ -52,6 +63,12 @@ public class Value {
 			return s;
 		case SUBPATS:
 			return "SUBPATTERNS";
+		case LIST:
+			String out = "";
+			for(Value v: list){
+				out=out+v.str();
+			}
+			return out;
 		default:return "??";
 		}
 	}
@@ -80,12 +97,19 @@ public class Value {
 			throw new ActionException("cannot convert value to double");
 		}
 	}
-	boolean equals(Value b){
+	@Override
+	public boolean equals(Object ob){
+		if(this == ob)return true;
+		if(!(ob instanceof Value))return false;
+		Value b = (Value)ob;
+				
 		if(t != b.t)return false;
 		switch(t){
 		case INT:return i==b.i;
 		case DOUBLE:return d==b.d;
 		case STRING:return s.equals(b.s);
+		case LIST:
+			return list.equals(b.list);
 		default:return false;
 		}
 	}

@@ -98,4 +98,20 @@ public class Commands {
 		String topname = c.popString();
 		c.enableDisablePattern(topname, patname, true);
 	}
+	
+	/*
+	 * lists
+	 */
+	@Cmd public static void get(Conversation c) throws ActionException {
+		// (idx list -- val)
+		Value lst = c.pop();
+		int key = c.pop().toInt();
+		if(key>=0 && key<lst.list.size())
+			c.push(lst.list.get(key));
+		else
+			c.push(new Value("??"));
+	}
+	
+	@Cmd public static void len(Conversation c) throws ActionException {
+	}
 }
