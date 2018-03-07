@@ -1,6 +1,4 @@
 # Todo
-- document pattern/topic manipulation commands
-- lists (and hashes)?
 - list random choice
 - loop iterator
 - pattern/action pairs which always run, even in subpats?
