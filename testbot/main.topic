@@ -10,7 +10,7 @@
 +test1 "wibble"
     "test1" di
     "test2" en
-    [1,2,3] "woo" + dp
+    "woo" 1 + dp
     "Test 1 fires";
     
 +test2 "wibble"
@@ -29,6 +29,11 @@
 +"(fac $n=.)"
     $n int fac
 ;
+
+:divints int swap int swap /;
++"(div $a=. $b=.)"
+    $a $b divints;
+
 
 +"(get $n=.)" "result is " $n int ?@list get +;
 

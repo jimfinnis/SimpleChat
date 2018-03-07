@@ -19,6 +19,16 @@ public class Commands {
 		c.push(c.peek());
 	}
 	
+	@Cmd public static void swap(Conversation c) throws ActionException {
+		Value a = c.pop();
+		Value b = c.pop();
+		c.push(a);
+		c.push(b);
+	}
+	
+	/*
+	 * Debugging
+	 */
 	@Cmd public static void dp(Conversation c) throws ActionException{
 		String s = c.pop().str();
 		Logger.log("DP: "+s);
