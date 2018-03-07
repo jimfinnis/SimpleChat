@@ -1,6 +1,7 @@
 package org.pale.simplechat.values;
 
 import org.pale.simplechat.actions.Value;
+import org.pale.simplechat.actions.BinopInstruction.Type;
 
 public class StringValue extends Value {
 	String s;
@@ -10,7 +11,7 @@ public class StringValue extends Value {
 	}
 	@Override public boolean equals(Object ob){
 		if(this == ob)return true;
-		if(!(ob instanceof Value))return false;
+		if(!(ob instanceof StringValue))return false;
 		StringValue b = (StringValue)ob;
 		return b.s.equals(s);
 	}
@@ -26,4 +27,13 @@ public class StringValue extends Value {
 	@Override public String str(){
 		return s;
 	}
+	@Override
+	public Value binop(Type t, Value snd) {
+		if(t == Type.ADD)
+			return new StringValue(s+snd.str());
+		else
+			return null;
+	}
+
+
 }

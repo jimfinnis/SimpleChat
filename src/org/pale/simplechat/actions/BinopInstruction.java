@@ -1,6 +1,7 @@
 package org.pale.simplechat.actions;
 
 import org.pale.simplechat.Conversation;
+import org.pale.simplechat.values.IntValue;
 
 public class BinopInstruction extends Instruction {
 
@@ -19,85 +20,19 @@ public class BinopInstruction extends Instruction {
 	public int execute(Conversation c) throws ActionException {
 		Value b = c.pop();
 		Value a = c.pop();
+		Value r;
 		
 		switch(type){
-		case ADD: // support string adding
-			if(a.t == Value.Type.STRING || b.t == Value.Type.STRING){
-				String s1 = a.str();
-				String s2 = b.str();
-				c.push(new Value(s1+s2));
-			} else if(a.t == Value.Type.DOUBLE || b.t == Value.Type.DOUBLE){
-				c.push(new Value(a.toDouble()+b.toDouble()));
-			} else if(a.t == Value.Type.INT || b.t == Value.Type.INT){
-				c.push(new Value(a.toInt()+b.toInt()));
-			} else throw new ActionException("bad operands for +");
-			break;
-		case MUL: // string*num = string repeat
-			if(a.t == Value.Type.STRING) {
-				int n = b.toInt();
-				c.push(new Value(new String(new char[n]).replace("\0", a.s)));
-			} else if(a.t == Value.Type.DOUBLE || b.t == Value.Type.DOUBLE){
-				c.push(new Value(a.toDouble()*b.toDouble()));
-			} else if(a.t == Value.Type.INT || b.t == Value.Type.INT){
-				c.push(new Value(a.toInt()*b.toInt()));
-			} else throw new ActionException("bad operands for *");
-			break;
-		case DIV:
-			if(a.t == Value.Type.DOUBLE || b.t == Value.Type.DOUBLE){
-				c.push(new Value(a.toDouble()/b.toDouble()));
-			} else if(a.t == Value.Type.INT || b.t == Value.Type.INT){
-				c.push(new Value(a.toInt()/b.toInt()));
-			} else throw new ActionException("bad operands for /");
-			break;
-		case SUB:
-			if(a.t == Value.Type.DOUBLE || b.t == Value.Type.DOUBLE){
-				c.push(new Value(a.toDouble()-b.toDouble()));
-			} else if(a.t == Value.Type.INT || b.t == Value.Type.INT){
-				c.push(new Value(a.toInt()-b.toInt()));
-			} else throw new ActionException("bad operands for -");
-			break;
-		case MOD:
-			if(a.t == Value.Type.DOUBLE || b.t == Value.Type.DOUBLE){
-				c.push(new Value(a.toDouble()%b.toDouble()));
-			} else if(a.t == Value.Type.INT || b.t == Value.Type.INT){
-				c.push(new Value(a.toInt()%b.toInt()));
-			} else throw new ActionException("bad operands for %");
-			break;
-		case EQUAL:
-			c.push(new Value(a.equals(b)));
-			break;
-		case NEQUAL:
-			c.push(new Value(!a.equals(b)));
-			break;
-		case GT:
-			if(a.t == Value.Type.DOUBLE || b.t == Value.Type.DOUBLE){
-				c.push(new Value(a.toDouble()>b.toDouble()));
-			} else if(a.t == Value.Type.INT || b.t == Value.Type.INT){
-				c.push(new Value(a.toInt()>b.toInt()));
-			} else throw new ActionException("bad operands for %");
-			break;
-		case LT:
-			if(a.t == Value.Type.DOUBLE || b.t == Value.Type.DOUBLE){
-				c.push(new Value(a.toDouble()<b.toDouble()));
-			} else if(a.t == Value.Type.INT || b.t == Value.Type.INT){
-				c.push(new Value(a.toInt()<b.toInt()));
-			} else throw new ActionException("bad operands for %");
-			break;
-		case GE:
-			if(a.t == Value.Type.DOUBLE || b.t == Value.Type.DOUBLE){
-				c.push(new Value(a.toDouble()>=b.toDouble()));
-			} else if(a.t == Value.Type.INT || b.t == Value.Type.INT){
-				c.push(new Value(a.toInt()>=b.toInt()));
-			} else throw new ActionException("bad operands for %");
-			break;
-		case LE:
-			if(a.t == Value.Type.DOUBLE || b.t == Value.Type.DOUBLE){
-				c.push(new Value(a.toDouble()<=b.toDouble()));
-			} else if(a.t == Value.Type.INT || b.t == Value.Type.INT){
-				c.push(new Value(a.toInt()<=b.toInt()));
-			} else throw new ActionException("bad operands for %");
+		case EQUAL:r = new IntValue(a.equals(b));break;
+		case NEQUAL:r = new IntValue(!a.equals(b));break;
+		default:
+			r = a.binop(type, b);
+			if(r==null)
+				throw new ActionException("binop "+type.name()+" is invalid for arguments "+
+						a.getClass().getSimpleName()+","+b.getClass().getSimpleName());
 			break;
 		}
+		c.push(r);		
 		return 1;
 	}
 }

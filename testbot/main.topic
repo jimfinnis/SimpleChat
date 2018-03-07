@@ -10,6 +10,7 @@
 +test1 "wibble"
     "test1" di
     "test2" en
+    [1,2,3] "woo" + dp
     "Test 1 fires";
     
 +test2 "wibble"

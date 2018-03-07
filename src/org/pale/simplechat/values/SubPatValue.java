@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.pale.simplechat.Pair;
 import org.pale.simplechat.actions.Value;
+import org.pale.simplechat.actions.BinopInstruction.Type;
 
 public class SubPatValue extends Value {
 	public List<Pair> subpats;
@@ -18,4 +19,10 @@ public class SubPatValue extends Value {
 	@Override public String str(){
 		return "?subpat?";
 	}
+	@Override
+	public Value binop(Type t, Value snd) {
+		return null;
+	}
+
+
 }
