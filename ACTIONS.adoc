@@ -83,6 +83,7 @@ The different sorts of variables have different sigils in front of their name:
 - conversation and function variables have no sigil, they are the default.
 - instance variables have the `@` sigil
 - pattern variables have the `$` sigil
+
 [NOTE]
 ====
 If a function variable of the same name as a conversation variable is
