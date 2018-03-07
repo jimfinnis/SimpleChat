@@ -112,7 +112,7 @@ include more.subst
 
 ### Initial action
 This is written in the action language (see below and 
-[here](ACTIONS.md)) and runs when an instance of this bot
+[here](ACTIONS.adoc)) and runs when an instance of this bot
 is created, but just throws away the output. It is typically
 used to initialise instance variables. Setting a conversation
 variable will cause a runtime error, because the bot isn't in
@@ -263,4 +263,4 @@ defined in curly brackets:
             "Oh, I'm sorry";
     }
 ```
-More details on the action language [here](ACTIONS.md).
+More details on the action language [here](ACTIONS.adoc).

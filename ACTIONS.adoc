@@ -23,8 +23,12 @@ For example, a pattern/action pair to read two numbers and add them together mig
 
 A quoted string or number compile to instructions which stack them as strings, double-precision
 floating point (referred to as "doubles" hereafter) or integers.
+
+[NOTE]
+====
 Integers are stacked if the number is equal to its floor, so `2.0` will be stacked as the
 integer 2. This is due to how the tokeniser works, sorry.
+====
 
 === Maths and comparison operators
 Binary operations have the stack picture `(a b -- c)`: that is, they remove two items
@@ -77,10 +81,13 @@ above.
 The different sorts of variables have different sigils in front of their name:
 
 - conversation and function variables have no sigil, they are the default.
-If a function variable of the same name as a conversation variable is
-in scope, the function variable hides the conversation variable
 - instance variables have the `@` sigil
 - pattern variables have the `$` sigil
+[NOTE]
+====
+If a function variable of the same name as a conversation variable is
+in scope, the function variable hides the conversation variable
+====
 
 ==== Fetching variables
 - `!varname` will pop the stack and store into the conversation/function variable `varname`. 
