@@ -16,6 +16,15 @@ THIS IS VERY EARLY WORK. (See the link:TODO.md[todo list])
 
 toc::[]
 
+== Building
+For SimpleChat itself, there are two Maven manifests POMs provided:
+
+- *pom.xml* just builds the library
+- *pom-test.xml* builds a test program with a simple interface.
+
+There are no dependencies. The Minecraft plugin is a separate
+project which uses the library, and *isn't written yet :)*
+
 == Bots
 
 - The primary object is a `Bot`, which has a set of topics (see below)
