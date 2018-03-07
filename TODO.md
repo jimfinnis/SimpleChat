@@ -1,5 +1,4 @@
 # Todo
-- list random choice
 - loop iterator
 - pattern/action pairs which always run, even in subpats?
 - categories

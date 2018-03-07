@@ -322,6 +322,12 @@ Operations on lists are:
 - `pop` `(list -- val)` removes an item from the end of the list and stacks it, or `none` if there were no items
 - `unshift` `(val list --)` appends an item to the start of the list
 - `shift` `(list -- val)` removes an item from the start of the list and stacks it, or `none` if there were no items
+- `len` `(list -- int)` pushes the length of a list
+- `choose` `(list -- item)` selects a random item from the list
+
+The `choose` is particularly useful in selecting random responses, or even
+starting random dialogue trees.
+
 
 [NOTE]
 ====

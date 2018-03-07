@@ -1,6 +1,7 @@
 package org.pale.simplechat.actions;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.pale.simplechat.Conversation;
 import org.pale.simplechat.Logger;
@@ -187,5 +188,11 @@ public class Commands {
 
 	@Cmd public static void len(Conversation c) throws ActionException {
 		c.push(new IntValue(c.popList().size()));
+	}
+	
+	@Cmd public static void choose(Conversation c) throws ActionException {
+		List<Value> lst = c.popList();
+		int n = ThreadLocalRandom.current().nextInt(lst.size());
+		c.push(lst.get(n));
 	}
 }
