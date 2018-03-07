@@ -367,3 +367,7 @@ an instance variable, for example.
 - Premature optimisation is evil!
 ====
 
+== Extending the language
+Java code for new commands can be added to the language, which can
+link to data associated with bot instance data in your code. More
+details are in link:EXTENDING.adoc[this document].

@@ -17,6 +17,7 @@ link:ACTIONS.adoc[action language] to permit this.
 == Linking to your data
 If you need to access some private data for each instance,
 you will need your application to link the instances to it:
+[source,java]
 ----
 Bot b = new Bot(Paths.get("/some/directory/or/other");
 instance = new BotInstance(b,someObjectOrOther);
