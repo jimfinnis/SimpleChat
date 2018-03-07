@@ -23,7 +23,7 @@ For SimpleChat itself, there are two Maven manifests POMs provided:
 - *pom-test.xml* builds a test program with a simple interface.
 
 There are no dependencies. The Minecraft plugin is a 
-http://github.com/jimfinnis/ChatCitizens2[separate project]
+http://github.com/jimfinnis/ChatCitizen2[separate project]
 which uses the library, and is in the very early days.
 
 == Bots
