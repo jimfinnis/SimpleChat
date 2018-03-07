@@ -12,7 +12,9 @@ usecase is Minecraft chatbots, so I can't use that.
 So this is a simplified (hah) thing. This documentation is really 
 just for me, at the moment.
 
-THIS IS VERY EARLY WORK. (See the link:TODO.md(todo list))
+THIS IS VERY EARLY WORK. (See the link:TODO.md[todo list])
+
+toc::[]
 
 == Bots
 
@@ -123,7 +125,7 @@ include more.subst
 
 ### Initial action
 This is written in the action language (see below and 
-link:ACTIONS.adoc(here))
+link:ACTIONS.adoc[here])
 and runs when an instance of this bot
 is created, but just throws away the output. It is typically
 used to initialise instance variables. Setting a conversation
@@ -268,4 +270,4 @@ defined in curly brackets:
             "Oh, I'm sorry";
     }
 ----
-More details on the action language link:ACTIONS.adoc(here).
+More details on the action language link:ACTIONS.adoc[here].
