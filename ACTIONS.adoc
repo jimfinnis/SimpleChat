@@ -43,11 +43,13 @@ from the stack and replace them with a single item.
 
 Unary operations have the stack picture `(a -- b)`: they replace a value with a modified value.
 The core operations supported are:
+
 - `not` replaces a nonzero value with zero, and vice versa
 - `neg` replaces the value with its negative (having converted it to a number)
 
 === Conversion functions
 These all have the picture `(a -- b)`, like unary operators, and convert between types.
+
 - `double` converts to a string
 - `int` converts to an integer
 - `str` converts to a string
@@ -63,7 +65,8 @@ These all have the picture `(a -- b)`, like unary operators, and convert between
 - `dp` `(a --)` prints a value to the system logger
 
 === Variable access
-There are four sets of variables
+There are four sets of variables:
+
 - *instance* variables are private to each `BotInstance`, each communicating entity.
 - *conversation* variables are private to each `BotInstance/Source` pair, that is,
 each conversation between a bot and a user.
@@ -72,6 +75,7 @@ above.
 - *function* variables are local to user functions
 
 The different sorts of variables have different sigils in front of their name:
+
 - conversation and function variables have no sigil, they are the default.
 If a function variable of the same name as a conversation variable is
 in scope, the function variable hides the conversation variable
@@ -205,9 +209,7 @@ like division this wouldn't work, but you could write:
 ----
 :divints int swap int swap /;
 ----
-
-
- Functions can also call other functions, and can recurse,
+Functions can also call other functions, and can recurse,
 so you can have a function and pattern like this:
 ----
 :fac |n:|
