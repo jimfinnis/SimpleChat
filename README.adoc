@@ -58,6 +58,7 @@ Custom commands you write might need to access some special data
 connected to your bot. In this case, an `Object` can be passed
 to the instance constructor, so the bot can find the data inside
 your command code:
+[source,java]
 ----
 Bot b = new Bot(Paths.get("/some/directory/or/other");
 instance = new BotInstance(b,someObjectOrOther);

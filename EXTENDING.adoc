@@ -1,0 +1,82 @@
+= How to extend your chatbots
+Jim Finnis <jim.finnis@gmail.com>
+// settings
+:toc:
+:toc-placement!:
+
+toc::[]
+
+== Introduction
+Most applications will require that your bots can execute special
+bits of Java accessing external data. For example, a Minecraft
+Citizens trait will need ways for the bot to access the trait
+data.
+SimpleChat permits extensions to the
+link:ACTIONS.adoc[action language] to permit this.
+
+== Linking to your data
+If you need to access some private data for each instance,
+you will need your application to link the instances to it:
+----
+Bot b = new Bot(Paths.get("/some/directory/or/other");
+instance = new BotInstance(b,someObjectOrOther);
+source = new Source();
+----
+
+== Writing new commands
+Commands go into a class consisting of static methods, looking something
+like this:
+[source,java]
+----
+import org.pale.simplechat.Conversation;
+import org.pale.simplechat.Topic;
+import org.pale.simplechat.values.*;
+
+public class MyCommands {
+
+        // this command will pop an integer off the stack and print it
+        // to the system console
+        
+        @Cmd public static void test1(Conversation c) throws ActionException{
+            int v = c.popInt();
+            System.out.println(v);
+        }
+        
+        // this command has the stack picture (string int -- string)
+        // and pushes a string consisting of a number of repeats
+        // of a string.
+        
+        @Cmd public static void test2(Conversation c) throws ActionException{
+            int v2 = c.popInt();
+            String v1 = c.popString();
+            StringBuilder sb;
+            for(int i=0;i<v2;i++)
+                sb.append(v1);
+            c.push(new StringValue(sb.toString()));
+        }
+        
+        // this command is actually called "foo" in the action language.
+        // It accesses the bot instance's private data, which we assume
+        // is a MyPrivateData object, and pushes its integer member "n".
+        @Cmd(name="foo") public static void thefoofunc(Conversation c) 
+            throws ActionException{
+            if(! (c.instance.getData() instanceof MyPrivateData))
+                throw new ActionException("bad object in foo!");
+            MyPrivateData d = (MyPrivateData)(c.instance.getData());
+            c.pushInt(d.n);
+        }
+}
+----
+I'll not go into details - look at the
+link:src/org/pale/simplechat/actions/Commands.java[Commands.java] file
+for how the built-in commands do things.
+
+== Registering the commands
+Once you have written your command class (and it compiles),
+register it by calling
+----
+InstructionCompiler.register(MyCommands.class);
+----
+You can register multiple classes. The instruction compiler will
+run through the class, finding the `Cmd` annotations and registering
+them.
