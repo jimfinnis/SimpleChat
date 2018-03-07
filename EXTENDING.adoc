@@ -48,6 +48,7 @@ public class MyCommands {
         // of a string.
         
         @Cmd public static void test2(Conversation c) throws ActionException{
+            // note that we pop the arguments off in reverse order :)
             int v2 = c.popInt();
             String v1 = c.popString();
             StringBuilder sb;
@@ -75,6 +76,7 @@ for how the built-in commands do things.
 == Registering the commands
 Once you have written your command class (and it compiles),
 register it by calling
+[source,java]
 ----
 InstructionCompiler.register(MyCommands.class);
 ----
