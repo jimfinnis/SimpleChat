@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.pale.simplechat.Conversation;
 import org.pale.simplechat.Logger;
+import org.pale.simplechat.values.IntValue;
 
 // this is a list of user functions
 class Function {
@@ -49,7 +50,7 @@ class Function {
 		}
 		if(locals!=null){
 			for(String n : locals){
-				llist.put(n,new Value(0)); // all locals initialized to 0
+				llist.put(n,new IntValue(0)); // all locals initialized to 0
 			}
 		}
 		// we set the conversation's local vars to this

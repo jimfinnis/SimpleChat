@@ -4,6 +4,8 @@ import java.util.Stack;
 
 import org.pale.simplechat.Logger;
 import org.pale.simplechat.Pair;
+import org.pale.simplechat.values.ListValue;
+import org.pale.simplechat.values.SubPatValue;
 
 public class Runtime {
 	// this interface will hold iterator data for iterable things.
@@ -45,9 +47,16 @@ public class Runtime {
 	
 	public List<Pair> popSubpats() throws ActionException {
 		Value v = pop();
-		if(v.t != Value.Type.SUBPATS)
+		if(!(v instanceof SubPatValue))
 			throw new ActionException("requires a subpats set on the stack");
-		return v.subpats;
+		return ((SubPatValue)v).subpats;
+	}
+	
+	public List<Value> popList() throws ActionException {
+		Value v = pop();
+		if(!(v instanceof ListValue))
+			throw new ActionException("requires a list on the stack");
+		return ((ListValue)v).list;
 	}
 	
 

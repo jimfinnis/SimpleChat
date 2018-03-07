@@ -1,6 +1,7 @@
 package org.pale.simplechat.actions;
 
 import org.pale.simplechat.Conversation;
+import org.pale.simplechat.values.StringValue;
 
 public class GetVarInstruction extends Instruction {
 	enum Type {
@@ -17,7 +18,7 @@ public class GetVarInstruction extends Instruction {
 	public int execute(Conversation c) throws ActionException {
 		switch(type){
 		case PATVAR:
-			c.push(new Value(c.getPatVar(name))); // always strings
+			c.push(new StringValue(c.getPatVar(name))); // always strings
 			break;
 		case CONVVAR:
 			c.push(c.getVar(name));

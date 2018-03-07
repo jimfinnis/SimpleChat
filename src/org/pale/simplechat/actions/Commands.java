@@ -1,8 +1,14 @@
 package org.pale.simplechat.actions;
 
+import java.util.List;
+
 import org.pale.simplechat.Conversation;
 import org.pale.simplechat.Logger;
 import org.pale.simplechat.Topic;
+import org.pale.simplechat.values.DoubleValue;
+import org.pale.simplechat.values.IntValue;
+import org.pale.simplechat.values.ListValue;
+import org.pale.simplechat.values.StringValue;
 
 public class Commands {
 
@@ -24,21 +30,21 @@ public class Commands {
 	 * Type conversion
 	 */
 	@Cmd public static void str(Conversation c) throws ActionException {
-		c.push(new Value(c.pop().str()));
+		c.push(new StringValue(c.pop().str()));
 	}
 
 	@Cmd (name="int") public static void toint(Conversation c) throws ActionException {
-		c.push(new Value(c.pop().toInt()));
+		c.push(new IntValue(c.pop().toInt()));
 	}
 	@Cmd (name="double") public static void todouble(Conversation c) throws ActionException {
-		c.push(new Value(c.pop().toDouble()));
+		c.push(new DoubleValue(c.pop().toDouble()));
 	}
 
 	/*
 	 * String manipulation
 	 */
 	@Cmd public static void trim(Conversation c) throws ActionException{
-		c.push(new Value(c.pop().str().trim()));
+		c.push(new StringValue(c.pop().str().trim()));
 	}
 	
 	/*
@@ -51,7 +57,7 @@ public class Commands {
 
 	@Cmd public static void recurse(Conversation c) throws ActionException {
 		// recurse the entire string (like SRAI in AIML)
-		c.push(new Value(c.handle(c.popString())));
+		c.push(new StringValue(c.handle(c.popString())));
 	}
 	
 	private static void doPromoteDemote(Conversation c,String name,boolean demote) throws ActionException{
@@ -104,12 +110,12 @@ public class Commands {
 	 */
 	@Cmd public static void get(Conversation c) throws ActionException {
 		// (idx list -- val)
-		Value lst = c.pop();
+		List<Value> lst = c.popList();
 		int key = c.pop().toInt();
-		if(key>=0 && key<lst.list.size())
-			c.push(lst.list.get(key));
+		if(key>=0 && key<lst.size())
+			c.push(lst.get(key));
 		else
-			c.push(new Value("??"));
+			c.push(new StringValue("??"));
 	}
 	
 	@Cmd public static void len(Conversation c) throws ActionException {

@@ -8,14 +8,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.TreeMap;
 
+import org.pale.simplechat.BotConfigException;
 import org.pale.simplechat.Conversation;
 import org.pale.simplechat.Logger;
 import org.pale.simplechat.Pair;
 import org.pale.simplechat.Pattern;
 import org.pale.simplechat.PatternParseException;
-import org.pale.simplechat.BotConfigException;
+import org.pale.simplechat.values.DoubleValue;
+import org.pale.simplechat.values.IntValue;
+import org.pale.simplechat.values.StringValue;
+import org.pale.simplechat.values.SubPatValue;
 
 /**
  * This class compiles a stream of instructions.
@@ -68,7 +71,7 @@ public class InstructionCompiler {
 			switch(t){
 			case '\"':
 			case '\'':
-				insts.add(new LiteralInstruction(new Value(tok.sval)));
+				insts.add(new LiteralInstruction(new StringValue(tok.sval)));
 				break;
 			case '$':
 				if(tok.nextToken()!=StreamTokenizer.TT_WORD)
@@ -109,9 +112,9 @@ public class InstructionCompiler {
 			case StreamTokenizer.TT_NUMBER:
 				// this is a real pain, but there's no way of knowing whether the tokeniser got (say) 2 or 2.0.
 				if(tok.nval == Math.floor(tok.nval))
-					insts.add(new LiteralInstruction(new Value((int)tok.nval)));
+					insts.add(new LiteralInstruction(new IntValue((int)tok.nval)));
 				else
-					insts.add(new LiteralInstruction(new Value(tok.nval)));
+					insts.add(new LiteralInstruction(new DoubleValue(tok.nval)));
 				break;
 			case '+':
 				insts.add(new BinopInstruction(BinopInstruction.Type.ADD));
@@ -129,7 +132,7 @@ public class InstructionCompiler {
 				insts.add(new BinopInstruction(BinopInstruction.Type.MOD));
 				break;
 			case '{': // parse a subpattern list to deal with responses!
-				insts.add(new LiteralInstruction(new Value(parseSubPatterns(tok))));
+				insts.add(new LiteralInstruction(new SubPatValue(parseSubPatterns(tok))));
 				break;
 			case '=':
 				insts.add(new BinopInstruction(BinopInstruction.Type.EQUAL));

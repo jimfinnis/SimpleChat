@@ -2,10 +2,7 @@ package org.pale.simplechat;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,11 +11,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.pale.simplechat.patterns.MatchData;
 import org.pale.simplechat.actions.ActionException;
 import org.pale.simplechat.actions.ActionLog;
 import org.pale.simplechat.actions.Runtime;
 import org.pale.simplechat.actions.Value;
+import org.pale.simplechat.patterns.MatchData;
+import org.pale.simplechat.values.StringValue;
 
 /**
  * This contains data about the relationship between a bot instance and another person, i.e.
@@ -43,7 +41,7 @@ public class Conversation extends Runtime {
 		else if(vars.containsKey(s))
 			return vars.get(s);
 		else
-			return new Value("??");
+			return new StringValue("??");
 	}
 
 	// sets a function local if it exists, failing that a conversation local.
