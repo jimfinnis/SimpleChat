@@ -13,13 +13,13 @@ toc::[]
 == Basic operations
 All operations take arguments on the stack, which come before them in the language.
 For example, a pattern/action pair to read two numbers and add them together might look like this:
----
+----
 +"(add $foo=. $bar=.)"
     $foo double # stack the first argument and convert to double
     $bar double # stack the second argument and convert to double
     + str       # add together the two top stack values and convert to string
 ;
----
+----
 
 A quoted string or number compile to instructions which stack them as strings, double-precision
 floating point (referred to as "doubles" hereafter) or integers.
@@ -103,25 +103,25 @@ spoken to the bot, and stacks the result. Take care you don't recurse infinitely
 ### `if .. then .. else`
 This is the basic flow control statement. It might seem a bit odd if you're not used to
 languages of the Forth family, but it works like this:
----
+----
 <code that leaves integer on stack>
 if
 <part that runs if integer was true>
 then
----
+----
 or
----
+----
 <code that leaves integer on stack>
 if
 <part that runs if integer was true>
 then
 <part that runs if integer was false>
 else
----
+----
 For example
----
+----
 ?@foo 5 = if "Five!" else "Not five!" then
----
+----
 will check if instance variable `foo` is 5. If it is, it will stack "Five!", otherwise
 it will stack "Not five!" These statements can be nested.
 
@@ -129,15 +129,15 @@ it will stack "Not five!" These statements can be nested.
 We don't have `else if` in this language because of the way it's parsed (how would you separate
 the condition part from the action part of the previous `if`?). Instead, the `cases` construction
 serves the same role. It has the form
----
+----
 cases
     <condition> if <action> case
     <condition> if <action> case
     ...
     <action> otherwise
----
+----
 Here's an example which converts the string obtained from the pattern, `$n`, into an integer conversation variable for testing.
----        
+----        
     +"(case test $n=.)"
     $n int !n
     ?n 0 = if "Zero" case
@@ -145,7 +145,7 @@ Here's an example which converts the string obtained from the pattern, `$n`, int
     ?n 2 = if "Two" case
     ?n 10 < if "Between three and nine" case
     "Something else" otherwise;
----
+----
     
 
 === "Infinite" loops
@@ -154,7 +154,7 @@ The `leave` and `ifleave` words leave the enclosing loop. `ifleave` pops an inte
 from the stack and leaves the loop if it is non-zero; as such it is equivalent to
 `if leave then`. Loops may be nested.
 This example counts to the number user specifies:
----
+----
     +"(count to $n=.*)"
     0!ct
     ""
@@ -163,7 +163,7 @@ This example counts to the number user specifies:
         ?ct + " " +
         ?ct $n int = ifleave
     endloop trim;
----
+----
 
 === Early exit 
 We can exit from an action early using the `stop` word. Note that we must still
@@ -173,10 +173,10 @@ work inside loops and other control structures.
 == User functions
 It's possible to define user functions in `config.conf` or any
 topic file. To do this, use a function definition of the form
----
+----
 :name |arg1,arg2...,local1,local2...|
     function body in action language
----
+----
 The arguments will we popped off the stack, and local variables
 will be allocated. Inside a function, accessing local variables and
 arguments (known as *function variables*) is done the same way as
@@ -185,30 +185,30 @@ using the '!' and '?' sigils. Function variables take precedence over
 conversation variables: if no function variable exists of that name,
 the function will try to access the conversation variable.
 Here's an example function:
----
+----
 :addints |s1,s2:|
     ?s1 int ?s2 int +;
----
+----
 
 You may omit the args and locals if you wish, and you can use values 
 already on the stack on entry to the function:
----
+----
 addints int swap int +;
----
+----
 will do the same: convert two values to ints and add them. This latter
 form is a bit more efficient (four instructions rather than five and
 no function variable setup) and works by converting the top int,
 swapping the top two stack members, converting the second int,
 and adding. Of course if you did it with a non-commutative operation
 like division this wouldn't work, but you could write:
----
+----
 :divints int swap int swap /;
----
+----
 
 
  Functions can also call other functions, and can recurse,
 so you can have a function and pattern like this:
----
+----
 :fac |n:|
     ?n 1 = if
         1
@@ -220,7 +220,7 @@ so you can have a function and pattern like this:
 +"(fac $n=.)"
     $n int fac
 ;
----
+----
 Important: functions are global to all files - a function defined in a
 config file or a topic will be there for all subsequent topics.
 
