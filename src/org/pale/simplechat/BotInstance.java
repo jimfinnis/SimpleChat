@@ -20,6 +20,8 @@ public class BotInstance extends Source { // extends Source so bots can talk to 
 	
 	// this is a map of each instance to each possible conversational partner.
 	private Map<Source,Conversation> conversations = new HashMap<Source,Conversation>();
+
+	private Object data; // data connected to the bot instance, could be anything
 	
 	public BotInstance(Bot b) throws BotConfigException{
 		bot = b;
@@ -36,6 +38,12 @@ public class BotInstance extends Source { // extends Source so bots can talk to 
 		}
 	}
 	
+	// use this ctor when you want to connect some other data to the instance.
+	public BotInstance(Bot b, Object data) throws BotConfigException{
+		this(b); // call the other ctor
+		this.data = data;
+	}
+	
 	/// variables private (haha) to this instance.
 	private Map<String,Value> vars = new HashMap<String,Value>();
 	
@@ -48,6 +56,11 @@ public class BotInstance extends Source { // extends Source so bots can talk to 
 	
 	public void setVar(String s,Value v){
 		vars.put(s, v);
+	}
+	
+	// return the private data object you may have set; you'll need to cast.
+	public Object getData(){
+		return data;
 	}
 	
 	public String handle(String s,Source p){
