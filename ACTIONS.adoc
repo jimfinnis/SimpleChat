@@ -4,11 +4,23 @@ Jim Finnis <jim.finnis@gmail.com>
 :toc:
 :toc-placement!:
 
+toc::[]
+
+
+The action language is used inside pattern actions and user functions,
+for example in a topic file:
+----
++.*:
+    "I have no idea what to say to that";
+----
+the last line
+----
+    "I have no idea what to say to that";
+----
+is a very simple action which outputs a string.
 The action language is based on Angort, because it was pretty easy to write
 a quick-and-dirty parser and interpreter for such a language. As such, it's
 a Forth-based RPN stack language.
-
-toc::[]
 
 == Basic operations
 All operations take arguments on the stack, which come before them in the language.
