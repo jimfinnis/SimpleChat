@@ -2,6 +2,7 @@ package org.pale.simplechat.actions;
 
 import java.io.IOException;
 import java.io.StreamTokenizer;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -153,7 +154,6 @@ public class InstructionCompiler {
 					insts.add(new BinopInstruction(BinopInstruction.Type.LT));
 				}
 				break;
-					
 			case '[':
 				insts.add(new Lists.NewListInstruction());
 				if(tok.nextToken()!=']')tok.pushBack(); // skip ] in [].
@@ -162,6 +162,18 @@ public class InstructionCompiler {
 			case ',':
 				insts.add(new Lists.AppendInstruction());
 				break;
+			case ':':
+			{
+				InstructionStream str = new InstructionStream(tok);
+				try {
+					Conversation c = new Conversation(); // create dummy convo
+					str.run(c, true);
+					insts.add(new LiteralInstruction(c.pop()));
+				} catch (ActionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					throw new BotConfigException("error in running constant expression: "+e.getMessage());
+				}
+			}
+			break;
 			case StreamTokenizer.TT_WORD:
 				// "if .. (else ..) then" handling
 				if(tok.sval.equals("if")){

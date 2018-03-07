@@ -259,5 +259,70 @@ so you can have a function and pattern like this:
 Important: functions are global to all files - a function defined in a
 config file or a topic will be there for all subsequent topics.
 
+
 == Lists
+Lists are created using the `[`, `]` and `,` stack operators.
+The `[` operator creates a new list and puts it on the stack. The `,` and `]` operators
+both append the item on top of the stack to the list on the stack below it (without popping
+off the list). The only difference between `]` and `,` is that `[` scans forward in
+the parser and throws away a `]` if it comes next.
+
+This might seem a bit complex, but the result is that you can build a list by simply
+writing out its members separated by commas, inside square brackets:
+----
+[1,2,3,"hello"]
+----
+will stack a list consisting of those four values. `[]` will stack an empty list,
+because of the way `[` skips a following `]`. Here's a step-by-step look
+at the previous code example:
+
+- `[` stacks a new list
+- `1` pushes the value 1 onto the stack
+- `,` pops the 1 and puts it onto the list, which remains on the stack
+- `2` pushes the value 2 onto the stack
+- `,` pops the 2 and puts it onto the list, which remains on the stack
+- `3` pushes the value 3 onto the stack
+- `,` pops the 3 and puts it onto the list, which remains on the stack
+- `"hello"` pushes the value "hello" onto the stack
+- `]` pops the "hello" and puts it onto the list, which remains on the stack
+
+[NOTE]
+====
+This peculiar behaviour becomes useful for building lists containing variables,
+and when we deal with iterating over lists (giving us list comprehensions for free) -
+but it is sometimes inefficient because of the number of operations. Consider using
+a *constant expression* or
+setting up large constant lists in instance variables in your config file's `init` action.
+====
+
+== Constant expressions
+Sometimes it is useful to write code which manipulates constants: a trivial
+example might be:
+----
+:degs2rads |x:|
+    3.14159 180.0 *
+    ?x *
+;
+----
+Although the above example is fine, complex list-building expressions can
+take a large number of operations just to build a constant list. Action language
+has no optimizer, but it is possible to optimize such code by enclosing it in
+a *constant expression block*. This is started with a ':' and terminated by a ';'
+just like a function, but appears inside a block of code. The compiler will
+build the enclosed code, run it immediately, and compile an instruction which
+just stacks the returned value (i.e. the value left on top of the stack of the code
+it just ran). The above code could be written as
+----
+:degs2rads |x:| 
+    :3.14159 180*; ?x *;
+----
+compiling to three instructions rather than five. 
+
+[NOTE]
+====
+- Some operations and commands will crash inside a constant expression, because they
+run in a dummy conversation without a bot instance or source. Don't try to access
+an instance variable, for example.
+- Premature optimisation is evil!
+====
 

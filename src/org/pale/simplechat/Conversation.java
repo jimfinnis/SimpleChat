@@ -62,6 +62,14 @@ public class Conversation extends Runtime {
 			return "??";
 	}
 
+	// used for creating "dummy" conversations for constant blocks 
+	public Conversation(){
+		source = null;
+		instance = null;
+		topicLists = new ArrayList<Deque<Topic>>();
+	}
+	
+	// the usual ctor for creating real conversations (and also the init conversation with myself)
 	Conversation(BotInstance i,Source p){
 		source = p;
 		instance = i;

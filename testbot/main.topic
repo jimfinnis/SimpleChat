@@ -10,7 +10,7 @@
 +test1 "wibble"
     "test1" di
     "test2" en
-    "woo" 1 + dp
+    :[1,2,3,4]; dp
     "Test 1 fires";
     
 +test2 "wibble"
@@ -23,7 +23,7 @@
         1
     else
         ?n 1 - fac ?n *
-    then   
+    then
 ;
 
 +"(fac $n=.)"
