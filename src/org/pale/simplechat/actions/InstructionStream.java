@@ -7,8 +7,7 @@ import java.util.List;
 
 import org.pale.simplechat.Bot;
 import org.pale.simplechat.Conversation;
-import org.pale.simplechat.PatternParseException;
-import org.pale.simplechat.BotConfigException;
+import org.pale.simplechat.ParserError;
 
 public class InstructionStream {
 	// limit on how many instructions can run
@@ -16,7 +15,7 @@ public class InstructionStream {
 	
 	private List<Instruction> insts;
 
-	public InstructionStream(Bot bot,StreamTokenizer toks) throws IOException, BotConfigException, PatternParseException{
+	public InstructionStream(Bot bot,StreamTokenizer toks) throws IOException, ParserError {
 		insts = new InstructionCompiler(bot,toks).insts;
 	}
 	

@@ -2,9 +2,8 @@ package org.pale.simplechat.patterns;
 
 import java.util.List;
 
-import org.pale.simplechat.Logger;
+import org.pale.simplechat.ParserError;
 import org.pale.simplechat.Pattern;
-import org.pale.simplechat.PatternParseException;
 
 /// a list of nodes which must all match. Parsed by ( .. )
 
@@ -14,7 +13,7 @@ public class SequenceNode extends Node {
 	 */
 	private List<Node> nodes;
 	
-	public SequenceNode(Pattern pattern, String lab) throws PatternParseException{
+	public SequenceNode(Pattern pattern, String lab) throws ParserError{
 		super(pattern,lab);
 		nodes = this.pattern.parseNodeList(')');
 		Node pnode=null;

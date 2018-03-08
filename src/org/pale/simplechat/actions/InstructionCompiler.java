@@ -15,8 +15,8 @@ import org.pale.simplechat.BotConfigException;
 import org.pale.simplechat.Conversation;
 import org.pale.simplechat.Logger;
 import org.pale.simplechat.Pair;
+import org.pale.simplechat.ParserError;
 import org.pale.simplechat.Pattern;
-import org.pale.simplechat.PatternParseException;
 import org.pale.simplechat.values.DoubleValue;
 import org.pale.simplechat.values.IntValue;
 import org.pale.simplechat.values.StringValue;
@@ -62,7 +62,7 @@ public class InstructionCompiler {
 	}
 
 
-	InstructionCompiler(Bot bot,StreamTokenizer tok) throws IOException, BotConfigException, PatternParseException{
+	InstructionCompiler(Bot bot,StreamTokenizer tok) throws IOException, ParserError {
 		for(;;){
 			int t = tok.nextToken();
 			if(t == ';')
@@ -74,7 +74,7 @@ public class InstructionCompiler {
 				break;
 			case '$':
 				if(tok.nextToken()!=StreamTokenizer.TT_WORD)
-					throw new BotConfigException("expected a varname after $");
+					throw new ParserError("expected a varname after $");
 				insts.add(new GetVarInstruction(tok.sval,GetVarInstruction.Type.PATVAR));
 				break;
 			case '?':
@@ -84,10 +84,10 @@ public class InstructionCompiler {
 					break;
 				case '@':
 					if(tok.nextToken()!=StreamTokenizer.TT_WORD)
-						throw new BotConfigException("expected a varname after ?@");
+						throw new ParserError("expected a varname after ?@");
 					insts.add(new GetVarInstruction(tok.sval,GetVarInstruction.Type.INSTVAR));
 					break;
-					default: throw new BotConfigException("expected a varname or sigil after ?");
+					default: throw new ParserError("expected a varname or sigil after ?");
 				}
 				break;
 			case '!':
@@ -101,10 +101,10 @@ public class InstructionCompiler {
 						break;
 					case '@':
 						if(tok.nextToken()!=StreamTokenizer.TT_WORD)
-							throw new BotConfigException("expected a varname after !@");
+							throw new ParserError("expected a varname after !@");
 						insts.add(new SetVarInstruction(tok.sval,SetVarInstruction.Type.INSTVAR));
 						break;
-					default: throw new BotConfigException("expected a varname or sigil after !");
+					default: throw new ParserError("expected a varname or sigil after !");
 					}
 				}
 				break;
@@ -168,7 +168,7 @@ public class InstructionCompiler {
 					str.run(c, true);
 					insts.add(new LiteralInstruction(c.pop()));
 				} catch (ActionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-					throw new BotConfigException("error in running constant expression: "+e.getMessage());
+					throw new ParserError("error in running constant expression: "+e.getMessage());
 				}
 			}
 			break;
@@ -179,13 +179,13 @@ public class InstructionCompiler {
 					insts.add(new Flow.IfInstruction()); // .. and compile an IF to fixup later
 				} else if(tok.sval.equals("else")){
 					int ref = cstack.pop(); // pop the IF..
-					if(ref<0)throw new BotConfigException("'else' matching with 'cases'?");
+					if(ref<0)throw new ParserError("'else' matching with 'cases'?");
 					resolveJumpForwards(ref,1); // .. and resolve it to jump to just past here
 					cstack.push(insts.size()); // push where we are
 					insts.add(new Flow.JumpInstruction()); // and compile a jump to the end
 				} else if(tok.sval.equals("then")){
 					int ref = cstack.pop(); // pop the IF or ELSE location
-					if(ref<0)throw new BotConfigException("'then' matching with 'cases'?");
+					if(ref<0)throw new ParserError("'then' matching with 'cases'?");
 					resolveJumpForwards(ref,0); // and resolve it to jump here (there is no THEN instruction)
 					
 				// "loop..endloop" and leave handling
@@ -195,7 +195,7 @@ public class InstructionCompiler {
 					loopStack.push(leaveList); // remember the current leave list (which might be null)
 					leaveList = new ArrayList<Integer>(); // create a new leave list for this loop
 				} else if(tok.sval.equals("endloop")){
-					if(leaveList==null)throw new BotConfigException("endloop when not in a loop");
+					if(leaveList==null)throw new ParserError("endloop when not in a loop");
 					// iterate through the leave list, fixing up the jumps
 					for(int leaveOffset : leaveList){
 						// resolve the leave to point to just after the jump we're about to compile
@@ -206,11 +206,11 @@ public class InstructionCompiler {
 					// now compile the jump back to the loop start, using the value stacked on the cstack.
 					insts.add(new Flow.JumpInstruction(cstack.pop() - insts.size()));
 				} else if(tok.sval.equals("leave")){
-					if(leaveList==null)throw new BotConfigException("leave when not in a loop");
+					if(leaveList==null)throw new ParserError("leave when not in a loop");
 					leaveList.add(insts.size()); // add to the leave list to fixup in endloop
 					insts.add(new Flow.LeaveInstruction());
 				} else if(tok.sval.equals("ifleave")){
-					if(leaveList==null)throw new BotConfigException("ifleave when not in a loop");
+					if(leaveList==null)throw new ParserError("ifleave when not in a loop");
 					leaveList.add(insts.size()); // add to the leave list to fixup in endloop
 					insts.add(new Flow.IfLeaveInstruction());
 					
@@ -221,7 +221,7 @@ public class InstructionCompiler {
 					cstack.push(-1); // push the end list marker - the first "case" will pop it.
 				} else if(tok.sval.equals("case")){
 					int ref = cstack.pop(); // get the corresponding "if"
-					if(ref<0)throw new BotConfigException("'case' should have an 'if'");
+					if(ref<0)throw new ParserError("'case' should have an 'if'");
 					resolveJumpForwards(ref,1); // resolve the "if"
 					ref = cstack.pop(); // this will pop the marker the first time round, then the next thing in the list.
 					cstack.push(insts.size()); // push the location we're about to write..
@@ -236,10 +236,10 @@ public class InstructionCompiler {
 						// follow the list made through case jumps
 						// make sure it's a jump, and the right kind of jump
 						if(!(insts.get(ref) instanceof Flow.JumpInstruction))
-							throw new BotConfigException("bad case construction");
+							throw new ParserError("bad case construction");
 						Flow.JumpInstruction j = (Flow.JumpInstruction)insts.get(ref);
 						if(!j.isCaseJump)
-							throw new BotConfigException("bad case construction");
+							throw new ParserError("bad case construction");
 						int next = j.offset; // get the next location in the list.
 						j.isCaseJump = false; // turn it back into an ordinary jump
 						resolveJumpForwards(ref,0); // resolve the jump destination
@@ -259,16 +259,16 @@ public class InstructionCompiler {
 					insts.add(new FuncCallInstruction(bot.funcMap.get(tok.sval)));
 				}
 				else
-					throw new BotConfigException("cannot find action cmd or function: "+tok.sval);
+					throw new ParserError("cannot find action cmd or function: "+tok.sval);
 			}
 		}
 		
 		// flow control termination checks
-		if(leaveList!=null)throw new BotConfigException("loop left unclosed");
-		if(!cstack.isEmpty())throw new BotConfigException("flow control statement left unclosed");
+		if(leaveList!=null)throw new ParserError("loop left unclosed");
+		if(!cstack.isEmpty())throw new ParserError("flow control statement left unclosed");
 	}
 	
-	private static String[] parseLocalList(StreamTokenizer tok,String fname,int terminator) throws IOException, BotConfigException{
+	private static String[] parseLocalList(StreamTokenizer tok,String fname,int terminator) throws IOException, ParserError{
 		List<String> ss = new ArrayList<String>();
 		for(;;){
 			int t = tok.nextToken();
@@ -276,7 +276,7 @@ public class InstructionCompiler {
 				ss.add(tok.sval);
 			else if(t==terminator)break;
 			else if(t!=',')
-				throw new BotConfigException("bad local specification in function '"+fname+"'");
+				throw new ParserError("bad local specification in function '"+fname+"'");
 		}
 		return ss.toArray(new String[ss.size()]);
 	}
@@ -284,15 +284,15 @@ public class InstructionCompiler {
 	/// parses functions and adds them to the function list. Assumes the function introducer (probably ':')
 	/// has been read and we're ready for the name.
 	
-	public static void parseFunction(Bot bot,StreamTokenizer tok) throws IOException, BotConfigException, PatternParseException{
+	public static void parseFunction(Bot bot,StreamTokenizer tok) throws IOException, ParserError {
 		if(tok.nextToken()!=StreamTokenizer.TT_WORD)
-			throw new BotConfigException("expected name of function after ':'");
+			throw new ParserError("expected name of function after ':'");
 		String name = tok.sval;
 		String[] argarray = null;
 		String[] locarray = null;
 		
 		if(bot.funcMap.containsKey(name))
-			throw new BotConfigException("function already exists: "+name);
+			throw new ParserError("function already exists: "+name);
 				
 		if(tok.nextToken()=='|'){
 			// we're getting an args,locals specification
@@ -313,7 +313,7 @@ public class InstructionCompiler {
 	
 	/// used to fix up an existing jump instruction to jump to the current instruction
 	/// with an offset. 
-	private void resolveJumpForwards(int refToIf, int i) throws BotConfigException {
+	private void resolveJumpForwards(int refToIf, int i) throws ParserError {
 		insts.get(refToIf).setJump((insts.size()-refToIf)+i);
 	}
 	
@@ -326,13 +326,13 @@ public class InstructionCompiler {
 	 * @throws IOException 
 	 * @throws PatternParseException 
 	 */
-	private List<Pair> parseSubPatterns(Bot bot,StreamTokenizer tok) throws BotConfigException, IOException, PatternParseException {
+	private List<Pair> parseSubPatterns(Bot bot,StreamTokenizer tok) throws ParserError, IOException  {
 		List<Pair> subpatterns = new ArrayList<Pair>();
 		for(;;){
 			int tt = tok.nextToken();
 			if(tt=='}')break;
 			if(tt != '\"' && tt != '\'')
-				throw new BotConfigException("error in parsing subpattern, expected a pattern string");
+				throw new ParserError("error in parsing subpattern, expected a pattern string");
 			Pattern pat = new Pattern(null,tok.sval);
 			InstructionStream act = new InstructionStream(bot,tok);
 			Pair p = new Pair(pat,act);

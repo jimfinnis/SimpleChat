@@ -40,13 +40,13 @@ public class Pattern {
 	}
 	
 	/// get a label terminated with '='. We are currently on the char before the label, usually '$'
-	String parseLabel() throws PatternParseException{
+	String parseLabel() throws ParserError{
 		StringBuilder sb = new StringBuilder();
 		iter.next();
 		for(;;){
 			char c = iter.current();
 			if(c == CharacterIterator.DONE)
-				throw new PatternParseException("label should end with '='");
+				throw new ParserError("pattern label should end with '='");
 			iter.next();
 			if(c=='=')
 				break;
@@ -58,14 +58,14 @@ public class Pattern {
 
 	// parse a white-space separated list of nodes. Parser is on the opening terminator, so we have
 	// to skip past it.
-	public List<Node> parseNodeList(char terminator) throws PatternParseException{
+	public List<Node> parseNodeList(char terminator) throws ParserError{
 		List<Node> nodes = new ArrayList<Node>();
 		iter.next(); // skip past opening terminator.
 		for(;;){
 			skipspaces();
 			char c = iter.current();
 			if(c==CharacterIterator.DONE)
-				throw new PatternParseException("expected node or '"+terminator+"', got end of string");
+				throw new ParserError("expected node in pattern or '"+terminator+"', got end of string");
 			else if(c==terminator)break;
 			else {
 				Node n = parseNode();
@@ -85,7 +85,7 @@ public class Pattern {
 	
 	/// parse a node. Start parse position is first char in node, end position is just after
 	/// last char in node.
-	public Node parseNode() throws PatternParseException{
+	public Node parseNode() throws ParserError{
 		char c = iter.current();
 		if(c==CharacterIterator.DONE)return null;
 		String label;
@@ -124,7 +124,7 @@ public class Pattern {
 	}
 	
 	/// compile the pattern using a recursive descent parser
-	public Pattern(String name, String pstring) throws PatternParseException{
+	public Pattern(String name, String pstring) throws ParserError{
 		this.name = name;
 		iter = new StringCharacterIterator(pstring);
 		iter.first();

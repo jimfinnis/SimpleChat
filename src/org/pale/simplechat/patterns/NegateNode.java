@@ -1,13 +1,13 @@
 package org.pale.simplechat.patterns;
 
+import org.pale.simplechat.ParserError;
 import org.pale.simplechat.Pattern;
-import org.pale.simplechat.PatternParseException;
 
 public class NegateNode extends Node {
 
 	private Node node; // the node we want to negate
 
-	public NegateNode(Pattern p, String lab) throws PatternParseException {
+	public NegateNode(Pattern p, String lab) throws ParserError {
 		super(p, lab);
 		pattern.iter.next();
 		// parse the child pattern we want to negate

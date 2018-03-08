@@ -34,22 +34,22 @@ public class Topic {
 	String name;
 	StreamTokenizer tok;
 
-	private double getNextDouble() throws BotConfigException, IOException{
+	private double getNextDouble() throws IOException, ParserError{
 		if(tok.nextToken()!=StreamTokenizer.TT_NUMBER)
-			throw new BotConfigException("Expected a number");
+			throw new ParserError("Expected a number");
 		return (double)tok.nval;
 	}
 
-	private String getNextString() throws BotConfigException, IOException{
+	private String getNextString() throws IOException, ParserError{
 		int tt = tok.nextToken();
 		if(tt != '\'' && tt != '\"')
-			throw new BotConfigException("Expected a string");
+			throw new ParserError("Expected a string");
 		return tok.sval;
 	}
 
-	private String getNextIdent() throws BotConfigException, IOException{
+	private String getNextIdent() throws IOException, ParserError{
 		if(tok.nextToken()!=StreamTokenizer.TT_WORD)
-			throw new BotConfigException("Expected an identifier");
+			throw new ParserError("Expected an identifier");
 		return tok.sval;
 	}
 	/**
@@ -87,7 +87,7 @@ public class Topic {
 						pname = null;
 						pstring = tok.sval;
 					} else
-						throw new BotConfigException("badly formed pattern definition");
+						throw new BotConfigException(f,tok,"badly formed pattern definition");
 					Pattern pat = new Pattern(pname,pstring);
 					InstructionStream act = new InstructionStream(bot,tok);
 					Pair pair = new Pair(pat,act);
@@ -96,19 +96,16 @@ public class Topic {
 					pairList.add(pair);
 					Logger.log("pattern/action pair parsed");
 				} else
-					throw new BotConfigException("badly formed topic file, expected '+'");
+					throw new BotConfigException(f,tok,"badly formed topic file, expected '+'");
 			}
 		} catch (BotConfigException e){
-			Logger.log("syntax error in topic file "+f.toString()+":"+tok.lineno()+ ": "+e.getMessage());
+			Logger.log("syntax error in topic file "+e.getMessage());
 			throw e; // log and rethrow
 		} catch (IOException e) {
-			String s ="IO error in topic file "+f.toString();
-			Logger.log(s);
-			throw new BotConfigException(s);
-		} catch(PatternParseException e){
-			String s = "Pattern parse error in topic file "+f.toString()+":"+tok.lineno()+" : "+e.getMessage();
-			Logger.log(s);
-			throw new BotConfigException(s);
+			throw new BotConfigException(f,null,"IO error in topic file");
+		} catch (ParserError e) {
+			Logger.log("syntax error in topic file - "+e.getMessage());
+			throw new BotConfigException(f,tok,e.getMessage());
 		}
 
 		tok = null; // discard tokeniser when done

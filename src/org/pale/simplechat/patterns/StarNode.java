@@ -1,12 +1,12 @@
 package org.pale.simplechat.patterns;
 
+import org.pale.simplechat.ParserError;
 import org.pale.simplechat.Pattern;
-import org.pale.simplechat.PatternParseException;
 
 public class StarNode extends Node {
 	private Node node;
 	private int minCount,maxCount; // the number of matches must be in this range
-	public StarNode(Pattern pattern, Node n,String lab,boolean alo) throws PatternParseException {
+	public StarNode(Pattern pattern, Node n,String lab,boolean alo) throws ParserError {
 		super(pattern,lab);
 		pattern.iter.next();
 		node = n; // the node we are wrapping
