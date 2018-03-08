@@ -43,7 +43,6 @@ public class Bot {
 	public Map<String, Function> funcMap;
 	
 	public boolean hasFunc(String name){
-		Logger.log("Looking for "+name);
 		return funcMap.containsKey(name);
 	}
 
