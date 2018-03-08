@@ -81,6 +81,10 @@ public class Commands {
 		// tell the conversation to use the patterns we just specified to match first.
 		c.specialpats =  c.popSubpats();
 	}
+	
+	@Cmd public static void hasnext(Conversation c) throws ActionException {
+		c.push(new IntValue(c.specialpats != null));
+	}
 
 	@Cmd public static void recurse(Conversation c) throws ActionException {
 		// recurse the entire string (like SRAI in AIML)

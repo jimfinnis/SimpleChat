@@ -88,7 +88,7 @@ public class Bot {
 						} else if(tok.sval.equals("subs")){
 							if(tok.nextToken()!='"')
 								throw new BotConfigException(p,tok,"subs should be followed by a subs file name in \"quotes\"");
-							subs.parseFile(p,tok.sval+".sub");
+							subs.parseFile(p,tok.sval);
 						} else throw new BotConfigException(p,tok,"unknown word in config: "+tok.sval);
 					}
 				}

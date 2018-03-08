@@ -140,6 +140,7 @@ that there is no `?` here, because you cannot set a pattern variable.
 - `recurse` `(s --)` feeds the string back into the conversation system as if it were
 spoken to the bot, and stacks the result. Take care you don't recurse infinitely!
 - `next` `(p --)` specifies the subpattern block to use for preferential matching of the next input.
+- `hasnext` ( -- bool)` pushes whether the conversation has a special subpattern to run; typically used for suppressing random comments from action functions called with `runFunc()` 
 - `promote` `(topicname --)` promotes a topic to the top of its list
 - `demote` `(topicname --)` demotes a topic to the bottom of its list
 - `enabletopic` `(topicname --)` enables a topic if it was disabled

@@ -53,6 +53,13 @@ is done by repeatedly calling
 ----
 String reply = instance.handle(string,source);
 ----
+[NOTE]
+====
+`handle()` can return a string, or null if a `none` value
+was on the stack at the end of the action (you'll find out
+what this means). Be prepared to deal with null return values!
+====
+
 Custom commands you write might need to access some special data
 connected to your bot. In this case, an `Object` can be passed
 to the instance constructor, so the bot can find the data inside
@@ -96,6 +103,8 @@ from a topic pattern (see below).
 ====
 - It's a good idea to check the function exists and to do (or not do) something
 if it doesn't!
+- As before, `runFunc()` can return a null if `none` was on the stack.
+Deal with this case.
 - By convention, functions that get called externally are named ALLINCAPS,
 like RANDSAY in the example config file below. I haven't enforced this
 in the language, however.

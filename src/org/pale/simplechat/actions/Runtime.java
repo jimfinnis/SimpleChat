@@ -5,6 +5,7 @@ import java.util.Stack;
 import org.pale.simplechat.Logger;
 import org.pale.simplechat.Pair;
 import org.pale.simplechat.values.ListValue;
+import org.pale.simplechat.values.NoneValue;
 import org.pale.simplechat.values.SubPatValue;
 
 public class Runtime {
@@ -64,9 +65,13 @@ public class Runtime {
 		return pop().str();
 	}
 	
+	// return the result left on the stack. It will be converted to a string,
+	// unless it is none, in which case null will be returned.
 	public String getResult(){
 		try {
-			String s = pop().str();
+			Value v = pop();
+			if(v.equals(NoneValue.instance))return null;
+			String s = v.str();
 			if(!stack.empty()){
 				Logger.log("oops - stuff still on the stack (depth is "+stack.size()+")");
 			}
