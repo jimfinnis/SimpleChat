@@ -23,11 +23,8 @@ import org.pale.simplechat.actions.InstructionStream;
  */
 
 public class Bot {
-	private Map<String,Topic> topicsByName = new HashMap<String,Topic>();
-	
-
-	Substitutions subs = new Substitutions(); // substitutions to run before topics
-
+	private Map<String,Topic> topicsByName;
+	Substitutions subs; // substitutions to run before topics
 	public InstructionStream initAction; // an Action to initialise bot variables etc.
 	
 	// this is a list of topic lists.
@@ -39,11 +36,10 @@ public class Bot {
 	// All topics exist in the same namespace, however.
 	// This list, and sublists, gets cloned into each conversation so that the promoted/demoted topics
 	// are per-conversation.
-	List<List<Topic>> topicLists = new ArrayList<List<Topic>>();
+	List<List<Topic>> topicLists;
 
 	/// map of user functions we might use,
-	public Map<String, Function> funcMap = new HashMap<String,Function>();
-	
+	public Map<String, Function> funcMap;
 
 	// this is a set of options which can be turned on by "opt" in the config. Their use
 	// is entirely up to the library user.
@@ -52,7 +48,21 @@ public class Bot {
 		return opts.contains(s);
 	}
 
+	// reload all the bot's data!
+	public void reload() throws BotConfigException {
+		topicLists = new ArrayList<List<Topic>>();
+		subs = new Substitutions();
+		funcMap =  new HashMap<String,Function>();
+		topicsByName = new HashMap<String,Topic>();
+		
+		// read the configuration data
+		parseConfig(path);
+	}
+
 	private String name;
+
+
+	private Path path; // the path of the bot's data, stored for reload
 	public String getName(){return name;}
 	
 	// parse a config.conf in the directory Path
@@ -124,10 +134,11 @@ public class Bot {
 	}
 
 	public Bot(Path path) throws BotConfigException{
-		// read the configuration data
+		this.path = path; // store this so we can reload
 		name = path.getFileName().toString();
-		parseConfig(path);
+		reload();
 
 		Logger.log("Created bot OK");
 	}
+
 }

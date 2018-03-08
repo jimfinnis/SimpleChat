@@ -99,14 +99,14 @@ public class Topic {
 					throw new BotConfigException("badly formed topic file, expected '+'");
 			}
 		} catch (BotConfigException e){
-			Logger.log("syntax error in topic file "+f.toString()+" : "+e.getMessage());
+			Logger.log("syntax error in topic file "+f.toString()+":"+tok.lineno()+ ": "+e.getMessage());
 			throw e; // log and rethrow
 		} catch (IOException e) {
 			String s ="IO error in topic file "+f.toString();
 			Logger.log(s);
 			throw new BotConfigException(s);
 		} catch(PatternParseException e){
-			String s = "Pattern parse error in topic file "+f.toString()+" : "+e.getMessage();
+			String s = "Pattern parse error in topic file "+f.toString()+":"+tok.lineno()+" : "+e.getMessage();
 			Logger.log(s);
 			throw new BotConfigException(s);
 		}
