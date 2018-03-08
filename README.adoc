@@ -94,8 +94,11 @@ from a topic pattern (see below).
 
 [NOTE]
 ====
-It's a good idea to check the function exists and to do (or not do) something
+- It's a good idea to check the function exists and to do (or not do) something
 if it doesn't!
+- By convention, functions that get called externally are named ALLINCAPS,
+like RANDSAY in the example config file below. I haven't enforced this
+in the language, however.
 ====
 
 
