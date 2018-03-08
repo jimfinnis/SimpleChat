@@ -38,7 +38,7 @@ between a `BotInstance` and a source has some private data, called
 "conversation data". It's a raw `Object` because it's likely to be something
 in your code.
 
-== Creating a bot
+== Creating a bot and using it
 Typically goes like this:
 
 [source,java]
@@ -74,6 +74,31 @@ bots.
 Be careful with the casting you'll have to do inside
 the commands!
 
+=== Calling action language functions
+Sometimes you might want to get a string or perform an action in response to some kind of event
+rather than user text. Pattern matching here would be wasteful, so it's possible to run
+user-defined action language functions directly:
+[source,java]
+----
+// assuming instance and source are set, and funcName is the name
+// you defined the function with..
+
+String msg;
+if(instance.bot.hasFunc(funcname)){
+    msg = instance.runFunc(funcName,source);
+    sendMessageToThePlayer(msg);
+}
+----
+The action function must return a string on top of the stack, just like an action called
+from a topic pattern (see below).
+
+[NOTE]
+====
+It's a good idea to check the function exists and to do (or not do) something
+if it doesn't!
+====
+
+
 == Bot directory
 The bot directory should contain
 
@@ -91,18 +116,25 @@ pattern is matched, the action fires and pattern matching stops.
 from a `.sub` file
 - an optional `init` entry followed by a block of Action language (see below)
 which will set up initial values for conversation variables and maybe do
-some other things. A `#` starts a comment.
-- `opt` settings - each is a word. Adding an opt setting sets the option
-to true. It can be accessed by your application code to determine certain
-properties of the entire bot quickly with the `Bot.hasOpt(String)` call.
+some other things. A `#` starts a comment
+- any number of action language functions, which can be called from action language or
+from your application code.
 
 Here is an example:
 ----
 # This is a test bot!
 
-# just a thing to say we have a greet pattern, perhaps.
+# The calling program might invoke this function with runFunc() to
+# respond to some kind of event in the world or a random tick.
 
-opt hasGreet
+:RANDSAY
+    [
+        "It's exciting here!",
+        "Hello trees! Hello flowers!",
+        "SPOON!",
+        "Bored now."
+    ] choose;
+
 
 # here are some substitution files.
 

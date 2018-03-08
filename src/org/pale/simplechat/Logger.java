@@ -16,7 +16,7 @@ public class Logger {
 		listener.log(s);
 	}
 	
-	static void setListener(Listener l){
+	public static void setListener(Listener l){
 		listener = l;
 	}
 

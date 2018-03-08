@@ -282,18 +282,14 @@ public class InstructionCompiler {
 	}
 	
 	/// parses functions and adds them to the function list. Assumes the function introducer (probably ':')
-	/// has been read and we're ready for the name.
+	/// and name have been read and we're ready for the arglist and func body.
+	/// Bot and name are passed in if we are compiling a named function, so that they
+	/// can be set prior to compilation of the instructions to permit recursion. 
 	
-	public static void parseFunction(Bot bot,StreamTokenizer tok) throws IOException, ParserError {
-		if(tok.nextToken()!=StreamTokenizer.TT_WORD)
-			throw new ParserError("expected name of function after ':'");
-		String name = tok.sval;
+	private static Function parseFunction(Bot bot,String name,StreamTokenizer tok) throws IOException, ParserError {
 		String[] argarray = null;
 		String[] locarray = null;
 		
-		if(bot.funcMap.containsKey(name))
-			throw new ParserError("function already exists: "+name);
-				
 		if(tok.nextToken()=='|'){
 			// we're getting an args,locals specification
 			argarray = parseLocalList(tok,name,':');
@@ -304,11 +300,23 @@ public class InstructionCompiler {
 		}
 		// define the function (before compiling, so we can recurse)
 		Function f = new Function(name,argarray,locarray);
-		bot.funcMap.put(name,f);
+		if(bot!=null && name!=null)
+			bot.funcMap.put(name,f); // add the name to the bot HERE - before compilation
 		// now compile it
 		InstructionStream insts = new InstructionStream(bot,tok);
 		// and set the instructions
 		f.setInsts(insts);
+		return f; // if we're doing an anonymous function we'll need this.
+	}
+	
+	/// parses a function with a name, assuming we're just waiting for the name
+	public static void parseNamedFunction(Bot bot,StreamTokenizer tok) throws IOException, ParserError{
+		if(tok.nextToken()!=StreamTokenizer.TT_WORD)
+			throw new ParserError("expected name of function after ':'");
+		String name = tok.sval;
+		if(bot.funcMap.containsKey(name))
+			throw new ParserError("function already exists: "+name);
+		InstructionCompiler.parseFunction(bot,name,tok);
 	}
 	
 	/// used to fix up an existing jump instruction to jump to the current instruction

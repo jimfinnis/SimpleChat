@@ -13,6 +13,7 @@ import java.util.TreeMap;
 
 import org.pale.simplechat.actions.ActionException;
 import org.pale.simplechat.actions.ActionLog;
+import org.pale.simplechat.actions.Function;
 import org.pale.simplechat.actions.Runtime;
 import org.pale.simplechat.actions.Value;
 import org.pale.simplechat.patterns.MatchData;
@@ -125,6 +126,21 @@ public class Conversation extends Runtime {
 		}
 		else
 			return null;
+	}
+	
+	public String runFunc(String s) throws ActionException{
+		specialpats=null;
+		if(!instance.bot.funcMap.containsKey(s))
+			throw new ActionException("bot does not define function "+s);
+		Function f = instance.bot.funcMap.get(s);
+		try {
+			f.run(this);
+			return getResult();
+		} catch (IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			throw new ActionException("error in running function "+s+": "+e.getMessage());
+		}
 	}
 
 	// This is a list giving which topics to promote/demote based on the last actions run.

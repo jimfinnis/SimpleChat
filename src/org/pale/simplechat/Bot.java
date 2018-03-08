@@ -39,13 +39,12 @@ public class Bot {
 	List<List<Topic>> topicLists;
 
 	/// map of user functions we might use,
+	
 	public Map<String, Function> funcMap;
-
-	// this is a set of options which can be turned on by "opt" in the config. Their use
-	// is entirely up to the library user.
-	Set<String> opts = new HashSet<String>();
-	public boolean hasOpt(String s){
-		return opts.contains(s);
+	
+	public boolean hasFunc(String name){
+		Logger.log("Looking for "+name);
+		return funcMap.containsKey(name);
 	}
 
 	// reload all the bot's data!
@@ -77,7 +76,7 @@ public class Bot {
 					if(t == StreamTokenizer.TT_EOF)break;
 					else if(t == ':') {
 						try {
-							InstructionCompiler.parseFunction(this,tok);
+							InstructionCompiler.parseNamedFunction(this,tok);
 						} catch (ParserError e){
 							throw new BotConfigException(p,tok,"error in a config file function: "+e.getMessage());
 						}
@@ -91,13 +90,7 @@ public class Bot {
 							if(tok.nextToken()!='"')
 								throw new BotConfigException(p,tok,"subs should be followed by a subs file name in \"quotes\"");
 							subs.parseFile(p,tok.sval+".sub");
-						} else if(tok.sval.equals("opt")){
-							if(tok.nextToken()!=StreamTokenizer.TT_WORD)
-								throw new BotConfigException(p,tok,"config opt should be a word");
-							opts.add(tok.sval);
-
-						}
-						else throw new BotConfigException(p,tok,"unknown word in config: "+tok.sval);
+						} else throw new BotConfigException(p,tok,"unknown word in config: "+tok.sval);
 					}
 				}
 			} catch (ParserError e){

@@ -73,7 +73,7 @@ public class Topic {
 			for(;;){
 				int t = tok.nextToken();
 				if(t == StreamTokenizer.TT_EOF)break;
-				else if(t == ':')InstructionCompiler.parseFunction(bot,tok);
+				else if(t == ':')InstructionCompiler.parseNamedFunction(bot,tok);
 				else if(t == '+'){
 					// pattern line is +"pattern" .. OR +name "pattern"
 					String pname,pstring;

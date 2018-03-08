@@ -148,9 +148,14 @@ public class MainWindow implements ActionListener, MenuListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String s;
-		if(instance != null)
-			s = instance.handle(textField.getText(), source);
-		else
+		if(instance != null){
+			String in = textField.getText();
+			if(in.substring(0,1).equals(":")) { // :name means run a func
+				s = instance.runFunc(in.substring(1), source);
+			} else {
+				s = instance.handle(in, source);				
+			}
+		} else
 			s = "No bot loaded yet.";
 		textArea.append(s+"\n");
 		textField.setText("");

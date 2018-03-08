@@ -33,7 +33,7 @@ public class Function {
 		this.insts = i;
 	}
 	
-	void run(Conversation c) throws ActionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	public void run(Conversation c) throws ActionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		// we save the OLD locals (which will may be null)
 		Map<String,Value> oldLocals = c.funcVars;
 		// we pop off the arguments into new local variables of the same name. It's a good job

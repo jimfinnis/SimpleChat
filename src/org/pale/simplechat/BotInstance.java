@@ -75,6 +75,12 @@ public class BotInstance  {
 		return c;
 	}
 	
+	/**
+	 * Handle an input string from a user
+	 * @param s the input
+	 * @param source something associated with the user
+	 * @return
+	 */
 	public String handle(String s,Object source){
 		Conversation c = getConversation(source);
 		
@@ -85,5 +91,23 @@ public class BotInstance  {
 
 		// pass through to the conversation
 		return c.handle(s);
+	}
+	
+	/**
+	 * Run a function defined in the bot (typically used for events rather than conversational input)
+	 * @param s the function name
+	 * @param source a source object, typically the performer of an action on the bot.
+	 * @return
+	 * @throws ActionException 
+	 */
+	public String runFunc(String s,Object source) {
+		Conversation c = getConversation(source);
+		try {
+			c.reset(); // reset (or create) the stacks etc.
+			return c.runFunc(s);
+		} catch (ActionException e) {
+			Logger.log(e.getMessage());
+			return "??"; // not ideal.
+		}
 	}
 }
