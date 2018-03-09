@@ -341,7 +341,7 @@ public class InstructionCompiler {
 			if(tt=='}')break;
 			if(tt != '\"' && tt != '\'')
 				throw new ParserError("error in parsing subpattern, expected a pattern string");
-			Pattern pat = new Pattern(null,tok.sval);
+			Pattern pat = new Pattern(bot,null,tok.sval);
 			InstructionStream act = new InstructionStream(bot,tok);
 			Pair p = new Pair(pat,act);
 			subpatterns.add(p);

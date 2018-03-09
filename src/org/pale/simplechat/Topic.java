@@ -75,7 +75,7 @@ public class Topic {
 				int t = tok.nextToken();
 				if(t == StreamTokenizer.TT_EOF)break;
 				else if(t == ':')InstructionCompiler.parseNamedFunction(bot,tok);
-				else if(t == '~')Category.parseCat(bot.cats, tok);
+				else if(t == '~')Category.parseCat(bot, tok);
 				else if(t == '+'){
 					// pattern line is +"pattern" .. OR +name "pattern"
 					String pname,pstring;
@@ -90,7 +90,7 @@ public class Topic {
 						pstring = tok.sval;
 					} else
 						throw new BotConfigException(f,tok,"badly formed pattern definition");
-					Pattern pat = new Pattern(pname,pstring);
+					Pattern pat = new Pattern(bot,pname,pstring);
 					InstructionStream act = new InstructionStream(bot,tok);
 					Pair pair = new Pair(pat,act);
 					if(pname!=null)

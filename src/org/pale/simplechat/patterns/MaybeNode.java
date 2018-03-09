@@ -1,15 +1,16 @@
 package org.pale.simplechat.patterns;
 
+import org.pale.simplechat.Bot;
 import org.pale.simplechat.ParserError;
 import org.pale.simplechat.Pattern;
 
 public class MaybeNode extends Node {
 
 	Node node;
-	public MaybeNode(Pattern p, String lab) throws ParserError {
+	public MaybeNode(Bot b,Pattern p, String lab) throws ParserError {
 		super(p, lab);
 		p.iter.next();
-		node = p.parseNode();
+		node = p.parseNode(b);
 	}
 	
 	@Override

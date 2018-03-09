@@ -2,6 +2,7 @@ package org.pale.simplechat.patterns;
 
 import java.util.List;
 
+import org.pale.simplechat.Bot;
 import org.pale.simplechat.ParserError;
 import org.pale.simplechat.Pattern;
 
@@ -11,9 +12,9 @@ public class AnyOfNode extends Node {
 	 * 
 	 */
 	private List<Node> nodes;
-	public AnyOfNode(Pattern pattern, String lab) throws ParserError{
+	public AnyOfNode(Bot b,Pattern pattern, String lab) throws ParserError{
 		super(pattern,lab);
-		nodes = this.pattern.parseNodeList(']');
+		nodes = this.pattern.parseNodeList(b,']');
 	}
 	@Override
 	public void match(MatchData m) {

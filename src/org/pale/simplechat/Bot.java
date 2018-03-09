@@ -65,11 +65,19 @@ public class Bot {
 	}
 
 	private String name;
+	public String getName(){return name;}
 
 
 	private Path path; // the path of the bot's data, stored for reload
-	public Map<String,Category> cats = new HashMap<String,Category>(); // bot's private categories
-	public String getName(){return name;}
+	private  Map<String,Category> cats = new HashMap<String,Category>(); // bot's private categories
+	public Category getCategory(String name){
+		if(cats.containsKey(name))return cats.get(name);
+		if(Category.globalCats.containsKey(name))return Category.globalCats.get(name);
+		else return null;	
+	}
+	public void addCategory(String name,Category c){
+		cats.put(name,c);
+	}
 
 	// parse a config.conf in the directory Path
 	private void parseConfig(Path p) throws BotConfigException{

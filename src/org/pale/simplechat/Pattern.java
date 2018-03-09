@@ -58,7 +58,7 @@ public class Pattern {
 
 	// parse a white-space separated list of nodes. Parser is on the opening terminator, so we have
 	// to skip past it.
-	public List<Node> parseNodeList(char terminator) throws ParserError{
+	public List<Node> parseNodeList(Bot b,char terminator) throws ParserError{
 		List<Node> nodes = new ArrayList<Node>();
 		iter.next(); // skip past opening terminator.
 		for(;;){
@@ -68,7 +68,7 @@ public class Pattern {
 				throw new ParserError("expected node in pattern or '"+terminator+"', got end of string");
 			else if(c==terminator)break;
 			else {
-				Node n = parseNode();
+				Node n = parseNode(b);
 				nodes.add(n);
 			}
 		}
@@ -85,7 +85,7 @@ public class Pattern {
 	
 	/// parse a node. Start parse position is first char in node, end position is just after
 	/// last char in node.
-	public Node parseNode() throws ParserError{
+	public Node parseNode(Bot b) throws ParserError{
 		char c = iter.current();
 		if(c==CharacterIterator.DONE)return null;
 		String label;
@@ -103,11 +103,12 @@ public class Pattern {
 			n = new WordNode(this, label);
 		} else {
 			switch(c){
-			case '[':	n = new AnyOfNode(this, label);break;
-			case '(':	n = new SequenceNode(this, label);break;
-			case '^':	n = new NegateNode(this,label); break;
+			case '[':	n = new AnyOfNode(b,this, label);break;
+			case '(':	n = new SequenceNode(b,this, label);break;
+			case '^':	n = new NegateNode(b,this,label); break;
 			case '.':	n = new DotNode(this,label);break;
-			case '?':	n = new MaybeNode(this,label);break;
+			case '?':	n = new MaybeNode(b,this,label);break;
+			case '~':	n = new CategoryNode(b,this,label);break;
 			default:
 				System.out.println("CHAR: "+c);
 				iter.next();
@@ -122,13 +123,19 @@ public class Pattern {
 		}
 		return n;
 	}
-	
-	/// compile the pattern using a recursive descent parser
-	public Pattern(String name, String pstring) throws ParserError{
+
+	/**
+	 * parse a pattern from a string
+	 * @param b
+	 * @param name
+	 * @param pstring
+	 * @throws ParserError
+	 */
+	public Pattern(Bot b, String name, String pstring) throws ParserError{
 		this.name = name;
 		iter = new StringCharacterIterator(pstring);
 		iter.first();
-		root = parseNode();
+		root = parseNode(b);
 		Logger.log("Pattern parsed "+pstring);
 	}
 	

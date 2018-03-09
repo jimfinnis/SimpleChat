@@ -2,6 +2,7 @@ package org.pale.simplechat.patterns;
 
 import java.util.List;
 
+import org.pale.simplechat.Bot;
 import org.pale.simplechat.ParserError;
 import org.pale.simplechat.Pattern;
 
@@ -13,9 +14,9 @@ public class SequenceNode extends Node {
 	 */
 	private List<Node> nodes;
 	
-	public SequenceNode(Pattern pattern, String lab) throws ParserError{
+	public SequenceNode(Bot t,Pattern pattern, String lab) throws ParserError{
 		super(pattern,lab);
-		nodes = this.pattern.parseNodeList(')');
+		nodes = this.pattern.parseNodeList(t,')');
 		Node pnode=null;
 		// link the child nodes together into a linked list
 		for(Node n: nodes){

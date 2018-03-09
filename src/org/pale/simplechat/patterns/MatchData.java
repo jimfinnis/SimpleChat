@@ -16,9 +16,9 @@ public class MatchData {
 	// labelled results
 	public Map<String,String> labels = new HashMap<String,String>();
 	// progress data
-	String[] words; // words of the sentence in lower-cased form
-	String[] wordsRaw; // words of the sentence in native case
-	int pos;	// first unparsed word
+	public String[] words; // words of the sentence in lower-cased form
+	public String[] wordsRaw; // words of the sentence in native case
+	public int pos;	// first unparsed word
 	public boolean invalid; // set when parse fails; may get temporarily cleared (e.g. in AnyOfNode)
 	public String consumed; // the string most recently consumed, in native case
 	public MatchData(String[] ss){
@@ -32,12 +32,12 @@ public class MatchData {
 		invalid = false;
 	}
 	
-	String consume(){
+	public String consume(){
 		if(pos >= words.length)return "";
 		else return wordsRaw[pos++];
 	}
 	
-	String cur(){
+	public String cur(){
 		if(pos < words.length)
 			return words[pos];
 		else
