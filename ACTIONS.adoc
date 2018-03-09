@@ -60,12 +60,13 @@ or even
 +"gronk"
     "this is the ${?@gronk 1+ dup !@gronk}th time you've said that.";
 ```
-[NOTE]
-====
 Don't do what I did in the example above and try to be too clever in your embedded code -
 just use it for accessing variables.
-====
-
+They are generally best used for accessing the pattern variables assigned in the matched
+pattern:
+````
++"(is $n=(?a ~cat) a cat)" "Yes ${$n} is a cat";
+````
 
 ==== Subpattern lists
 The *subpattern list*
