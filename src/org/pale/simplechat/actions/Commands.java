@@ -123,16 +123,16 @@ public class Commands {
 	}
 	
 	@Cmd public static void enablepattern(Conversation c) throws ActionException {
-		// (topname patname -- )
-		String patname = c.popString();
+		// (patname topname -- )
 		String topname = c.popString();
+		String patname = c.popString();
 		c.enableDisablePattern(topname, patname, false);
 	}
 
 	@Cmd public static void disablepattern(Conversation c) throws ActionException {
-		// (topname patname -- )
-		String patname = c.popString();
+		// (patname topname -- )
 		String topname = c.popString();
+		String patname = c.popString();
 		c.enableDisablePattern(topname, patname, true);
 	}
 	
@@ -206,5 +206,20 @@ public class Commands {
 		List<Value> lst = c.popList();
 		int n = ThreadLocalRandom.current().nextInt(lst.size());
 		c.push(lst.get(n));
+	}
+	
+	@Cmd public static void join(Conversation c) throws ActionException {
+		// (list string -- string)
+		String js = c.popString();
+		List<Value> lst = c.popList();
+		StringBuilder sb = new StringBuilder();
+		boolean first=true;
+		for(Value v:lst)
+		{
+			if(first)first=false;
+			else sb.append(js);
+			sb.append(v.str());
+		}
+		c.push(new StringValue(sb.toString()));
 	}
 }

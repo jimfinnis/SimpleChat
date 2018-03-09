@@ -145,8 +145,8 @@ spoken to the bot, and stacks the result. Take care you don't recurse infinitely
 - `demote` `(topicname --)` demotes a topic to the bottom of its list
 - `enabletopic` `(topicname --)` enables a topic if it was disabled
 - `disabletopic` `(topicname --)` disables a topic if it was enabled
-- `enablepattern` `(topicname patternname --)` enables a disabled named pattern in a topic
-- `disablepattern` `(topicname patternname --)` disables an enabled named pattern in a topic
+- `enablepattern` `(patternname topicname --)` enables a disabled named pattern in a topic
+- `disablepattern` `(patternname topicname --)` disables an enabled named pattern in a topic
 - `curtopic` `(-- name)` return name of matched topic or `none` if not in a topic
 == Flow control
 

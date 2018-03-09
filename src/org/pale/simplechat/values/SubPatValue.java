@@ -17,7 +17,7 @@ public class SubPatValue extends Value {
 	}
 	
 	@Override public String str(){
-		return "?subpat?";
+		return "<SUBPAT VALUE> (did you forget 'next'?)";
 	}
 	@Override
 	public Value binop(Type t, Value snd) {

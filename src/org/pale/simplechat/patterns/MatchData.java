@@ -16,19 +16,25 @@ public class MatchData {
 	// labelled results
 	public Map<String,String> labels = new HashMap<String,String>();
 	// progress data
-	String[] words; // words of the sentence
+	String[] words; // words of the sentence in lower-cased form
+	String[] wordsRaw; // words of the sentence in native case
 	int pos;	// first unparsed word
 	public boolean invalid; // set when parse fails; may get temporarily cleared (e.g. in AnyOfNode)
-	public String consumed; // the string most recently consumed
+	public String consumed; // the string most recently consumed, in native case
 	public MatchData(String[] ss){
-		words = ss;
+		wordsRaw = ss;
+		// produce lower-case version to match agains
+		words = new String[ss.length];
+		for(int i=0;i<ss.length;i++){
+			words[i] = ss[i].toLowerCase();
+		}
 		pos = 0;
 		invalid = false;
 	}
 	
 	String consume(){
 		if(pos >= words.length)return "";
-		else return words[pos++];
+		else return wordsRaw[pos++];
 	}
 	
 	String cur(){
@@ -50,10 +56,11 @@ public class MatchData {
 		return pos == words.length;
 	}
 
+	// returns the raw, not lowercased, versions.
 	public String consumeAll() {
 		StringBuilder sb = new StringBuilder();
 		while(pos<words.length){
-			sb.append(words[pos++]+" ");
+			sb.append(wordsRaw[pos++]+" ");
 		}
 		return sb.toString();
 	}

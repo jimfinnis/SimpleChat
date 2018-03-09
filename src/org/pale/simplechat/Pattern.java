@@ -141,7 +141,7 @@ public class Pattern {
 	 */
 	public MatchData match(String s){
 		// prepare the data, removing punctuation - we assume this is a single sentence.
-		s = s.replaceAll("[^a-zA-Z0-9_]"," ").toLowerCase();
+		s = s.replaceAll("[^a-zA-Z0-9_]"," ");
 		Logger.log("After repl: "+s);
 		String[] arr = s.split("\\s+");
 		for(String t: arr)Logger.log("Item: **"+t+"**");
