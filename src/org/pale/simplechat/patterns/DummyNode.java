@@ -11,7 +11,7 @@ public class DummyNode extends Node {
 		data = s;
 	}
 	@Override
-	public void parse(MatchData m) {
+	public void match(MatchData m) {
 		// consumes no tokens, does nothing.
 	}
 }

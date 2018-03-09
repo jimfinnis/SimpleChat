@@ -136,6 +136,14 @@ public class Commands {
 		c.enableDisablePattern(topname, patname, true);
 	}
 	
+	@Cmd public static void curtopic(Conversation c) throws ActionException {
+		Topic t = c.getCurTopic();
+		if(t==null)
+			c.push(NoneValue.instance);
+		else
+			c.push(new StringValue(t.name));
+	}
+	
 	/*
 	 * lists
 	 */

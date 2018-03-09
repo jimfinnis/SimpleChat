@@ -16,7 +16,7 @@ public class WordNode extends Node {
 		Logger.log("New word: "+word);
 	}
 	@Override
-	public void parse(MatchData m) {
+	public void match(MatchData m) {
 		if(m.invalid){log("early return");return;}
 		if(m.cur().equals(word)){
 			log("match succeeded: "+word);

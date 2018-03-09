@@ -18,11 +18,11 @@ public class MaybeNode extends Node {
 	}
 
 	@Override
-	public void parse(MatchData m) {
+	public void match(MatchData m) {
 		if(m.invalid){log("early return");return;}
 
 		// try to match the node
-		node.parse(m);
+		node.match(m);
 		// if we got it, handle it.
 		if(!m.invalid){
 			if(label!=null){

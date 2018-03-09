@@ -20,12 +20,12 @@ public class NegateNode extends Node {
 	}
 
 	@Override
-	public void parse(MatchData m) {
+	public void match(MatchData m) {
 		if(m.invalid){log("early return");return;}
 
 		// record the match data to reset once we verify the match failed
 		int pos = m.pos;
-		node.parse(m); // try to parse the node
+		node.match(m); // try to parse the node
 		// if it failed, that's OK, it's what we want. Just reset the pos and accept.
 		m.consumed="";
 		if(m.invalid){

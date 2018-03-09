@@ -16,12 +16,12 @@ public class AnyOfNode extends Node {
 		nodes = this.pattern.parseNodeList(']');
 	}
 	@Override
-	public void parse(MatchData m) {
+	public void match(MatchData m) {
 		if(m.invalid){log("early return");return;}
 		int op = m.pos; // save position
 		for(Node n : nodes){
 			// attempt to consume with this node
-			n.parse(m);
+			n.match(m);
 			if(!m.invalid){
 				// we succeeded!
 //TODO				if(label!=null)m.setLabel(label, word);

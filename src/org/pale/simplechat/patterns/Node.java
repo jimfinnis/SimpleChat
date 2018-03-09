@@ -14,7 +14,7 @@ abstract public class Node {
 	Node next; // in sequences, references the next node; otherwise null
 	// parses the string with the node, advancing the position in MatchData to consume
 	// tokens until we either succeed or fail (in which case invalid is set in the data).
-	public abstract void parse(MatchData m);
+	public abstract void match(MatchData m);
 	
 	public void log(String s){
 		Logger.log("NODE "+this.getClass().getSimpleName()+": "+s);

@@ -35,6 +35,12 @@ public class Conversation extends Runtime {
 	private Map<String,Value> vars = new TreeMap<String,Value>();
 	/// variables local to any function, none by default
 	public Map<String,Value> funcVars = null; 
+	
+	/// which topic I'm processing, null if we're doing a special
+	private Topic curTopic;
+	public Topic getCurTopic(){
+		return curTopic;
+	}
 
 	// gets a function local if it exists, failing that a conversation local.
 	public Value getVar(String s){
@@ -225,11 +231,13 @@ public class Conversation extends Runtime {
 			for(Topic t: list){
 				if(!disabledTopics.contains(t)){ // only run enabled topics
 					Logger.log("Testing topic patterns"+t.name);
+					curTopic = t;
 					for(Pair p: t.pairList){
 						if(!disabledPairs.contains(p)){
 							String res = handle(s,p);
 							if(res!=null){
 								Logger.log("done pattern "+p.pat.getName());
+								curTopic = null;
 								return res;
 							}
 						}
@@ -238,6 +246,7 @@ public class Conversation extends Runtime {
 			}
 		}
 
+		curTopic = null;
 		return "??"; // match failed for any topic.
 	}
 

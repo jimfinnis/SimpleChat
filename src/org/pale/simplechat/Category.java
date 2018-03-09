@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,13 +18,16 @@ import java.util.Set;
  * see if we find the category we're looking for. Unfortunately words can be in
  * more than one category. So we probably need to search down - go through
  * the child categories until we find the word.
+ * 
+ * Category leaves can also be arrays of words, which have to be matched in the order
+ * they are given, so  "foo","bar" will match "foo bar" and "foo. Bar". 
  * @author white
  *
  */
 public class Category {
 	private Set<String> words = new HashSet<String>(); // leaf nodes of this category
 	private Set<Category> cats = new HashSet<Category>(); // branches
-	
+	private Set<String[]> lists = new HashSet<String[]>(); // more leaf nodes
 	/**
 	 * depth first search of this category
 	 * @param w
@@ -76,14 +80,38 @@ public class Category {
 				case StreamTokenizer.TT_WORD:
 					c.words.add(tok.sval.toLowerCase());
 					break;
+				case '\'':case '\"':
+					c.lists.add(tok.sval.split("\\s+"));
+					break;	
 				case '~':
 					c.cats.add(parseCat(ns,tok));
 					break;
 				case ']':break outerloop;
+				default: throw new ParserError("error in category");
 				}
 			}
 			ns.put(name,c);
 			return c;
+		}
+	}
+	
+	public void dump(){
+		_dump(0);
+	}
+	private void _dump(int level){
+		StringBuilder sb = new StringBuilder();
+		for(int i=0;i<=level;i++)sb.append("-");
+		String pf = sb.toString();
+		for(String w: words)
+			Logger.log(pf+w);
+		for(String[] a: lists){
+			sb = new StringBuilder();
+			for(String w: a)
+				sb.append(w+",");
+			Logger.log(pf+sb.toString());
+		}
+		for(Category c:cats){
+			c._dump(level+1);
 		}
 	}
 }

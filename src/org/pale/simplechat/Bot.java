@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.pale.simplechat.actions.Function;
@@ -56,6 +57,11 @@ public class Bot {
 
 		// read the configuration data
 		parseConfig(path);
+		
+		for(Entry<String, Category> f: cats.entrySet()){
+			Logger.log("Category "+f.getKey()+":");
+			f.getValue().dump();
+		}
 	}
 
 	private String name;

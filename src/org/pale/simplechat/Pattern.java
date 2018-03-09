@@ -151,7 +151,7 @@ public class Pattern {
 		// And here we go. We traverse the nodes, consuming items (or not) in the match data.
 		// If a match fails we set the invalid flag, and subsequent nodes should bomb out early.
 		
-		root.parse(m);
+		root.match(m);
 		
 		// if any tokens remain, that's a fail
 		if(!m.allConsumed()){

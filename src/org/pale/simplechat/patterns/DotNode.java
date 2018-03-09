@@ -11,7 +11,7 @@ public class DotNode extends Node {
 	}
 
 	@Override
-	public void parse(MatchData m) {
+	public void match(MatchData m) {
 		if(m.invalid){log("early return");return;}
 		
 		if(m.allConsumed()){

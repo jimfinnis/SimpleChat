@@ -28,12 +28,12 @@ public class SequenceNode extends Node {
 	}
 
 	@Override
-	public void parse(MatchData m) {
+	public void match(MatchData m) {
 		StringBuilder out = new StringBuilder();
 		if(m.invalid){log("early return");return;}
 		// match IN ORDER
 		for(Node n: nodes){
-			n.parse(m);
+			n.match(m);
 			if(m.invalid){
 				log("match failed");
 				return; // failed

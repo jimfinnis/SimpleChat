@@ -32,7 +32,7 @@ public class Topic {
 	Map<String,Pair> pairMap = new HashMap<String,Pair>();
 	
 
-	String name;
+	public String name;
 	StreamTokenizer tok;
 
 	private double getNextDouble() throws IOException, ParserError{

@@ -15,7 +15,7 @@ public class StarNode extends Node {
 	}
 
 	@Override
-	public void parse(MatchData m) {
+	public void match(MatchData m) {
 		if(m.invalid){log("early return");return;}
 		
 		// the idea is that "foo* bar" should keep trying to match "bar"
@@ -29,7 +29,7 @@ public class StarNode extends Node {
 			// if there is one, try to match the next node
 			if(next!=null){
 				int pos = m.pos;
-				next.parse(m);
+				next.match(m);
 				m.pos = pos; // reset position, we'll always want to reparse this token
 				if(!m.invalid){
 					// we succeeded, so exit ready to parse that node
@@ -38,7 +38,7 @@ public class StarNode extends Node {
 			}
 			// otherwise, try to match our repeating node
 			m.invalid =false; // clear match state
-			node.parse(m);
+			node.match(m);
 			if(m.invalid){
 				// didn't get it; exit, this is a failure
 				return;
