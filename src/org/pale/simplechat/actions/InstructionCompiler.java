@@ -65,12 +65,12 @@ public class InstructionCompiler {
 	InstructionCompiler(Bot bot,StreamTokenizer tok) throws IOException, ParserError {
 		for(;;){
 			int t = tok.nextToken();
-			if(t == ';')
+			if(t == ';' || t == StreamTokenizer.TT_EOF)
 				break;
 			switch(t){
 			case '\"':
 			case '\'':
-				insts.add(new LiteralInstruction(new StringValue(tok.sval)));
+				insts.add(new StringInstruction(bot,tok.sval));
 				break;
 			case '$':
 				if(tok.nextToken()!=StreamTokenizer.TT_WORD)
@@ -268,6 +268,8 @@ public class InstructionCompiler {
 		if(!cstack.isEmpty())throw new ParserError("flow control statement left unclosed");
 	}
 	
+
+
 	private static String[] parseLocalList(StreamTokenizer tok,String fname,int terminator) throws IOException, ParserError{
 		List<String> ss = new ArrayList<String>();
 		for(;;){

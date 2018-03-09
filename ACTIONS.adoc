@@ -49,6 +49,25 @@ integer 2. This is due to how the tokeniser works, sorry.
 See below for more details.
 ====
 
+==== Embedding code in strings
+While most string constants just look like `"hello, I'm a string"`, it's possible to embed
+small fragments of code in them in between `${` and `}`. For example:
+```
+"hello, ${$@name}, pleased to meet you!"
+```
+or even
+```
++"gronk"
+    "this is the ${?@gronk 1+ dup !@gronk}th time you've said that.";
+```
+[NOTE]
+====
+Don't do what I did in the example above and try to be too clever in your embedded code -
+just use it for accessing variables.
+====
+
+
+==== Subpattern lists
 The *subpattern list*
 literal is rather complex, and looks like a list of patterns inside curly brackets,
 just as you would find in a topic, but without the preceding `+` or name on each pattern:
