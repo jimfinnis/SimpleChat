@@ -64,9 +64,9 @@ Don't do what I did in the example above and try to be too clever in your embedd
 just use it for accessing variables.
 They are generally best used for accessing the pattern variables assigned in the matched
 pattern:
-````
+```
 +"(is $n=(?a ~cat) a cat)" "Yes ${$n} is a cat";
-````
+```
 
 ==== Subpattern lists
 The *subpattern list*
