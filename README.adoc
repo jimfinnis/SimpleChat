@@ -371,10 +371,12 @@ Here's an example of a category block from a topic file:
         they them
     ]
 ----    
-This defines two top level categories, `~animal` and `~human`, each of which have some subcategories.
-`Steve` is in both the categories `human` and `man`, while `bird` is only in `animal`.
-There are two kinds of "leaf" entry in a category tree: single words and string separated lists of words.
-Words just match words, while lists of words have to match all the words in order.
+This defines two top level categories, `~animal` and `~human`, each of which
+have some subcategories. `Steve` is in both the categories `human` and `man`,
+while `bird` is only in `animal`. There are two kinds of "leaf" entry in a
+category tree: single words and space-separated lists of words in quotes.
+Words just
+match words, while lists of words have to match all the words in order.
 
 Matching in a pattern is done with the `~categoryname' symbol. Here's an example:
 ----
