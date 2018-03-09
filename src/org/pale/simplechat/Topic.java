@@ -3,6 +3,7 @@ package org.pale.simplechat;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StreamTokenizer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public class Topic {
 	public Topic(Bot bot,String name,Path f) throws BotConfigException {
 		try {
 			this.name = name;
-			BufferedReader r = Files.newBufferedReader(f); 
+			BufferedReader r = Files.newBufferedReader(f,StandardCharsets.UTF_8); 
 			tok = new StreamTokenizer(r);
 			tok.commentChar('#');
 			tok.ordinaryChar('/');
@@ -74,6 +75,7 @@ public class Topic {
 				int t = tok.nextToken();
 				if(t == StreamTokenizer.TT_EOF)break;
 				else if(t == ':')InstructionCompiler.parseNamedFunction(bot,tok);
+				else if(t == '~')Category.parseCat(bot.cats, tok);
 				else if(t == '+'){
 					// pattern line is +"pattern" .. OR +name "pattern"
 					String pname,pstring;
@@ -102,7 +104,7 @@ public class Topic {
 			Logger.log("syntax error in topic file "+e.getMessage());
 			throw e; // log and rethrow
 		} catch (IOException e) {
-			throw new BotConfigException(f,null,"IO error in topic file");
+			throw new BotConfigException(f,"Cannot read topic file");
 		} catch (ParserError e) {
 			Logger.log("syntax error in topic file - "+e.getMessage());
 			throw new BotConfigException(f,tok,e.getMessage());

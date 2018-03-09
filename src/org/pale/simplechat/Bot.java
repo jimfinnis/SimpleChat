@@ -2,6 +2,7 @@ package org.pale.simplechat;
 
 import java.io.IOException;
 import java.io.StreamTokenizer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -61,12 +62,14 @@ public class Bot {
 
 
 	private Path path; // the path of the bot's data, stored for reload
+	public Map<String,Category> cats = new HashMap<String,Category>(); // bot's private categories
 	public String getName(){return name;}
 
 	// parse a config.conf in the directory Path
 	private void parseConfig(Path p) throws BotConfigException{
 		try {
-			StreamTokenizer tok = new StreamTokenizer(Files.newBufferedReader(p.resolve("config.conf")));
+			StreamTokenizer tok = new StreamTokenizer(Files.newBufferedReader(p.resolve("config.conf"),
+					StandardCharsets.UTF_8));
 			tok.commentChar('#');
 			tok.ordinaryChar('/');
 			try {

@@ -2,6 +2,7 @@ package org.pale.simplechat;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class Substitutions {
 		Path f = p.resolve(file);
 		String sep = ":";
 		try {
-			BufferedReader r = Files.newBufferedReader(f);
+			BufferedReader r = Files.newBufferedReader(f,StandardCharsets.UTF_8);
 			String s;
 			while((s = r.readLine())!=null){
 				if(s.length()>1){
