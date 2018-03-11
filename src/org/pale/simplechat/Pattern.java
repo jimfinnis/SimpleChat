@@ -137,6 +137,8 @@ public class Pattern {
 		iter.first();
 		root = parseNode(b);
 		Logger.log("Pattern parsed "+pstring);
+		if(root == null)
+			throw new ParserError("empty pattern");
 	}
 	
 	

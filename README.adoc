@@ -96,8 +96,10 @@ if(instance.bot.hasFunc(funcname)){
     sendMessageToThePlayer(msg);
 }
 ----
-The action function must return a string on top of the stack, just like an action called
-from a topic pattern (see below).
+The action function should return a string on top of the stack or leave a string
+in the string builder, just like an action called
+from a topic pattern (see below). However, it can also return `none`, in which
+case the result from the Java call will be null.
 
 [NOTE]
 ====
@@ -351,6 +353,13 @@ defined in curly brackets:
     }
 ----
 More details on the action language link:ACTIONS.adoc[here].
+[NOTE]
+====
+If the action doesn't leave anything behind on the stack the system
+considers the whole pattern as having failed to match, and moves
+on to try the next one. This can be useful for adding addition code
+to test things.
+====
 
 
 == Categories

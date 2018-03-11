@@ -121,8 +121,9 @@ public class Conversation extends Runtime {
 				// but if we don't we should default to the top level search.
 				specialpats = null; 
 				p.act.run(this,true);
-				// at this point there should be something on the stack, and subpatterns
-				// may have been set.
+				// at this point there should be something on the stack or in the SB, and subpatterns
+				// may have been set. Note that this can return null if neither are true, in which case 
+				// we'll try the next pattern!
 				return getResult();
 			} catch (IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | ActionException e) {
@@ -281,6 +282,8 @@ public class Conversation extends Runtime {
 	}
 	
 	public String getOutput(){
+		if(output == null)
+			return null;
 		return output.toString();
 	}
 
