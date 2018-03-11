@@ -428,7 +428,7 @@ by the string builder. If you want to do fancy things with a range, it's easy en
 to convert it to a list. Here's a function to do that:
 ----
 :range2list |r:|
-   [] ?r each loop {i,}
+   [] ?r each loop i, endloop
 ;
 ----
 
