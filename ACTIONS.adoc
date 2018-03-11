@@ -416,8 +416,21 @@ Lists are implemented as Java ArrayList objects, which means that the `unshift` 
 ====
 
 == Ranges
-Not yet implemented.
-
+Ranges are values which represent ranges of integers. For example, the range created
+by `0 4 range` represents the numbers 0, 1, 2 and 3. The list doesn't include 4 so
+that it's 4 integers long. The only thing that you can do with a range is iterate
+over it. For example:
+----
+10 20 range each loop {i " " +.}
+----
+will print "10 11 12 13 14 15 16 17 18 19" - all the numbers from 10 to 19 joined together
+by the string builder. If you want to do fancy things with a range, it's easy enough
+to convert it to a list. Here's a function to do that:
+----
+:range2list |r:|
+   [] ?r each loop {i,}
+;
+----
 
 == Constant expressions
 Sometimes it is useful to write code which manipulates constants: a trivial

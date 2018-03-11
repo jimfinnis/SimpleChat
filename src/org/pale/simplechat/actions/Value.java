@@ -1,5 +1,7 @@
 package org.pale.simplechat.actions;
 
+import org.pale.simplechat.actions.Runtime.LoopIterator;
+
 
 
 
@@ -18,5 +20,9 @@ public abstract class Value {
 	
 	// binops call this on their first operand.
 	public abstract Value binop(BinopInstruction.Type t,Value snd);
+
+	public LoopIterator makeIterator() throws ActionException {
+		throw new ActionException("Type "+this.getClass().getSimpleName()+" is not iterable");
+	}
 	
 }

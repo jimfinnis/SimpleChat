@@ -31,8 +31,8 @@ public class Flow {
 		@Override
 		int execute(Conversation c) throws ActionException {
 			// get the iterable and make an iterator, and put that onto the iterstack.
-			List<Value> lst = c.popList();
-			LoopIterator iter = new ListLoopIterator(lst);
+			Value v = c.pop();
+			LoopIterator iter = v.makeIterator();
 			c.iterStack.push(iter);
 			return 1;
 		}

@@ -8,8 +8,8 @@ import org.pale.simplechat.Logger;
 import org.pale.simplechat.Topic;
 import org.pale.simplechat.values.DoubleValue;
 import org.pale.simplechat.values.IntValue;
-import org.pale.simplechat.values.ListValue;
 import org.pale.simplechat.values.NoneValue;
+import org.pale.simplechat.values.RangeValue;
 import org.pale.simplechat.values.StringValue;
 
 public class Commands {
@@ -221,6 +221,16 @@ public class Commands {
 			sb.append(v.str());
 		}
 		c.push(new StringValue(sb.toString()));
+	}
+	
+	/*
+	 * Range constructor
+	 */
+	
+	@Cmd public static void range(Conversation c) throws ActionException {
+		int end = c.pop().toInt();
+		int start = c.pop().toInt();
+		c.push(new RangeValue(start,end));
 	}
 	
 	/*

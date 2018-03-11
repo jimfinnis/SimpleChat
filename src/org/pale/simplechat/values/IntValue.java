@@ -14,6 +14,7 @@ public class IntValue extends Value{
 		this.i = b ? 1 : 0; // construct a "boolean" value as an int
 	}
 	
+	
 	@Override public boolean equals(Object ob){
 		if(this == ob)return true;
 		if(!(ob instanceof IntValue))return false;

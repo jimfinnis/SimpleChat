@@ -17,7 +17,7 @@ public class Runtime {
 	
 	/// a simple iterator interface - we don't use Iterator because it doesn't handle ranges
 	/// and doesn't have current().
-	interface LoopIterator {
+	public interface LoopIterator {
 		void next();
 		boolean hasNext();
 		Value current();
@@ -32,7 +32,7 @@ public class Runtime {
 		if(n<=iterStack.size()){
 			return iterStack.get(iterStack.size()-(n+1));
 		}
-		else throw new ActionException("stack underflow");
+		else throw new ActionException("not enough nested loops");
 	}
 	
 	// clears everything at the start of a top-level call

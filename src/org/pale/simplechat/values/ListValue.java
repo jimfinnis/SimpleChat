@@ -3,8 +3,11 @@ package org.pale.simplechat.values;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pale.simplechat.actions.Value;
+import org.pale.simplechat.actions.ActionException;
 import org.pale.simplechat.actions.BinopInstruction.Type;
+import org.pale.simplechat.actions.ListLoopIterator;
+import org.pale.simplechat.actions.Runtime.LoopIterator;
+import org.pale.simplechat.actions.Value;
 
 public class ListValue extends Value {
 	public List<Value> list;
@@ -62,5 +65,10 @@ public class ListValue extends Value {
 		default:
 			return null;
 		}
+	}
+
+	@Override
+	public LoopIterator makeIterator() throws ActionException {
+		return new ListLoopIterator(list);
 	}
 }

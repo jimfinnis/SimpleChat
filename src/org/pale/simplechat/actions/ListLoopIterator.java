@@ -13,7 +13,7 @@ public class ListLoopIterator implements LoopIterator {
 	// this will construct the iterator, leaving it "unstarted".
 	// The first "next" will set current to the first item in the iterable,
 	// if there is one.
-	ListLoopIterator(List<Value> lst){
+	public ListLoopIterator(List<Value> lst){
 		iter = lst.iterator();
 	}
 
