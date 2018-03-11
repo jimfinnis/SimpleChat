@@ -87,6 +87,7 @@ the `next` command.
 === Output
 The primary purpose of an action is to respond to the user with text.
 There are two ways to do this.
+
 - *Stack output*: The simplest method is simply to return a string on the stack.
 If there is any value left over on the stack at the end of an action, it will
 be converted to a string and sent to the user. All the examples so far have been of this
