@@ -264,6 +264,10 @@ This example counts to the number user specifies:
     endloop trim;
 ----
 
+=== Iterator loops
+It is also possible to loop over values in an iterable value, such as a
+<<Lists,list>> or <<Ranges,range>>.
+
 === Early exit 
 We can exit from an action early using the `stop` word. Note that we must still
 leave a string on the stack for the action to sent to the user. This word will
@@ -383,6 +387,9 @@ starting random dialogue trees.
 Lists are implemented as Java ArrayList objects, which means that the `unshift` and
 `shift` operations will be slower than `push` and `pop`.
 ====
+
+== Ranges
+Not yet implemented.
 
 
 == Constant expressions
