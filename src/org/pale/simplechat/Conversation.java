@@ -36,6 +36,9 @@ public class Conversation extends Runtime {
 	/// variables local to any function, none by default
 	public Map<String,Value> funcVars = null; 
 	
+	/// an output buffer
+	StringBuilder output=null;
+	
 	/// which topic I'm processing, null if we're doing a special
 	private Topic curTopic;
 	public Topic getCurTopic(){
@@ -148,6 +151,24 @@ public class Conversation extends Runtime {
 			throw new ActionException("error in running function "+s+": "+e.getMessage());
 		}
 	}
+	
+	// return the result left on the stack. It will be converted to a string,
+	// unless it is none, in which case null will be returned.
+	// If there is no value on the stack, the output from the string builder used by "."
+	// will be returned.
+	public String getResult() throws ActionException{
+			if(stack.empty())
+				return getOutput();
+			
+			Value v = pop(); // the exception here shouldn't occur.
+			if(v.equals(NoneValue.instance))return null;
+			String s = v.str();
+			if(!stack.empty()){
+				Logger.log("oops - stuff still on the stack (depth is "+stack.size()+")");
+			}
+			return s;
+	}
+
 
 	// This is a list giving which topics to promote/demote based on the last actions run.
 	// It's a list, not a set - and it's a single list of structures with a flag rather than than
@@ -248,6 +269,19 @@ public class Conversation extends Runtime {
 
 		curTopic = null;
 		return "??"; // match failed for any topic.
+	}
+	
+	public void clearOutput(){
+		output = new StringBuilder(output);
+	}
+
+	public void appendOutput(String s) {
+		if(output==null)output = new StringBuilder();
+		output.append(s);
+	}
+	
+	public String getOutput(){
+		return output.toString();
 	}
 
 }

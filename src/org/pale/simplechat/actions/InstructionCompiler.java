@@ -90,6 +90,9 @@ public class InstructionCompiler {
 					default: throw new ParserError("expected a varname or sigil after ?");
 				}
 				break;
+			case '.': // append to print output
+				insts.add(new Printing.PrintInstruction());
+				break;
 			case '!':
 				if(tok.nextToken()=='=')
 					insts.add(new BinopInstruction(BinopInstruction.Type.NEQUAL));
@@ -189,6 +192,22 @@ public class InstructionCompiler {
 					resolveJumpForwards(ref,0); // and resolve it to jump here (there is no THEN instruction)
 					
 				// "loop..endloop" and leave handling
+				} else if(tok.sval.equals("each")){
+					if(tok.nextToken()!=StreamTokenizer.TT_WORD || !tok.sval.equals("loop"))
+						throw new ParserError("each must be followed by loop");
+					insts.add(new Flow.IterLoopStartInstruction());
+					cstack.push(insts.size()); // remember the instruction after the loop start point
+					loopStack.push(leaveList); // remember the current leave list (which might be null)
+					leaveList = new ArrayList<Integer>(); // create a new leave list for this loop
+					leaveList.add(insts.size()); // add to the leave list to fixup in endloop
+					insts.add(new Flow.IterLoopLeaveIfDone());
+					break;
+				} else if(tok.sval.equals("i")){
+					insts.add(new Flow.LoopGetInstruction(0));
+				} else if(tok.sval.equals("j")){
+					insts.add(new Flow.LoopGetInstruction(1));
+				} else if(tok.sval.equals("k")){
+					insts.add(new Flow.LoopGetInstruction(2));
 				} else if(tok.sval.equals("loop")){
 					insts.add(new Flow.LoopStartInstruction()); // compile a loop start
 					cstack.push(insts.size()); // remember the instruction after the loop start point
@@ -245,7 +264,6 @@ public class InstructionCompiler {
 						resolveJumpForwards(ref,0); // resolve the jump destination
 						ref = next; // get the next jump to resolve.
 					}
-					
 				// "stop" and other quick flow control stuff
 				} else if(tok.sval.equals("stop")){
 					insts.add(new Flow.StopInstruction());

@@ -86,6 +86,7 @@ public class Bot {
 					StandardCharsets.UTF_8));
 			tok.commentChar('#');
 			tok.ordinaryChar('/');
+			tok.ordinaryChar('.');
 			try {
 				for(;;) {
 					int t = tok.nextToken();
@@ -150,7 +151,7 @@ public class Bot {
 		name = path.getFileName().toString();
 		reload();
 
-		Logger.log("Created bot OK");
+		Logger.log(name+" : created bot OK");
 	}
 
 }

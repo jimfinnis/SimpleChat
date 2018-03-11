@@ -1,4 +1,5 @@
 package org.pale.simplechat.actions;
+import java.util.Deque;
 import java.util.List;
 import java.util.Stack;
 
@@ -9,16 +10,30 @@ import org.pale.simplechat.values.NoneValue;
 import org.pale.simplechat.values.SubPatValue;
 
 public class Runtime {
-	// this interface will hold iterator data for iterable things.
-	interface LoopIterator {
-		// empty for the moment
-	}
-	
-	private Stack<Value> stack; // the main stack
+
+	protected Stack<Value> stack; // the main stack
 	public boolean exitflag; // set to quit code early. Cleared at start of run.
 	public int totalinsts; // number of instructions run.
-	// stack of iterators
+	
+	/// a simple iterator interface - we don't use Iterator because it doesn't handle ranges
+	/// and doesn't have current().
+	interface LoopIterator {
+		void next();
+		boolean hasNext();
+		Value current();
+	}
+	
+	// stack of iterators. Annoyingly, Stack doesn't provide peek(int)
 	public Stack<LoopIterator> iterStack;
+	
+	// Annoyingly, Stack (and Deque) doesn't provide peek(int). This returns the nth item from the top.
+	// so iterStackPeek(0) = iterStack.peek().
+	public LoopIterator iterStackPeek(int n) throws ActionException{
+		if(n<=iterStack.size()){
+			return iterStack.get(iterStack.size()-(n+1));
+		}
+		else throw new ActionException("stack underflow");
+	}
 	
 	// clears everything at the start of a top-level call
 	public void reset(){
@@ -65,19 +80,4 @@ public class Runtime {
 		return pop().str();
 	}
 	
-	// return the result left on the stack. It will be converted to a string,
-	// unless it is none, in which case null will be returned.
-	public String getResult(){
-		try {
-			Value v = pop();
-			if(v.equals(NoneValue.instance))return null;
-			String s = v.str();
-			if(!stack.empty()){
-				Logger.log("oops - stuff still on the stack (depth is "+stack.size()+")");
-			}
-			return s;
-		} catch (ActionException e) {
-			return "no result from action";
-		}
-	}
 }

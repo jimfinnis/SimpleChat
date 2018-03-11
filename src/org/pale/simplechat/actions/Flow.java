@@ -1,6 +1,10 @@
 package org.pale.simplechat.actions;
 
+import java.util.List;
+
 import org.pale.simplechat.Conversation;
+import org.pale.simplechat.Logger;
+import org.pale.simplechat.actions.Runtime.LoopIterator;
 
 /**
  * This class is just a container - I use it to keep the flow control instructions all in one place.
@@ -8,6 +12,49 @@ import org.pale.simplechat.Conversation;
  *
  */
 public class Flow {
+	public static class LoopGetInstruction extends Instruction {
+		private int n;
+		
+		public LoopGetInstruction(int n) {
+			this.n = n;
+		}
+		@Override
+		int execute(Conversation c) throws ActionException {
+			// we're going to have to do a weird peek into the stack here.
+			LoopIterator iter = c.iterStackPeek(n);
+			c.push(iter.current());
+			return 1;
+		}
+	}
+
+	public static class IterLoopStartInstruction extends Instruction {
+		@Override
+		int execute(Conversation c) throws ActionException {
+			// get the iterable and make an iterator, and put that onto the iterstack.
+			List<Value> lst = c.popList();
+			LoopIterator iter = new ListLoopIterator(lst);
+			c.iterStack.push(iter);
+			return 1;
+		}
+	}
+	
+	public static class IterLoopLeaveIfDone extends LeaveInstruction {
+		@Override
+		public int execute(Conversation c) throws ActionException  {
+			LoopIterator iter = c.iterStack.peek();
+			if(iter.hasNext()){
+				iter.next();
+				// get the next thingy, advancing the iterator, and move on..
+				return 1;
+			} else {
+				// loop is done, pop the iterator and jump out
+				c.iterStack.pop();
+				return offset;
+			}
+		}
+	}
+
+
 	public static class JumpInstruction extends Instruction {
 		// how far to jump.
 		// 0 is used as a default to be fixed up

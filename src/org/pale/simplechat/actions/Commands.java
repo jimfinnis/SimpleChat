@@ -222,4 +222,14 @@ public class Commands {
 		}
 		c.push(new StringValue(sb.toString()));
 	}
+	
+	/*
+	 * Assorted stuff
+	 */
+	
+	@Cmd public static void out(Conversation c) throws ActionException {
+		c.push(new StringValue(c.getOutput()));
+		c.clearOutput();
+		
+	}
 }

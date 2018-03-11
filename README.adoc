@@ -329,7 +329,8 @@ the data it matches will be stored in a variable. In the case of '*' and
 
 == Actions
 These are in the form of a sequence of instructions in an RPN language,
-which should always leave a string on the stack. They are always terminated
+which should either leave a string on the stack or build one using 
+print statements. They are always terminated
 by a semicolon. The simplest is just a string:
 ----
 +([hello hi] $name=.*)

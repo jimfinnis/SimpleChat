@@ -69,6 +69,7 @@ public class Topic {
 			tok = new StreamTokenizer(r);
 			tok.commentChar('#');
 			tok.ordinaryChar('/');
+			tok.ordinaryChar('.');
 			
 			// we got the name of the topic, so parse a list of pattern/action pairs, or possibly other topic includes
 			for(;;){
