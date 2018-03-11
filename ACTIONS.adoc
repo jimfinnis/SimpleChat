@@ -94,13 +94,24 @@ be converted to a string and sent to the user. All the examples so far have been
 kind.
 - *The string builder*: Sometimes it's necessary to build a more complex string.
 You could do this by concatenation (e.g. `"building " "a "+ "string"+`) but all the stack
-operations be hard to read. Instead, the in-build string builder can be used. Here, the
+operations be hard to read. Instead, the string builder can be used. Here, the
 `.` operation appends to a string inside the conversation. If there is no value left on
 the stack at the end of the action's run, the resulting string is returned.
 Here's a simple example:
 ----
-"Hello ". ["you", ?@name, "friend"] choose . "." .
+"Hello ".                           # add "Hello " to the output
+["you", ?@name, "friend"] choose .  # followed by one of these strings
+"." .                               # followed by "."
 ----
+If an action ends with no value on the stack and an empty string builder,
+the pattern matcher will consider the pattern to have failed to match and will
+move on to the next pattern in the topic.
+
+The string builder has a couple of commands which can be useful:
+
+- `out` will stack the contents of the string builder without clearing it. If the
+builder is empty, `none` will be stacked.
+- `clearout` will clear the string builder to its uninitialized state.
 
 
 === Maths and comparison operators

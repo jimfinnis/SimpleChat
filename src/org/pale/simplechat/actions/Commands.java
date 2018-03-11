@@ -228,8 +228,12 @@ public class Commands {
 	 */
 	
 	@Cmd public static void out(Conversation c) throws ActionException {
-		c.push(new StringValue(c.getOutput()));
-		c.clearOutput();
-		
+		if(c.getOutput()==null)
+			c.push(NoneValue.instance);
+		else
+			c.push(new StringValue(c.getOutput()));
+	}
+	@Cmd public static void clearout(Conversation c) throws ActionException {
+		c.clearOutput();		
 	}
 }

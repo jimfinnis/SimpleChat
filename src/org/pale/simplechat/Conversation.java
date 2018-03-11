@@ -214,6 +214,8 @@ public class Conversation extends Runtime {
 	}
 
 	public String handle(String s) {
+		output = null; // clear the builder
+		
 		// The previous interaction may have promoted or demoted topics. We need to reorder the lists
 		// before we try to process them. Demotions or promotions must run in the order they were performed.
 
