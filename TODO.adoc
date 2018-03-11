@@ -1,17 +1,32 @@
-# Todo
-- pattern matching case keep
-- categories
-- global categories and functions (i.e. shared by all bots)
+= TODO list and notes
+Jim Finnis <jim.finnis@gmail.com>
+// settings
+:toc:
+:toc-placement!:
+
+= Todo
 - loop iterator
-- pattern "subroutines"?
+- subbots
 - try to write Shopkeeper and Soldier
 
-## Global conf notes
+
+
+
+== Global conf notes
+[NOTE]
+====
+This is merely how I would *like* things to work. To achieve this,
+I would have to break the current upward links between topics
+and actions, and individual bots. This will slow things down
+quite a bit, as it would probably require looking up functions at
+runtime. I'm going to abandon this idea for now.
+====
+
 Have a set of files in the top level.
 The `global.conf` file is very similar to the bot config file, but the
 topic lists are dealt with differently.
 
-### Substitutions
+=== Substitutions
 These have the same `subs <filename>` format in the config file, and are
 read from the root directory. Within each bot, a `subs global` line
 is required to put the substitutions into the bot. This means that you
@@ -24,15 +39,15 @@ subs global
 will link in the global substitutions to run last, immediately before
 topic matching.
 
-### Init actions
+=== Init actions
 The global init action always runs before the bots own init actions.
 
-### Functions
+=== Functions
 Global functions can be replaced - overridden - by bot functions of
 the same name. This is not true within a bot; attempting to redefine
 a bot function will result in an error.
 
-### Topics
+=== Topics
 This is the biggest syntactic difference between global and bot config
 files: global topic lists are named, for example:
 ----
