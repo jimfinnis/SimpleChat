@@ -265,8 +265,35 @@ This example counts to the number user specifies:
 ----
 
 === Iterator loops
-It is also possible to loop over values in an iterable value, such as a
-<<Lists,list>> or <<Ranges,range>>.
+It is also possible to loop over values of an iterable value, such as a
+<<Lists,list>> or <<Ranges,range>>. To do this, use `each loop`, and use
+`i` to get the current value:
+----
+[1,2,3,4] each loop 
+    i dup * . "\n". 
+endloop
+----
+will output the squares of the given numbers. Iterator loops (and all loops) can be
+nested. If you want to access the current value of the next loop out, use `j`; and for
+the loop outside that use `k`. Here's a silly example of a nested loop over a pair
+of lists:
+----
+[] ["dog","fish","cat","bird"] each loop 
+    ["head","leg","arm"] each loop
+        j i + ,
+    endloop
+endloop
+", " join
+----
+will print "doghead, dogleg, dogarm, fishhead, fishleg, fisharm, cathead,
+catleg, catarm, birdhead, birdleg, birdarm". (See <<Lists,list>> to understand
+how it builds up the list and uses `join` to join the elements together.)
+
+The most common use of iterator loops is to do some code a number of times:
+----
+0 4 range each loop "Yes!". endloop
+----
+will perform the code 4 times, with `i` running from 0 to 3 (but unused here).
 
 === Early exit 
 We can exit from an action early using the `stop` word. Note that we must still
