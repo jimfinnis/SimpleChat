@@ -19,7 +19,6 @@ import org.pale.simplechat.ParserError;
 import org.pale.simplechat.Pattern;
 import org.pale.simplechat.values.DoubleValue;
 import org.pale.simplechat.values.IntValue;
-import org.pale.simplechat.values.StringValue;
 import org.pale.simplechat.values.SubPatValue;
 
 /**

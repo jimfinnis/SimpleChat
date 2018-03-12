@@ -1,9 +1,6 @@
 package org.pale.simplechat.actions;
 
-import java.util.List;
-
 import org.pale.simplechat.Conversation;
-import org.pale.simplechat.Logger;
 import org.pale.simplechat.actions.Runtime.LoopIterator;
 
 /**

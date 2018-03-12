@@ -35,6 +35,7 @@ public class Topic {
 	public String name;
 	StreamTokenizer tok;
 
+	@SuppressWarnings("unused")
 	private double getNextDouble() throws IOException, ParserError{
 		if(tok.nextToken()!=StreamTokenizer.TT_NUMBER)
 			throw new ParserError("Expected a number");
@@ -48,6 +49,7 @@ public class Topic {
 		return tok.sval;
 	}
 
+	@SuppressWarnings("unused")
 	private String getNextIdent() throws IOException, ParserError{
 		if(tok.nextToken()!=StreamTokenizer.TT_WORD)
 			throw new ParserError("Expected an identifier");

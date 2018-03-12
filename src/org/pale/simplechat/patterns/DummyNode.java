@@ -5,6 +5,7 @@ import org.pale.simplechat.Pattern;
 
 /// for debugging
 public class DummyNode extends Node {
+	@SuppressWarnings("unused")
 	private String data;
 	public DummyNode(Pattern pattern,String lab,String s){
 		super(pattern,lab);

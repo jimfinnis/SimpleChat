@@ -1,12 +1,9 @@
 package org.pale.simplechat.actions;
-import java.util.Deque;
 import java.util.List;
 import java.util.Stack;
 
-import org.pale.simplechat.Logger;
 import org.pale.simplechat.Pair;
 import org.pale.simplechat.values.ListValue;
-import org.pale.simplechat.values.NoneValue;
 import org.pale.simplechat.values.SubPatValue;
 
 public class Runtime {

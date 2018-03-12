@@ -1,10 +1,9 @@
 package org.pale.simplechat.values;
 
+import org.pale.simplechat.actions.ActionException;
 import org.pale.simplechat.actions.BinopInstruction.Type;
 import org.pale.simplechat.actions.RangeLoopIterator;
 import org.pale.simplechat.actions.Runtime.LoopIterator;
-import org.pale.simplechat.actions.ActionException;
-import org.pale.simplechat.actions.ListLoopIterator;
 import org.pale.simplechat.actions.Value;
 
 public class RangeValue extends Value {

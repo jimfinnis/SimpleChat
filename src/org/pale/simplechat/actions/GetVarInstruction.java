@@ -1,7 +1,6 @@
 package org.pale.simplechat.actions;
 
 import org.pale.simplechat.Conversation;
-import org.pale.simplechat.values.StringValue;
 
 public class GetVarInstruction extends Instruction {
 	enum Type {

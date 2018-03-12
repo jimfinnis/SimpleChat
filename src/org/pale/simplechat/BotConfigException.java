@@ -3,6 +3,7 @@ package org.pale.simplechat;
 import java.io.StreamTokenizer;
 import java.nio.file.Path;
 
+@SuppressWarnings("serial")
 public class BotConfigException extends Exception {
 	public BotConfigException(Path p,StreamTokenizer tok, String s){
 		super(p.getFileName()+":"+tok.lineno()+" : "+s);
