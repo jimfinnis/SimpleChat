@@ -1,6 +1,8 @@
 #
 # catch-alls that run after everything.
 # 
+
+
 +"$foo=.*"
     [      
     "I don't know how to respond to " $foo +,

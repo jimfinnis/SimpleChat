@@ -3,6 +3,7 @@ package org.pale.simplechat;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -91,7 +92,7 @@ public class Category {
 					}
 				}
 			// sort the lists by length so longer lists are tried first
-			c.lists.sort(new Comparator<String[]>(){
+			Collections.sort(c.lists,new Comparator<String[]>(){
 				@Override
 				public int compare(String[] arg0, String[] arg1) {
 					return arg1.length-arg0.length;
