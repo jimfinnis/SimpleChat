@@ -74,6 +74,16 @@ public class Commands {
 		c.push(new StringValue(c.pop().str().trim()));
 	}
 	
+	@Cmd public static void sentence(Conversation c) throws ActionException {
+		String s = c.popString();
+		if(s.length()>0){
+			s = s.substring(0,1).toUpperCase()+s.substring(1);
+			if(s.substring(s.length()-1)!=".")
+				s = s+". ";
+		}
+		c.push(new StringValue(s));
+	}
+	
 	/*
 	 * Pattern handling and topic manipulation
 	 */

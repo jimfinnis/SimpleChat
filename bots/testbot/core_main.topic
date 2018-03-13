@@ -1,0 +1,8 @@
++"NAME"
+    ["my name is","people call me"] choose.
+    " ".
+    ?@name. 
+    out sentence
+    ;
+    
+

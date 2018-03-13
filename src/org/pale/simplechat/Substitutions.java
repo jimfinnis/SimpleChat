@@ -19,7 +19,7 @@ import java.util.List;
  * @author white
  *
  */
-public class Substitutions {
+public class Substitutions implements SubstitutionsInterface {
 	public String process(String in){
 		for(SubstPair p: substs){
 			in = p.repl(in);
@@ -40,7 +40,8 @@ public class Substitutions {
 	}
 	private List<SubstPair> substs = new ArrayList<SubstPair>();
 	
-	public void parseFile(Path p,String file){
+	// separate to permit "include", if you want to do it that way
+	private void parseFile(Path p,String file){
 		Path f = p.resolve(file);
 		String sep = ":";
 		try {
@@ -68,4 +69,7 @@ public class Substitutions {
 		}		
 	}
 	
+	public Substitutions(Path p,String file) {
+		parseFile(p,file);
+	}	
 }

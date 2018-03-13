@@ -1,0 +1,9 @@
++"NAME"
+    ["My name is","I am known as","People call me"] choose.
+    " ".
+    ?@name. sentence
+    ;
+    
++"(what .* name)" "NAME" recurse;
++"(.* you .* called)" "NAME" recurse;
+

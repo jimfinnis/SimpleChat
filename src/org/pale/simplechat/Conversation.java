@@ -127,7 +127,6 @@ public class Conversation extends Runtime {
 				return getResult();
 			} catch (IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | ActionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				Logger.log("Error in run: "+e.getClass().getSimpleName()+","+e.getMessage());
 				ActionLog.show();
@@ -140,15 +139,14 @@ public class Conversation extends Runtime {
 	
 	public String runFunc(String s) throws ActionException{
 		specialpats=null;
-		if(!instance.bot.funcMap.containsKey(s))
+		Function f = instance.bot.getFunc(s);
+		if(f==null)
 			throw new ActionException("bot does not define function "+s);
-		Function f = instance.bot.funcMap.get(s);
 		try {
 			f.run(this);
 			return getResult();
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			throw new ActionException("error in running function "+s+": "+e.getMessage());
 		}
 	}

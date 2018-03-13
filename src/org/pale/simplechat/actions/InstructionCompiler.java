@@ -272,8 +272,8 @@ public class InstructionCompiler {
 					insts.add(new MethodCallInstruction(tok.sval,cmds.get(tok.sval)));
 				}
 				// and finally user functions
-				else if(bot.funcMap.containsKey(tok.sval)){
-					insts.add(new FuncCallInstruction(bot.funcMap.get(tok.sval)));
+				else if(bot.getFunc(tok.sval)!=null){
+					insts.add(new FuncCallInstruction(bot.getFunc(tok.sval)));
 				}
 				else
 					throw new ParserError("cannot find action cmd or function: "+tok.sval);
@@ -320,7 +320,7 @@ public class InstructionCompiler {
 		// define the function (before compiling, so we can recurse)
 		Function f = new Function(name,argarray,locarray);
 		if(bot!=null && name!=null)
-			bot.funcMap.put(name,f); // add the name to the bot HERE - before compilation
+			bot.putFunc(name,f); // add the name to the bot HERE - before compilation
 		// now compile it
 		InstructionStream insts = new InstructionStream(bot,tok);
 		// and set the instructions
@@ -333,7 +333,7 @@ public class InstructionCompiler {
 		if(tok.nextToken()!=StreamTokenizer.TT_WORD)
 			throw new ParserError("expected name of function after ':'");
 		String name = tok.sval;
-		if(bot.funcMap.containsKey(name))
+		if(bot.getFunc(name)!=null)
 			throw new ParserError("function already exists: "+name);
 		InstructionCompiler.parseFunction(bot,name,tok);
 	}

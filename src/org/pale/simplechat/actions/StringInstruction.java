@@ -12,6 +12,7 @@ import java.util.List;
 import org.pale.simplechat.Bot;
 import org.pale.simplechat.Conversation;
 import org.pale.simplechat.ParserError;
+import org.pale.simplechat.Tokenizer;
 import org.pale.simplechat.values.StringValue;
 
 // this instruction contains code to stack a string, but to
@@ -42,7 +43,7 @@ public class StringInstruction extends Instruction {
 					}
 					i.next();
 					// we got a block of code, compile it.
-					codels.add(new InstructionStream(bot,new StreamTokenizer(new StringReader(sb.toString()))));
+					codels.add(new InstructionStream(bot,new Tokenizer(new StringReader(sb.toString()))));
 				} else {
 					sbtex.append('$');
 					sbtex.append(i.current());

@@ -67,11 +67,7 @@ public class Topic {
 	public Topic(Bot bot,String name,Path f) throws BotConfigException {
 		try {
 			this.name = name;
-			BufferedReader r = Files.newBufferedReader(f,StandardCharsets.UTF_8); 
-			tok = new StreamTokenizer(r);
-			tok.commentChar('#');
-			tok.ordinaryChar('/');
-			tok.ordinaryChar('.');
+			tok = new Tokenizer(f);
 			
 			// we got the name of the topic, so parse a list of pattern/action pairs, or possibly other topic includes
 			for(;;){

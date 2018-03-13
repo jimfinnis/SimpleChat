@@ -10,7 +10,7 @@ public class BotConfigException extends Exception {
 	}
 
 	public BotConfigException(Path p, String s){
-		super(p.getFileName()+": "+s);
+		super(p.toAbsolutePath().toString()+": "+s);
 	}
 	
 	// for the few cases where there is no file data

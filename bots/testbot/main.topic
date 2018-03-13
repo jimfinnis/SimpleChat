@@ -15,7 +15,3 @@
 +"(is ?a $n=~animal a cat)" "No, but a " $n + " is some kind of animal!"+;
 +"(is ?a $n=.+ a cat)" "No, I don't know what " $n+ " is"+;
 
-
-
-+"gronk"
-    "this is the ${?@gronk 1+ dup !@gronk}th time you've said that.";

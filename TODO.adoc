@@ -5,70 +5,25 @@ Jim Finnis <jim.finnis@gmail.com>
 :toc-placement!:
 
 = Todo
-- loop iterator
-- subbots
+
+- document inheritance (see below)
+- loop iterator (done?)
+- hashes
+- facts (and check subbots work)
+- tidy up testbot and parent (and talk about them)
 - try to write Shopkeeper and Soldier
+- document chat test program (including :event)
 
 
 
+== Inherit notes
 
-== Global conf notes
-[NOTE]
-====
-This is merely how I would *like* things to work. To achieve this,
-I would have to break the current upward links between topics
-and actions, and individual bots. This will slow things down
-quite a bit, as it would probably require looking up functions at
-runtime. I'm going to abandon this idea for now.
-====
-
-Have a set of files in the top level.
-The `global.conf` file is very similar to the bot config file, but the
-topic lists are dealt with differently.
-
-=== Substitutions
-These have the same `subs <filename>` format in the config file, and are
-read from the root directory. Within each bot, a `subs global` line
-is required to put the substitutions into the bot. This means that you
-can run the global substitutions at any point. For example:
-----
-subs "basic.subs"
-subs "myspecialsubs.com"
-subs global
-----
-will link in the global substitutions to run last, immediately before
-topic matching.
-
-=== Init actions
-The global init action always runs before the bots own init actions.
-
-=== Functions
-Global functions can be replaced - overridden - by bot functions of
-the same name. This is not true within a bot; attempting to redefine
-a bot function will result in an error.
-
-=== Topics
-This is the biggest syntactic difference between global and bot config
-files: global topic lists are named, for example:
-----
-topics top {main test}
-topics bottom {bottom}
-----
-rather than the bot config's
-----
-topics {main test}
-topics {bottom}
-----
-To use these global topic lists, a bot needs to put them into its
-own config file with a `topics global` command thus:
-----
-topics {main test}
-topics global top
-topics {bottom}
-topics global bottom
-----
-The ordering of the commands allows the global topics to be at different
-priorities for different bots. Promoting and demoting, enabling and
-disabling, all work the same way as for bot-local topics, and as in
-bot-local topics, they work on a per-instance basis.
+- "inherit" keyword gets the parent bot from a path, loading if required
+- Cats are now searched for up the tree
+- Topics are now searched for up the tree.
+- Also functions!
+- But topic lists are not inherited - you have to put the inherited topics 
+into a list for them to work.
+- Parent substitutions are also inherited, but you need to insert
+"subs parent" where you want them to occur in the subs chain.
 

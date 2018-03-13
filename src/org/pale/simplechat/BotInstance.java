@@ -26,9 +26,10 @@ public class BotInstance  {
 	public BotInstance(Bot b) throws BotConfigException{
 		bot = b;
 		try {
+			// go up the tree, running all the init instances
 			// during the init action, the instance is "talking to itself" as it were.
-			if(b.initAction!=null)
-				b.initAction.run(new Conversation(this,this),true);
+			Conversation c = new Conversation(this,this);
+			b.runInits(c);
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
 			throw new BotConfigException("error running initialisation action: "+e.getMessage());
@@ -85,7 +86,7 @@ public class BotInstance  {
 		Conversation c = getConversation(source);
 		
 		// run any regex substitutions
-		s = bot.subs.process(s);
+		s = bot.processSubs(s);
 		Logger.log("after subs: "+s);
 		
 
