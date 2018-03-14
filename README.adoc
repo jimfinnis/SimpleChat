@@ -390,8 +390,7 @@ to test things.
 
 == Categories
 Words can belong to hierarchies categories, rather like (OK, very like) "concepts" in ChatScript.
-They can be defined in topic files, and are local to each bot. Global categories can also exist, which
-are shared across all bots, but I haven't written anything to do this yet!
+They can be defined in topic files, and are local to each bot. 
 Here's an example of a category block from a topic file:
 ----
 ~animal=
