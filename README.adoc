@@ -190,17 +190,18 @@ in the config file. The file path is relative to the bot directory.
 The format for the files is
 lines consisting of a regex and a replacement string, separated by default
 by a colon. Two directives exist, which should be on their own lines.
-The `#include` directive has a file argument and will include a file
-of substitutions. The `#sep` directive has a string (actually regex)
+The "#include" directive has a file argument and will include a file
+of substitutions. The "#sep" directive has a string (actually regex)
 argument and changes the separator for this file. The argument is separated
 by a space. All other `#` lines are comments.
 A (very brief) example:
 ----
+# a comment
 [iI]'m:Iam
 [Ii]\s+am:Iam
 [yY]ou\s+are:youre
 [yY]ou're:youre
-include more.subst
+#include more.subst
 ----
 
 
