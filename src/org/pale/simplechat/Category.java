@@ -46,7 +46,7 @@ public class Category {
 
 
 	public void add(String phrase){
-		String[] s = phrase.split("\\s+");
+		String[] s = Utils.toLowerCase(phrase.split("\\s+"));
 		if(s.length > 1)
 			lists.add(s);
 		else
@@ -163,6 +163,7 @@ public class Category {
 	// match testing.
 	
 	public boolean isMatch(String[] s){
+		s = Utils.toLowerCase(s);
 		// first, try the words. This is only used when length is 1.
 		if(s.length==1 && words.contains(s[0])){
 			return true;			
