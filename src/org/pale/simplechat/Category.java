@@ -45,6 +45,20 @@ public class Category {
 	}
 
 
+	public void add(String phrase){
+		String[] s = phrase.split("\\s+");
+		if(s.length > 1)
+			lists.add(s);
+		else
+			words.add(s[0]);
+	}
+	
+	public void add(Category subcat){
+		cats.add(subcat);
+	}
+	
+
+
 	// This compiles ~name=[...], where [...] consists of words or subcategories.
 	// Subcategories are either ~name=[...] again, or just ~name in which case the category
 	// is already defined.
@@ -73,13 +87,11 @@ public class Category {
 					int t = tok.nextToken();
 					switch(t){
 					case StreamTokenizer.TT_WORD:
-						c.words.add(tok.sval.toLowerCase());
-						break;
 					case '\'':case '\"':
-						c.lists.add(tok.sval.split("\\s+"));
+						c.add(tok.sval);
 						break;	
 					case '~':
-						c.cats.add(parseCat(b,tok));
+						c.add(parseCat(b,tok));
 						break;
 					case ']':break outerloop;
 					default: throw new ParserError("error in category");
@@ -95,6 +107,7 @@ public class Category {
 			return c;
 		}
 	}
+	
 
 	public void dump(){
 		_dump(0);

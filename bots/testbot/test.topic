@@ -1,11 +1,11 @@
 +"(case test $n=.)"
     $n int !n
-    "case is "
+    "case is ".
     cases
-        ?n 0 = if "Zero" case
+        ?n 0 = if `Zero case
         ?n 1 = if "One" case
         ?n 2 = if "Two" case
-    "Something else" otherwise;
+    "Something else" otherwise.;
     
 :range2list |r:|
    [] ?r each loop i, endloop

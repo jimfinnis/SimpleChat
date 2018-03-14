@@ -15,13 +15,16 @@ import java.util.Stack;
 
 import org.pale.simplechat.Bot;
 import org.pale.simplechat.BotConfigException;
+import org.pale.simplechat.Category;
 import org.pale.simplechat.Conversation;
 import org.pale.simplechat.Logger;
 import org.pale.simplechat.Pair;
 import org.pale.simplechat.ParserError;
 import org.pale.simplechat.Pattern;
+import org.pale.simplechat.values.CatValue;
 import org.pale.simplechat.values.DoubleValue;
 import org.pale.simplechat.values.IntValue;
+import org.pale.simplechat.values.StringValue;
 import org.pale.simplechat.values.SubPatValue;
 
 /**
@@ -132,6 +135,21 @@ public class InstructionCompiler {
 			case '\"':
 			case '\'':
 				insts.add(new StringInstruction(bot,tok.sval));
+				break;
+			case '`':
+				if(tok.nextToken()!=StreamTokenizer.TT_WORD)
+					throw new ParserError("expected a single word after `");
+				insts.add(new LiteralInstruction(new StringValue(tok.sval)));
+				break;
+			case '~':
+				if(tok.nextToken()!=StreamTokenizer.TT_WORD)
+					throw new ParserError("expected a category name after ~");
+				else {
+					Category c = bot.getCategory(tok.sval);
+					if(c==null)
+						throw new ParserError("unknown category: "+tok.sval);
+					insts.add(new LiteralInstruction(new CatValue(tok.sval,c)));
+				}
 				break;
 			case '$':
 				if(tok.nextToken()!=StreamTokenizer.TT_WORD)
