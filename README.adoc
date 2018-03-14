@@ -173,7 +173,7 @@ init
 ;
 ----
 
-## Regex substitutions
+== Regex substitutions
 Each bot can have a file (or set of files) containing regex substitutions
 associated with it. These will be processed before any other input,
 and are always processed. They are typically used to substitute
@@ -204,7 +204,7 @@ include more.subst
 ----
 
 
-### Initial action
+== Initial action
 This is written in the action language (see below and 
 link:ACTIONS.adoc[here])
 and runs when an instance of this bot
@@ -295,13 +295,13 @@ from inside an action.
 Whole topics can also be enabled and disabled, as well as being 
 promoted and demoted to the top or bottom of their list.
 
-## Patterns
+== Patterns
 For matching, the input is lower-cased, all punctuation is removed
 and finally it is split into words. Pattern matching is done per-word.
 The entire pattern must be in a pair of quotes. Most patterns
 will be sequences, so you'll see a lot of `"(...)"`.
 
-### pattern elements
+=== Pattern Elements
 
 - plain words match themselves
 - `^` negates the next pattern
@@ -328,6 +328,30 @@ Putting `$labelname=` before a pattern element marks it so that
 the data it matches will be stored in a variable. In the case of '*' and
 '+', the variable `$labelname_ct` is set to the match count.
 
+=== Reductions
+Following AIML usage, a "reduction" is a pattern/action pair which
+replaces some text with a shorter or canonical form, and then
+sends that straight back into the pattern matcher. For example,
+there are lots of ways of saying "Hello". We could reduce them to
+one pattern by something like this:
+----
++ "(hi .*)" "HELLO" recurse;
++ "(wotcher .*)" "HELLO" recurse;
++ "(good [morning afternoon evening])" "HELLO" recurse;
++ "[awright (all right)] .*" "HELLO" recurse;
++ "(hello .+)" "HELLO" recurse
++ "(hey .*)" "HELLO" recurse
+----
+and so on. The `recurse` command sends the string on top of the stack
+back into the interpreter. Naturally we could do a lot of this
+with string substitutions (and it's probably faster), but often
+reductions are easier to read, and are able to do more complicated
+things. More complex reductions could be:
+----
++ "(I think $a=.+)" "I think ${$a}" recurse;
++ "(do you think that $a=.+ is $b=.+)"  "is ${$a} ${$b}" recurse;
+----    
+Reductions typically live in a topic of their own.
 
 == Actions
 These are in the form of a sequence of instructions in an RPN language,
@@ -396,4 +420,42 @@ Matching in a pattern is done with the `~categoryname' symbol. Here's an example
 +"(is $n=(?a ~animal) a cat)" "No, but a ${$n} is some kind of animal!"+;
 +"(is $n=.+ cat)" "No, I don't know what ${$n} is"+;
 ----
+
+== Bot inheritance
+It's often the case that many disparate bots share many characteristics,
+from some of the more basic substitutions, through the so-called "reduction"
+topics, up to full conversational topics.
+To help do this without copying code or requiring more memory, a bot
+can inherit the properties of another bot. To do this, put a line
+of the form
+----
+inherit "botpath"
+----
+near the top of your config file, for example
+----
+inherit "bots/rootbot"
+----
+The new bot will inherit its parents categories and functions, unless
+they are overriden in the child. Topics are also inherited, but not
+topic lists - you have to add the topic into the topic list by
+name as usual, but if it already exists in the parent it will
+not require loading. 
+The init function of a parent bot will run before that of the child
+bot.
+Substitutions are also inherited, but the system
+needs to be told where they should run relative to the bot's own
+substitutions. To do this, add a `subs parent` line into the lines
+where you load your substitutions. For example:
+----
+subs "subs1.subs"
+subs parent
+subs "subs2.subs"
+----
+Quite often you'll just have a `subs parent` line by itself, since
+most English substitutions should be in your "root" bot.
+
+Bots can be nested to any level - if a category, topic or function
+does not exist, the system will go "up the family tree" to find it.
+Init functions will run so that the root init function runs first.
+
 

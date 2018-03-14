@@ -6,7 +6,7 @@ Jim Finnis <jim.finnis@gmail.com>
 
 = Todo
 
-- document inheritance (see below)
+- case matching in categories
 - document symbols
 - document iscat and ^ (noting that cats must be defined for this) and cat
 - loop iterator (done?)
