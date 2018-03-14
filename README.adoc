@@ -349,7 +349,7 @@ with string substitutions (and it's probably faster), but often
 reductions are easier to read, and are able to do more complicated
 things. More complex reductions could be:
 ----
-+ "(I think $a=.+)" "I think ${$a}" recurse;
++ "(I think $a=.+)" "${$a}" recurse;
 + "(do you think that $a=.+ is $b=.+)"  "is ${$a} ${$b}" recurse;
 ----    
 Reductions typically live in a topic of their own.
