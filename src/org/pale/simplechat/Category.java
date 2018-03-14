@@ -145,6 +145,31 @@ public class Category {
 		// no match.
 		return false;
 	}
+	
+	// return true if the string is a match for the category. This is used for action language
+	// match testing.
+	
+	public boolean isMatch(String[] s){
+		// first, try the words. This is only used when length is 1.
+		if(s.length==1 && words.contains(s[0])){
+			return true;			
+		}
+		// then try the lists. This returns 0 or the number of words matches.
+		// In this function we only have a positive match if the number of words
+		// matched is the same as the number passed in (i.e. "red dog with nose" will not match the list "red dog").
+		int n = matchesList(s,0);
+		if(n == s.length){
+			return true;
+		}
+		// otherwise try the subcategories.
+		for(Category sc: cats){
+			if(sc.isMatch(s))
+				return true;
+		}
+		// no match.
+		return false;
+		
+	}
 
 	private int matchesList(String[] a, int pos) {
 		// Do the words in the array a starting at pos match any of our lists?
