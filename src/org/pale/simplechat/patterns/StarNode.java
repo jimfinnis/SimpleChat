@@ -16,6 +16,7 @@ public class StarNode extends Node {
 
 	@Override
 	public void match(MatchData m) {
+		log("entry");
 		if(m.invalid){log("early return");return;}
 		
 		// the idea is that "foo* bar" should keep trying to match "bar"
@@ -28,18 +29,21 @@ public class StarNode extends Node {
 		while(!m.allConsumed()){
 			// if there is one, try to match the next node
 			if(next!=null){
+				log("attempting next node match, next node is "+next.getClass().getSimpleName());
 				int pos = m.pos;
 				next.match(m);
 				m.pos = pos; // reset position, we'll always want to reparse this token
 				if(!m.invalid){
 					// we succeeded, so exit ready to parse that node
+					log("next node succeeded, star node terminating");
 					break;
-				}
-			}
+				} else log("next node failed, continuing consumption");
+			} else log("no next node, will consume all tokens");
 			// otherwise, try to match our repeating node
 			m.invalid =false; // clear match state
 			node.match(m);
 			if(m.invalid){
+				log("failed, didn't match subnode");
 				// didn't get it; exit, this is a failure
 				return;
 			} else
@@ -47,6 +51,7 @@ public class StarNode extends Node {
 			n++;
 		}
 		if(n<minCount || n>maxCount){
+			log("failed, too many or too few");
 			m.invalid=true;
 		} else {
 			m.consumed=sb.toString().trim();

@@ -87,7 +87,7 @@ public class BotInstance  {
 		
 		// run any regex substitutions
 		s = bot.processSubs(s);
-		Logger.log("after subs: "+s);
+		Logger.log(Logger.PATTERN,"after subs: "+s);
 		
 
 		// pass through to the conversation
@@ -107,7 +107,7 @@ public class BotInstance  {
 			c.reset(); // reset (or create) the stacks etc.
 			return c.runFunc(s);
 		} catch (ActionException e) {
-			Logger.log(e.getMessage());
+			Logger.log(Logger.FATAL,e.getMessage());
 			return "??"; // not ideal.
 		}
 	}

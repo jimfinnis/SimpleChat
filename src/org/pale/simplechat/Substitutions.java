@@ -64,7 +64,7 @@ public class Substitutions implements SubstitutionsInterface {
 				}
 			}
 		} catch (IOException e) {
-			Logger.log("cannot open file "+f.toAbsolutePath().toString());
+			Logger.log(Logger.FATAL,"cannot open file "+f.toAbsolutePath().toString());
 			return;
 		}		
 	}

@@ -104,7 +104,7 @@ public class InstructionCompiler {
 			register(c);
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
-			Logger.log("unable to register classes");
+			Logger.log(Logger.FATAL,"unable to register classes");
 		}
 	}
 	
@@ -120,7 +120,7 @@ public class InstructionCompiler {
 				String name = cmd.name();
 				if(name.equals(""))name = m.getName();
 				cmds.put(name,m);
-				Logger.log("registered "+name);
+				Logger.log(Logger.CONFIG,"registered "+name);
 			}
 		}		
 	}

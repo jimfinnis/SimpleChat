@@ -18,10 +18,10 @@ public class Pattern {
 	
 	private Node root;
 
-	private String name; // name of pattern, null for anonymous
-	
+	private String name; // name of pattern or string if anonymous, used in debugging output
+
 	public String getName(){
-		return name==null ? "<ANON>" : name;
+		return name;
 	}
 
 	/// get word, assumes current char is alphanumeric, terminated by non-alphanumeric
@@ -132,11 +132,11 @@ public class Pattern {
 	 * @throws ParserError
 	 */
 	public Pattern(Bot b, String name, String pstring) throws ParserError{
-		this.name = name;
+		this.name = name==null ? pstring:name;
 		iter = new StringCharacterIterator(pstring);
 		iter.first();
 		root = parseNode(b);
-		Logger.log("Pattern parsed "+pstring);
+		Logger.log(Logger.PATTERN,"Pattern parsed "+pstring);
 		if(root == null)
 			throw new ParserError("empty pattern");
 	}
@@ -151,9 +151,9 @@ public class Pattern {
 	public MatchData match(String s){
 		// prepare the data, removing punctuation - we assume this is a single sentence.
 		s = s.replaceAll("[^a-zA-Z0-9_]"," ");
-		Logger.log("After repl: "+s);
+		Logger.log(Logger.PATTERN,"After repl: "+s);
 		String[] arr = s.split("\\s+");
-		for(String t: arr)Logger.log("Item: **"+t+"**");
+		for(String t: arr)Logger.log(Logger.PATTERN,"Item: **"+t+"**");
 		
 		MatchData m = new MatchData(arr);
 		
@@ -165,7 +165,7 @@ public class Pattern {
 		// if any tokens remain, that's a fail
 		if(!m.allConsumed()){
 			m.invalid=true;
-			Logger.log("Not all tokens consumed, so invalid");
+			Logger.log(Logger.PATTERN,"Not all tokens consumed, so invalid");
 		}
 		return m;
 	}

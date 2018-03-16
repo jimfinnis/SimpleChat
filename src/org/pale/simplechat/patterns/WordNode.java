@@ -13,10 +13,11 @@ public class WordNode extends Node {
 	public WordNode(Pattern pattern, String lab){
 		super(pattern,lab);
 		word = this.pattern.parseWord().toLowerCase();
-		Logger.log("New word: "+word);
+		Logger.log(Logger.PATTERN,"New word: "+word);
 	}
 	@Override
 	public void match(MatchData m) {
+		log("entry, word "+word);
 		if(m.invalid){log("early return");return;}
 		if(m.cur().equals(word)){
 			log("match succeeded: "+word);

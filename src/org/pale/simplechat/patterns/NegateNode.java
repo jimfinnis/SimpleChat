@@ -22,6 +22,7 @@ public class NegateNode extends Node {
 
 	@Override
 	public void match(MatchData m) {
+		log("entry");
 		if(m.invalid){log("early return");return;}
 
 		// record the match data to reset once we verify the match failed
@@ -31,9 +32,11 @@ public class NegateNode extends Node {
 		m.consumed="";
 		if(m.invalid){
 			m.pos = pos;
+			log("subnode failed, so we succeed");
 			m.invalid = false;
 		} else {
 			// the node was accepted, and that's a fail.
+			log("subnode success, so we fail");
 			m.invalid = true;
 		}
 	}

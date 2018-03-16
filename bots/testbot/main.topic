@@ -19,6 +19,12 @@
             $n ?@weirdanims iscat if ", and it's weird". then
         else "Nope". then out sentence;
         
+
++"($a=(?[a an] $n=.+) is an animal)"
+    $n ?@anims addcat
+    "I now know that ${$a} is an animal!"
+;
+        
 +"(is $n=(?a ~cat) a cat)" "Yes ${$n} is a cat";
 +"(is ?a ~dog a cat)" "No, it's a dog";
 +"(is ?a ~hippo a cat)" "No, she's a hippo!";

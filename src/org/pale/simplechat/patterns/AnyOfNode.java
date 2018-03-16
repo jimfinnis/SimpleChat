@@ -18,6 +18,7 @@ public class AnyOfNode extends Node {
 	}
 	@Override
 	public void match(MatchData m) {
+		log("entry");
 		if(m.invalid){log("early return");return;}
 		for(Node n : nodes){
 			// attempt to consume with this node
@@ -35,7 +36,7 @@ public class AnyOfNode extends Node {
 		}
 		// if we got here, we failed.
 		m.invalid = true;
-		log("match failed");
+		log("failed");
 		
 	}
 }

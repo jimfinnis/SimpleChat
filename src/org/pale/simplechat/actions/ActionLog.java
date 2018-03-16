@@ -23,7 +23,7 @@ public class ActionLog {
 	
 	public static void show(){
 		for(String s: data){
-			Logger.log("ACTION LOG: "+s);
+			Logger.log(Logger.ACTION,"ACTION LOG: "+s);
 		}
 	}
 }

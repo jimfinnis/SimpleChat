@@ -113,7 +113,7 @@ public class Conversation extends Runtime {
 		if(!m.invalid){
 			// output the labelled match results to the log
 			for(Entry<String, String> x: m.labels.entrySet()){
-				Logger.log("label "+x.getKey()+"="+x.getValue());
+				Logger.log(Logger.PATTERN,"label "+x.getKey()+"="+x.getValue());
 			}
 			patvars = m.labels; // set them so we can access them in actions
 			try {
@@ -128,7 +128,7 @@ public class Conversation extends Runtime {
 			} catch (IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | ActionException e) {
 				e.printStackTrace();
-				Logger.log("Error in run: "+e.getClass().getSimpleName()+","+e.getMessage());
+				Logger.log(Logger.FATAL,"Error in run: "+e.getClass().getSimpleName()+","+e.getMessage());
 				ActionLog.show();
 				return("ERROR in action");
 			}
@@ -163,7 +163,7 @@ public class Conversation extends Runtime {
 			if(v.equals(NoneValue.instance))return null;
 			String s = v.str();
 			if(!stack.empty()){
-				Logger.log("oops - stuff still on the stack (depth is "+stack.size()+")");
+				Logger.log(Logger.ACTION,"oops - stuff still on the stack (depth is "+stack.size()+")");
 			}
 			return s;
 	}
@@ -241,7 +241,7 @@ public class Conversation extends Runtime {
 			for(Pair p : specialpats){
 				String res = handle(s,p);
 				if(res!=null){
-					Logger.log("done special pseudotopic");
+					Logger.log(Logger.PATTERN,"done special pseudotopic");
 					return res;
 				}
 			}
@@ -252,13 +252,14 @@ public class Conversation extends Runtime {
 		for(Deque<Topic> list : topicLists){
 			for(Topic t: list){
 				if(!disabledTopics.contains(t)){ // only run enabled topics
-					Logger.log("Testing topic patterns"+t.name);
+					Logger.log(Logger.PATTERN,"Testing topic patterns: "+t.name);
 					curTopic = t;
 					for(Pair p: t.pairList){
 						if(!disabledPairs.contains(p)){
+							Logger.log(Logger.PATTERN,"Testing pattern "+p.pat.getName());
 							String res = handle(s,p);
 							if(res!=null){
-								Logger.log("done pattern "+p.pat.getName());
+								Logger.log(Logger.PATTERN,"done pattern "+p.pat.getName());
 								curTopic = null;
 								return res;
 							}

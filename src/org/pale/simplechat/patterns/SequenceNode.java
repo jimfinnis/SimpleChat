@@ -30,13 +30,14 @@ public class SequenceNode extends Node {
 
 	@Override
 	public void match(MatchData m) {
-		StringBuilder out = new StringBuilder();
+		log("entry");
 		if(m.invalid){log("early return");return;}
+		StringBuilder out = new StringBuilder();
 		// match IN ORDER
 		for(Node n: nodes){
 			n.match(m);
 			if(m.invalid){
-				log("match failed");
+				log("failed");
 				return; // failed
 			}
 			if(m.consumed.length()>0)

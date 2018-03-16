@@ -47,7 +47,7 @@ public class MatchData {
 	/// will only set label if it is a string of nz length
 	public void setLabel(String label, String word) {
 		if(word!=null && word.length()>0){
-			Logger.log("Setting "+label+" to "+word);
+			Logger.log(Logger.PATTERN,"Setting "+label+" to "+word);
 			labels.put(label, word);
 		}
 	}

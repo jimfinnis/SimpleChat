@@ -117,12 +117,12 @@ public class Category {
 		for(int i=0;i<=level;i++)sb.append("-");
 		String pf = sb.toString();
 		for(String w: words)
-			Logger.log(pf+w);
+			Logger.log(Logger.ALWAYS,pf+w);
 		for(String[] a: lists){
 			sb = new StringBuilder();
 			for(String w: a)
 				sb.append(w+",");
-			Logger.log(pf+sb.toString());
+			Logger.log(Logger.ALWAYS,pf+sb.toString());
 		}
 		for(Category c:cats){
 			c._dump(level+1);

@@ -20,6 +20,7 @@ public class MaybeNode extends Node {
 
 	@Override
 	public void match(MatchData m) {
+		log("MaybeNode");
 		if(m.invalid){log("early return");return;}
 
 		// try to match the node
@@ -32,6 +33,7 @@ public class MaybeNode extends Node {
 		} else {
 			m.consumed="";
 			// otherwise just clear the state and move on..
+			log("failed");
 			m.invalid = false;
 		}
 	}

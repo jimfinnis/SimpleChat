@@ -12,12 +12,13 @@ abstract public class Node {
 	String label; // if non-null, a value is stored during parsing into a hash
 	final Pattern pattern; // containing pattern
 	Node next; // in sequences, references the next node; otherwise null
+	
 	// parses the string with the node, advancing the position in MatchData to consume
 	// tokens until we either succeed or fail (in which case invalid is set in the data).
 	public abstract void match(MatchData m);
 	
 	public void log(String s){
-		Logger.log("NODE "+this.getClass().getSimpleName()+": "+s);
+		Logger.log(Logger.PATTERN,"NODE "+this.getClass().getSimpleName()+": "+s);
 	}
 
 	/// used to link child nodes into a parent's SequenceNode linked list, such as with NegateNode

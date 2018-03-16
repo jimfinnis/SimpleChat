@@ -12,9 +12,11 @@ public class DotNode extends Node {
 
 	@Override
 	public void match(MatchData m) {
+		log("entry");
 		if(m.invalid){log("early return");return;}
 		
 		if(m.allConsumed()){
+			log("failed, all consumed");
 			m.invalid=true;
 			return;
 		}

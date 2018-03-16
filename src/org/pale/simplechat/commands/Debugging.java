@@ -12,7 +12,7 @@ public class Debugging {
 	 */
 	@Cmd public static void dp(Conversation c) throws ActionException{
 		String s = c.pop().str();
-		Logger.log("DP: "+s);
+		Logger.log(Logger.ALWAYS,"DP: "+s);
 	}
 
 }

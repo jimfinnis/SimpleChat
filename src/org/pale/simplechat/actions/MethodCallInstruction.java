@@ -19,12 +19,12 @@ public class MethodCallInstruction extends Instruction {
 		try {
 			method.invoke(null, c);
 		} catch (IllegalAccessException | IllegalArgumentException e) {
-			Logger.log("Error in invocation of "+name+", exception is "+
+			Logger.log(Logger.ACTION+Logger.FATAL,"Error in invocation of "+name+", exception is "+
 				e.getClass().getSimpleName()+", message "+e.getMessage());
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			Throwable t = e.getCause();
-			Logger.log("Command "+name+" caused an error: "+t.getClass().getSimpleName()+", "+t.getMessage());
+			Logger.log(Logger.ACTION+Logger.FATAL,"Command "+name+" caused an error: "+t.getClass().getSimpleName()+", "+t.getMessage());
 			throw new ActionException("Command "+name+" caused an error: "+t.getClass().getSimpleName()+", "+t.getMessage());
 			
 		}

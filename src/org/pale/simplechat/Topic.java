@@ -1,10 +1,7 @@
 package org.pale.simplechat;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StreamTokenizer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,17 +92,17 @@ public class Topic {
 					if(pname!=null)
 						pairMap.put(pname,pair);
 					pairList.add(pair);
-					Logger.log("pattern/action pair parsed");
+					Logger.log(Logger.CONFIG,"pattern/action pair parsed");
 				} else
 					throw new BotConfigException(f,tok,"badly formed topic file, expected '+'");
 			}
 		} catch (BotConfigException e){
-			Logger.log("syntax error in topic file "+e.getMessage());
+			Logger.log(Logger.FATAL,"syntax error in topic file "+e.getMessage());
 			throw e; // log and rethrow
 		} catch (IOException e) {
 			throw new BotConfigException(f,"Cannot read topic file");
 		} catch (ParserError e) {
-			Logger.log("syntax error in topic file - "+e.getMessage());
+			Logger.log(Logger.FATAL,"syntax error in topic file - "+e.getMessage());
 			throw new BotConfigException(f,tok,e.getMessage());
 		}
 

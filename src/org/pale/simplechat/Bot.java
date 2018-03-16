@@ -83,7 +83,7 @@ public class Bot {
 		// read the configuration data
 		
 		for(Entry<String, Category> f: cats.entrySet()){
-			Logger.log("Category "+f.getKey()+":");
+			Logger.log(Logger.CONFIG,"Category "+f.getKey()+":");
 			f.getValue().dump();
 		}
 	}
@@ -210,7 +210,7 @@ public class Bot {
 		// store the loaded bot as an absolute path
 		loadedBots.put(path.toAbsolutePath(), this);
 
-		Logger.log(name+" : created bot OK");
+		Logger.log(Logger.LOAD,name+" : created bot OK");
 	}
 	
 	/// process substitutions on a string

@@ -26,7 +26,7 @@ public class Function {
 		this.args=args;
 		this.locals=locals;
 		this.insts = null;
-		Logger.log("New function : "+name);
+		Logger.log(Logger.CONFIG+Logger.ACTION,"New function : "+name);
 	}
 	
 	void setInsts(InstructionStream i){
