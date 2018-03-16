@@ -6,6 +6,7 @@ import org.pale.simplechat.Category;
 import org.pale.simplechat.Conversation;
 import org.pale.simplechat.actions.ActionException;
 import org.pale.simplechat.actions.Cmd;
+import org.pale.simplechat.actions.InstructionCompiler;
 import org.pale.simplechat.actions.Value;
 import org.pale.simplechat.values.CatValue;
 import org.pale.simplechat.values.IntValue;

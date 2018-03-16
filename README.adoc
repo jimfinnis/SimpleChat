@@ -39,13 +39,36 @@ between a `BotInstance` and a source has some private data, called
 in your code.
 
 == Creating a bot and using it
-Typically goes like this:
+Because bots sometimes need to load other bots in order to
+run, and because we don't necessarily know where those bots
+live in the file system (due to oddities like how people install
+Minecraft plugins), we need to tell the system how to turn bot names
+into filenames. This is done with a `Bot.PathProvider` object
+you have to provide. This simply takes a bot name and returns
+a path to its directory (all bots have their own directories).
+
+Having done this, we can then load the bot by using the static
+`Bot.loadBot()` method  - this is not a constructor; it will
+return a previously loaded bot if one of the same name exists.
+
+Here's an example, which assumes all the bots are in
+the current directory. 
 
 [source,java]
 ----
-Bot b = new Bot(Paths.get("/some/directory/or/other");
+Bot.setPathProvider(new Bot.PathProvider() {
+    public Path path(String name) {
+	return Paths.get(name);
+    }
+});
+Bot b = Bot.loadBot("mybot");
 instance = new BotInstance(b);
 source = new Object(); // could be anything, it's for you to use.
+----
+See the source of the test program
+`org.pale.chattest.MainWindow.java` to see some different code,
+which takes a bot directory from a dialog box and assumes any bots it might
+inherit live in sister directories to it.
 ----
 Typically a conversation
 is done by repeatedly calling

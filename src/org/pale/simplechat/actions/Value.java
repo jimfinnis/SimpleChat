@@ -24,5 +24,9 @@ public abstract class Value {
 	public LoopIterator makeIterator() throws ActionException {
 		throw new ActionException("Type "+this.getClass().getSimpleName()+" is not iterable");
 	}
+
+	public Value neg() throws ActionException {
+		throw new ActionException("cannot negate a "+this.getClass().getSimpleName());
+	}
 	
 }

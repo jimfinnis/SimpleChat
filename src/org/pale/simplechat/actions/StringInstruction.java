@@ -1,7 +1,6 @@
 package org.pale.simplechat.actions;
 
 import java.io.IOException;
-import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.text.CharacterIterator;

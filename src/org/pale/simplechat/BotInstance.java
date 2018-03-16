@@ -37,6 +37,7 @@ public class BotInstance  {
 			ActionLog.show();
 			throw new BotConfigException("error running initialisation action: "+e.getMessage());
 		}
+		bot.instances.add(this);
 	}
 	
 	// use this ctor when you want to connect some other data to the instance.
@@ -110,5 +111,9 @@ public class BotInstance  {
 			Logger.log(Logger.FATAL,e.getMessage());
 			return "??"; // not ideal.
 		}
+	}
+	
+	public void remove(){
+		bot.instances.remove(this);
 	}
 }

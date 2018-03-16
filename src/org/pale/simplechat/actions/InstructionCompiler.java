@@ -35,79 +35,33 @@ import org.pale.simplechat.values.SubPatValue;
 public class InstructionCompiler {
 	// when we've finished the constructor this will have useful data
 	List<Instruction> insts = new ArrayList<Instruction>();
-	
-	
+
+
 	private Stack<Integer> cstack = new Stack<Integer>(); // compile stack for flow control
 	// this is the current leave list - a list of the offsets of leave instructions to be resolved when a loop ends 
 	private List<Integer> leaveList = null;
 	// this is a stack of leave lists
 	private Stack<List<Integer>> loopStack = new Stack<List<Integer>>();
 
-	 /**
-	 * Scans all classes accessible from the context class loader which belong to the given package and subpackages.
-	 *
-	 * @param packageName The base package
-	 * @return The classes
-	 * @throws ClassNotFoundException
-	 * @throws IOException
-	 */
-	private static Class<?>[] getClasses(String packageName)
-	        throws ClassNotFoundException, IOException {
-	    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-	    assert classLoader != null;
-	    String path = packageName.replace('.', '/');
-	    Enumeration<URL> resources = classLoader.getResources(path);
-	    List<File> dirs = new ArrayList<File>();
-	    while (resources.hasMoreElements()) {
-	        URL resource = resources.nextElement();
-	        dirs.add(new File(resource.getFile()));
-	    }
-	    ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
-	    for (File directory : dirs) {
-	        classes.addAll(findClasses(directory, packageName));
-	    }
-	    return classes.toArray(new Class[classes.size()]);
-	}
-	
-	/**
-	 * Recursive method used to find all classes in a given directory and subdirs.
-	 *
-	 * @param directory   The base directory
-	 * @param packageName The package name for classes found inside the base directory
-	 * @return The classes
-	 * @throws ClassNotFoundException
-	 */
-	private static List<Class<?>> findClasses(File directory, String packageName) throws ClassNotFoundException {
-	    List<Class<?>> classes = new ArrayList<Class<?>>();
-	    if (!directory.exists()) {
-	        return classes;
-	    }
-	    File[] files = directory.listFiles();
-	    for (File file : files) {
-	        if (file.isDirectory()) {
-	            assert !file.getName().contains(".");
-	            classes.addAll(findClasses(file, packageName + "." + file.getName()));
-	        } else if (file.getName().endsWith(".class")) {
-	            classes.add(Class.forName(packageName + '.' + file.getName().substring(0, file.getName().length() - 6)));
-	        }
-	    }
-	    return classes;
-	}
-	
+
 	// the registry of commands
 	private static Map<String,Method> cmds = new HashMap<String,Method>();
-	
+
 	// static ctor to register all builtins
 	static {
-		try {
-			for(Class<?> c : getClasses("org.pale.simplechat.commands"))
-			register(c);
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-			Logger.log(Logger.FATAL,"unable to register classes");
-		}
+		Logger.log(Logger.CONFIG, "registering builtins");
+		register(org.pale.simplechat.commands.Categories.class);
+		register(org.pale.simplechat.commands.Debugging.class);
+		register(org.pale.simplechat.commands.Lists.class);
+		register(org.pale.simplechat.commands.OutputString.class);
+		register(org.pale.simplechat.commands.Stack.class);
+		register(org.pale.simplechat.commands.Strings.class);
+		register(org.pale.simplechat.commands.Topics.class);
+		register(org.pale.simplechat.commands.Types.class);
+		register(org.pale.simplechat.commands.Maths.class);
+
 	}
-	
+
 	// call this to register new commands!
 	public static void register(Class<?> c){
 		// register @cmd methods
@@ -166,7 +120,7 @@ public class InstructionCompiler {
 						throw new ParserError("expected a varname after ?@");
 					insts.add(new GetVarInstruction(tok.sval,GetVarInstruction.Type.INSTVAR));
 					break;
-					default: throw new ParserError("expected a varname or sigil after ?");
+				default: throw new ParserError("expected a varname or sigil after ?");
 				}
 				break;
 			case '.': // append to print output
@@ -269,8 +223,8 @@ public class InstructionCompiler {
 					int ref = cstack.pop(); // pop the IF or ELSE location
 					if(ref<0)throw new ParserError("'then' matching with 'cases'?");
 					resolveJumpForwards(ref,0); // and resolve it to jump here (there is no THEN instruction)
-					
-				// "loop..endloop" and leave handling
+
+					// "loop..endloop" and leave handling
 				} else if(tok.sval.equals("each")){
 					if(tok.nextToken()!=StreamTokenizer.TT_WORD || !tok.sval.equals("loop"))
 						throw new ParserError("each must be followed by loop");
@@ -311,10 +265,10 @@ public class InstructionCompiler {
 					if(leaveList==null)throw new ParserError("ifleave when not in a loop");
 					leaveList.add(insts.size()); // add to the leave list to fixup in endloop
 					insts.add(new Flow.IfLeaveInstruction());
-					
-				// "cases {..if..case} {..if..case} {.. otherwise}" handling
-				// we construct a linked list of case jumps through the offset pointer of the jumps,
-				// terminated by the end list marker -1.
+
+					// "cases {..if..case} {..if..case} {.. otherwise}" handling
+					// we construct a linked list of case jumps through the offset pointer of the jumps,
+					// terminated by the end list marker -1.
 				} else if(tok.sval.equals("cases")){
 					cstack.push(-1); // push the end list marker - the first "case" will pop it.
 				} else if(tok.sval.equals("case")){
@@ -343,7 +297,7 @@ public class InstructionCompiler {
 						resolveJumpForwards(ref,0); // resolve the jump destination
 						ref = next; // get the next jump to resolve.
 					}
-				// "stop" and other quick flow control stuff
+					// "stop" and other quick flow control stuff
 				} else if(tok.sval.equals("stop")){
 					insts.add(new Flow.StopInstruction());
 				}
@@ -359,12 +313,12 @@ public class InstructionCompiler {
 					throw new ParserError("cannot find action cmd or function: "+tok.sval);
 			}
 		}
-		
+
 		// flow control termination checks
 		if(leaveList!=null)throw new ParserError("loop left unclosed");
 		if(!cstack.isEmpty())throw new ParserError("flow control statement left unclosed");
 	}
-	
+
 
 
 	private static String[] parseLocalList(StreamTokenizer tok,String fname,int terminator) throws IOException, ParserError{
@@ -379,16 +333,16 @@ public class InstructionCompiler {
 		}
 		return ss.toArray(new String[ss.size()]);
 	}
-	
+
 	/// parses functions and adds them to the function list. Assumes the function introducer (probably ':')
 	/// and name have been read and we're ready for the arglist and func body.
 	/// Bot and name are passed in if we are compiling a named function, so that they
 	/// can be set prior to compilation of the instructions to permit recursion. 
-	
+
 	private static Function parseFunction(Bot bot,String name,StreamTokenizer tok) throws IOException, ParserError {
 		String[] argarray = null;
 		String[] locarray = null;
-		
+
 		if(tok.nextToken()=='|'){
 			// we're getting an args,locals specification
 			argarray = parseLocalList(tok,name,':');
@@ -407,7 +361,7 @@ public class InstructionCompiler {
 		f.setInsts(insts);
 		return f; // if we're doing an anonymous function we'll need this.
 	}
-	
+
 	/// parses a function with a name, assuming we're just waiting for the name
 	public static void parseNamedFunction(Bot bot,StreamTokenizer tok) throws IOException, ParserError{
 		if(tok.nextToken()!=StreamTokenizer.TT_WORD)
@@ -417,13 +371,13 @@ public class InstructionCompiler {
 			throw new ParserError("function already exists: "+name);
 		InstructionCompiler.parseFunction(bot,name,tok);
 	}
-	
+
 	/// used to fix up an existing jump instruction to jump to the current instruction
 	/// with an offset. 
 	private void resolveJumpForwards(int refToIf, int i) throws ParserError {
 		insts.get(refToIf).setJump((insts.size()-refToIf)+i);
 	}
-	
+
 	/**
 	 * Parse subpatterns to match after this response.
 	 * Syntax is { "pattern string" action... ; "pattern string" action...; }

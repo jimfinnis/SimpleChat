@@ -16,7 +16,8 @@ public class FuncCallInstruction extends Instruction {
 			f.run(c);
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
-			throw new ActionException("error occurred in call of '"+f.name+"' : "+e.getMessage());
+			e.printStackTrace();
+			throw new ActionException("error occurred in call of '"+f.name+"' : "+e.toString());
 		}
 		return 1;
 	}

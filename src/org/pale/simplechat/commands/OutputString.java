@@ -7,6 +7,8 @@ import org.pale.simplechat.values.NoneValue;
 import org.pale.simplechat.values.StringValue;
 
 public class OutputString {
+	
+	
 	@Cmd public static void out(Conversation c) throws ActionException {
 		if(c.getOutput()==null)
 			c.push(NoneValue.instance);

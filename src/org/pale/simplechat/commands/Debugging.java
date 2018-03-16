@@ -7,12 +7,16 @@ import org.pale.simplechat.actions.Cmd;
 
 public class Debugging {
 
+	
 	/*
 	 * Debugging
 	 */
 	@Cmd public static void dp(Conversation c) throws ActionException{
 		String s = c.pop().str();
 		Logger.log(Logger.ALWAYS,"DP: "+s);
+	}
+	@Cmd public static void debug(Conversation c) throws ActionException {
+		c.debug = c.pop().toInt()==0 ? false : true;
 	}
 
 }

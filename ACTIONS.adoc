@@ -180,6 +180,11 @@ These all have the picture `(a -- b)`, like unary operators, and convert between
 
 === String functions
 - `trim` `(a -- b)` trims leading and trailing whitespace from a string
+- `sentence` `(a -- b)` capitalize initial letter and ensure the string
+ends with a full stop.
+- `clean` `(a -- b)` as `sentence`, but also replaces multiple whitespace
+with space, ensures sentences and comma-phrases are space-separated,
+and various other things.
 
 === Stack manipulation
 - `dup` `(a -- a a)` duplicates the item on top of the stack
@@ -441,6 +446,9 @@ Operations on lists are:
 - `shift` `(list -- val)` removes an item from the start of the list and stacks it, or `none` if there were no items
 - `len` `(list -- int)` pushes the length of a list
 - `choose` `(list -- item)` selects a random item from the list
+- `in` `(item list -- int)` stack 1 if the item is in the list, 0 if not
+- `join` `(list string -- string)` join the string representations of
+items in a list with another string, to produce a new string
 
 The `choose` is particularly useful in selecting random responses, or even
 starting random dialogue trees.
@@ -565,7 +573,13 @@ used in pattern matching. You have to match a set of words and then
 use `iscat` in the action, returning `none` if there is no match.
 - There is currently no facility for removing strings from a category.
 ====
-    
+
+
+== Random numbers
+
+- `rand` `(int --)` pushes an integer from 0 to n-1 onto the stack.
+It's useful in constructions like `4 rand not if...then` which will
+happen 1 in 4 times.
 
 == Extending the language
 Java code for new commands can be added to the language, which can

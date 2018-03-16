@@ -7,6 +7,7 @@ import org.pale.simplechat.actions.Value;
 
 public class Stack {
 
+	
 	@Cmd public static void drop(Conversation c) throws ActionException{
 		c.pop();
 	}

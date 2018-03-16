@@ -77,4 +77,11 @@ public class Runtime {
 		return pop().str();
 	}
 	
+	public String stackDump(){
+		StringBuilder sb = new StringBuilder();
+		for(int i=0;i<stack.size();i++)
+			sb.append(stack.get(i).str()+" | ");
+		return sb.toString();
+	}
+	
 }

@@ -5,6 +5,8 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -77,11 +79,21 @@ public class MainWindow implements ActionListener, MenuListener {
 		addMenus(menuBar);
 	}
 	
-	private void loadBot(File f){
+	// the bot loader assumes that all bots, including any parent bots used by "inherit", are in the same directory.
+	
+	private void loadBot(final File f){ // takes the directory
+		final String p = f.getParent(); // get parent directory
+		Bot.setPathProvider(new Bot.PathProvider() {
+			public Path path(String name) {
+				System.out.println("Requesting name for "+name);
+				String fn = p+"/"+name;
+				return Paths.get(fn);
+			}
+		});
 		reloadMenuItem.setEnabled(true);
 		botfile = f;
 		try {
-			Bot b = new Bot(f.toPath());
+			Bot b = Bot.loadBot(f.getName());
 			instance = new BotInstance(b);
 		} catch (BotConfigException e) {
 			JOptionPane.showMessageDialog(frame,"Could not load bot.\n"+e.getMessage());			

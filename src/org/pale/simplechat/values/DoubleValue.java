@@ -1,6 +1,7 @@
 package org.pale.simplechat.values;
 
 import org.pale.simplechat.actions.BinopInstruction.Type;
+import org.pale.simplechat.actions.ActionException;
 import org.pale.simplechat.actions.Value;
 
 public class DoubleValue extends Value {
@@ -100,5 +101,10 @@ public class DoubleValue extends Value {
 		}
 		return r;
 	}
+	
+	public Value neg() {
+		return new DoubleValue(-d);
+	}
+
 
 }

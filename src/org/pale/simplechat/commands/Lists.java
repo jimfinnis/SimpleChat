@@ -12,6 +12,8 @@ import org.pale.simplechat.values.NoneValue;
 import org.pale.simplechat.values.StringValue;
 
 public class Lists {
+	
+	
 	@Cmd public static void get(Conversation c) throws ActionException {
 		// (idx list -- val)
 		List<Value> lst = c.popList();
@@ -87,5 +89,19 @@ public class Lists {
 		}
 		c.push(new StringValue(sb.toString()));
 	}
+	
+	@Cmd public static void in(Conversation c) throws ActionException {
+		// (val list -- boolean)
+		List<Value> lst = c.popList();
+		Value v = c.pop();
+		for(Value vv: lst){
+			if(vv.equals(v)){
+				c.push(new IntValue(true));
+				return;
+			}
+		}
+		c.push(new IntValue(false));
+	}
+
 
 }

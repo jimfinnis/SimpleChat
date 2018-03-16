@@ -106,5 +106,9 @@ public class IntValue extends Value{
 		}
 		return r;
 	}
+	
+	public Value neg() {
+		return new DoubleValue(-i);
+	}
 
 }

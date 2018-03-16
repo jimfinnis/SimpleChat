@@ -30,6 +30,7 @@ import org.pale.simplechat.values.StringValue;
 public class Conversation extends Runtime {
 	public BotInstance instance;
 	public Object source;
+	public boolean debug=false;
 
 	/// variables private to this conversation
 	private Map<String,Value> vars = new TreeMap<String,Value>();

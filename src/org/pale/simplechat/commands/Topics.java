@@ -10,6 +10,7 @@ import org.pale.simplechat.values.StringValue;
 
 public class Topics {
 
+	
 	@Cmd public static void next(Conversation c) throws ActionException{
 		// tell the conversation to use the patterns we just specified to match first.
 		c.specialpats =  c.popSubpats();

@@ -23,7 +23,7 @@ public class BinopInstruction extends Instruction {
 		Value a = c.pop();
 		Value r;
 
-		if(type == Type.ADD && a instanceof StringValue || b instanceof StringValue ){
+		if(type == Type.ADD && (a instanceof StringValue || b instanceof StringValue )){
 			r = new StringValue(a.str()+b.str());
 		} else {
 
