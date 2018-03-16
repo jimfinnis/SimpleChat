@@ -22,6 +22,7 @@
 
 +"($a=(?[a an] $n=.+) is an animal)"
     $n ?@anims addcat
+    $n dp
     "I now know that ${$a} is an animal!"
 ;
         

@@ -10,8 +10,8 @@ public class WordNode extends Node {
 	 */
 	private String word;
 
-	public WordNode(Pattern pattern, String lab){
-		super(pattern,lab);
+	public WordNode(Pattern pattern, String lab,Node parent){
+		super(pattern,lab, parent);
 		word = this.pattern.parseWord().toLowerCase();
 		Logger.log(Logger.PATTERN,"New word: "+word);
 	}

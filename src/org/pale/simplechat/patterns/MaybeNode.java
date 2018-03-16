@@ -7,10 +7,10 @@ import org.pale.simplechat.Pattern;
 public class MaybeNode extends Node {
 
 	Node node;
-	public MaybeNode(Bot b,Pattern p, String lab) throws ParserError {
-		super(p, lab);
+	public MaybeNode(Bot b,Pattern p, String lab,Node parent) throws ParserError {
+		super(p, lab,parent);
 		p.iter.next();
-		node = p.parseNode(b);
+		node = p.parseNode(b,this);
 	}
 	
 	@Override

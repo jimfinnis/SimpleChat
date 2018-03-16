@@ -14,9 +14,9 @@ public class SequenceNode extends Node {
 	 */
 	private List<Node> nodes;
 	
-	public SequenceNode(Bot t,Pattern pattern, String lab) throws ParserError{
-		super(pattern,lab);
-		nodes = this.pattern.parseNodeList(t,')');
+	public SequenceNode(Bot t,Pattern pattern, String lab, Node parent) throws ParserError{
+		super(pattern,lab, parent);
+		nodes = this.pattern.parseNodeList(t,')',this);
 		Node pnode=null;
 		// link the child nodes together into a linked list
 		for(Node n: nodes){

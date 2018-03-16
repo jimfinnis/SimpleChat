@@ -556,20 +556,14 @@ or another category) to the category:
     "I now know that ${$a} is an animal!"
 ;
 ----
-[IMPORTANT]
-====
-THIS DOESN'T WORK YET because the inner sequence `$n=.+` will swallow
-all remaining tokens, because it doesn't know that "is" is
-the next node it should look for. This is being fixes.
 
-There's also no way to remove things from a category.
-====    
 
 [NOTE]
 ====
-Categories defined in variables using `cat` in this way cannot be
+- Categories defined in variables using `cat` in this way cannot be
 used in pattern matching. You have to match a set of words and then
 use `iscat` in the action, returning `none` if there is no match.
+- There is currently no facility for removing strings from a category.
 ====
     
 

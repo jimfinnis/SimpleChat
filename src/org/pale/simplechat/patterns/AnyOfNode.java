@@ -12,9 +12,9 @@ public class AnyOfNode extends Node {
 	 * 
 	 */
 	private List<Node> nodes;
-	public AnyOfNode(Bot b,Pattern pattern, String lab) throws ParserError{
-		super(pattern,lab);
-		nodes = this.pattern.parseNodeList(b,']');
+	public AnyOfNode(Bot b,Pattern pattern, String lab,Node parent) throws ParserError{
+		super(pattern,lab,parent);
+		nodes = this.pattern.parseNodeList(b,']',this);
 	}
 	@Override
 	public void match(MatchData m) {

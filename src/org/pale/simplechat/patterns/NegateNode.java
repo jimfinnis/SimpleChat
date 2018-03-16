@@ -8,11 +8,11 @@ public class NegateNode extends Node {
 
 	private Node node; // the node we want to negate
 
-	public NegateNode(Bot t,Pattern p, String lab) throws ParserError {
-		super(p, lab);
+	public NegateNode(Bot t,Pattern p, String lab, Node parent) throws ParserError {
+		super(p, lab, parent);
 		pattern.iter.next();
 		// parse the child pattern we want to negate
-		node = pattern.parseNode(t);
+		node = pattern.parseNode(t,this);
 	}
 	
 	@Override

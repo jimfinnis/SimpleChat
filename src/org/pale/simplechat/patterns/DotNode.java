@@ -5,8 +5,8 @@ import org.pale.simplechat.Pattern;
 // matches one of any word
 public class DotNode extends Node {
 
-	public DotNode(Pattern p, String lab) {
-		super(p, lab);
+	public DotNode(Pattern p, String lab,Node parent) {
+		super(p, lab,parent);
 		p.iter.next();
 	}
 

@@ -6,11 +6,12 @@ import org.pale.simplechat.Pattern;
 public class StarNode extends Node {
 	private Node node;
 	private int minCount,maxCount; // the number of matches must be in this range
-	public StarNode(Pattern pattern, Node n,String lab,boolean alo) throws ParserError {
-		super(pattern,lab);
+	public StarNode(Pattern pattern, Node n,String lab,boolean atLeastOne,Node parent) throws ParserError {
+		super(pattern,lab,parent);
 		pattern.iter.next();
 		node = n; // the node we are wrapping
-		minCount= alo ? 1 : 0;
+		node.parent = this;
+		minCount= atLeastOne ? 1 : 0;
 		maxCount = 10000; // not used currently.
 	}
 
@@ -27,11 +28,16 @@ public class StarNode extends Node {
 		StringBuilder sb = new StringBuilder(); // build up the consumed tokens
 		int n = 0; // count of matches
 		while(!m.allConsumed()){
-			// if there is one, try to match the next node
-			if(next!=null){
-				log("attempting next node match, next node is "+next.getClass().getSimpleName());
+			// if there is one, try to match the next node. If there is no next node at this level,
+			// go up a level and try to use the next node there.
+			
+			Node nextNode = getNextNode();
+
+			
+			if(nextNode!=null){
+				log("attempting next node match, next node is "+nextNode.getClass().getSimpleName());
 				int pos = m.pos;
-				next.match(m);
+				nextNode.match(m);
 				m.pos = pos; // reset position, we'll always want to reparse this token
 				if(!m.invalid){
 					// we succeeded, so exit ready to parse that node

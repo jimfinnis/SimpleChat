@@ -8,8 +8,8 @@ import org.pale.simplechat.Pattern;
 public class CategoryNode extends Node {
 	private Category c;
 	String cname;
-	public CategoryNode(Bot b,Pattern pattern, String label) throws ParserError {
-		super(pattern,label);
+	public CategoryNode(Bot b,Pattern pattern, String label,Node parent) throws ParserError {
+		super(pattern,label,parent);
 		pattern.iter.next();
 		String name = pattern.parseWord(); // get cat name
 		this.cname = name;
