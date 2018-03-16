@@ -33,12 +33,19 @@ abstract public class Node {
 	
 	Node getNextNode() {
 		Node n = this;
+		log("Getting next node...");
 		while(n!=null){
+			log(" current node is a "+n.getClass().getSimpleName());
 			// we have a next node, so return it.
-			if(n.next!=null)return n.next;
+			if(n.next!=null){
+				log(" next node found: a "+n.next.getClass().getSimpleName());
+				return n.next;
+			}
 			// no next node here .. go up a level
+			log(" no next node - going up.");
 			n = n.parent;
 		}
+		log(" finished at root, no next node.");
 		return null; // got to the top of the tree without a next node.
 	}
 
