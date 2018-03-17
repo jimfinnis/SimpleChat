@@ -458,8 +458,6 @@ to them. Thus `[say talk]/+ing` is stored as `[say talk saying talking]`.
 
 
 == Lists
-IMPORTANT: Lists are not yet implemented
-
 Lists are lists of strings which are accessible from
 that language. They are in many ways like categories, but cannot be 
 matched on - instead they are intended for generating content and customising
