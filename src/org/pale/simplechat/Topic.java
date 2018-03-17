@@ -65,6 +65,7 @@ public class Topic {
 		try {
 			this.name = name;
 			tok = new Tokenizer(f);
+			Logger.log(Logger.CONFIG, "+++++++++++++++++++++++++++++++++ Parsing topic file for "+bot.getName()+": "+name);
 			
 			// we got the name of the topic, so parse a list of pattern/action pairs, or possibly other topic includes
 			for(;;){
@@ -97,15 +98,18 @@ public class Topic {
 					throw new BotConfigException(f,tok,"badly formed topic file, expected '+'");
 			}
 		} catch (BotConfigException e){
+			e.printStackTrace();
 			Logger.log(Logger.FATAL,"syntax error in topic file "+e.getMessage());
 			throw e; // log and rethrow
 		} catch (IOException e) {
 			throw new BotConfigException(f,"Cannot read topic file");
 		} catch (ParserError e) {
+			e.printStackTrace();
 			Logger.log(Logger.FATAL,"syntax error in topic file - "+e.getMessage());
 			throw new BotConfigException(f,tok,e.getMessage());
 		}
 
+		Logger.log(Logger.CONFIG, "--------------------------------- topic file done, "+bot.getName()+":"+name);
 		tok = null; // discard tokeniser when done
 	}
 }

@@ -411,7 +411,23 @@ so you can have a function and pattern like this:
 Important: functions are global to all files - a function defined in a
 config file or a topic will be there for all subsequent topics.
 
-== Lists
+== Phrase lists 
+You'll have seen these before in the link:README.adoc[main document].
+They are lists of phrases with the same meaning, defined with code
+in a config file like:
+----
+^ok = [yes very_good fine_by_me "no problem"]
+----
+We can use the name in action language to stack a random phrase:
+----
++"(open .* door ?please)"
+    ^ok clean;
+----
+This is useful, because sub-bots can override the lists to provide
+some variation to a generic chat.
+
+
+== Action language lists
 Lists are created using the `[`, `]` and `,` stack operators.
 The `[` operator creates a new list and puts it on the stack. The `,` and `]` operators
 both append the item on top of the stack to the list on the stack below it (without popping

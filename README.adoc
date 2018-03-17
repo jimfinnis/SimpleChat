@@ -140,7 +140,8 @@ in the language, however.
 == Bot directory
 The bot directory should contain
 
-- `config.conf` file listing the topics, substitutions etc.
+- `config.conf` file listing the topics, substitutions, categories, lists etc.
+- subsidiary `.conf` files containing more of the above included with `include`
 - `.sub` files with substitutions
 - `.topic` files each containing a topic
 
@@ -155,8 +156,10 @@ from a `.sub` file
 - an optional `init` entry followed by a block of Action language (see below)
 which will set up initial values for conversation variables and maybe do
 some other things. A `#` starts a comment
+- category and list definitions (q.v.)
 - any number of action language functions, which can be called from action language or
 from your application code.
+- `include "filename"` lines to include subsidiary conf files
 
 Here is an example:
 ----
@@ -420,6 +423,7 @@ Here's an example of a category block from a topic file:
 ~animal=
     [
         "small dinosaur"
+        big_dinosaur
         bird pig aardvark yak
         ~dog=[dog dogs puppy puppies]
         ~cat=[cat cats kittens "puddy tat"]
@@ -430,12 +434,14 @@ Here's an example of a category block from a topic file:
         they them
     ]
 ----    
+
 This defines two top level categories, `~animal` and `~human`, each of which
 have some subcategories. `Steve` is in both the categories `human` and `man`,
 while `bird` is only in `animal`. There are two kinds of "leaf" entry in a
-category tree: single words and space-separated lists of words in quotes.
-Words just
-match words, while lists of words have to match all the words in order.
+category tree: single words and word lists. Single words are entered just
+using the word; while lists are entered either using space-separated lists of
+words in quotes, or by separating the words with underscores. Words just match
+words, while lists of words have to match all the words in order.
 
 Matching in a pattern is done with the `~categoryname' symbol. Here's an example:
 ----
@@ -444,6 +450,28 @@ Matching in a pattern is done with the `~categoryname' symbol. Here's an example
 +"(is $n=(?a ~animal) a cat)" "No, but a ${$n} is some kind of animal!"+;
 +"(is $n=.+ cat)" "No, I don't know what ${$n} is"+;
 ----
+=== Category post-modifiers
+Some useful hacks are available for modifying a category list. After
+the square brackets, the `/` symbol precedes a set of modifiers.
+These are characters followed by some data.
+
+- `/+suffix` duplicates all the words in the category, adding the suffix
+to them. Thus `[say talk]/+ing` is stored as `[say talk saying talking]`.
+
+
+== Lists
+IMPORTANT: Lists are not yet implemented
+
+Lists are lists of strings which are accessible from
+that language. They are in many ways like categories, but cannot be 
+matched on - instead they are intended for generating content and customising
+this content to sub-bots of a bot (see the section on Inheritance).
+
+Lists are specified in a config file by data of the form:
+----
+^listname = [word "a phrase" another_phrase]
+----
+So very similar to categories. They cannot, however, be nested.
 
 == Bot inheritance
 It's often the case that many disparate bots share many characteristics,

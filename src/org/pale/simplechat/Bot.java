@@ -35,13 +35,18 @@ public class Bot {
 	public interface PathProvider {
 		public Path path(String name);
 	}
-	
-	
+	private static PathProvider pathProvider=null; // the path provider, which must be set!
 	// list of all the bots, used in "inherit".
 	static Map<String,Bot> bots = new HashMap<String,Bot>();
+	
+	private String name;
+	private Path path; // the path of the bot's data, stored for reload
+	
 	// Things in bot may also be used. It's set by using the "inherit" command.
 	public Bot parent=null;  
 	private Map<String,Topic> topicsByName;
+	private Map<String,Category> cats = new HashMap<String,Category>(); // bot's private categories
+	private Map<String,PhraseList> phraseLists = new HashMap<String,PhraseList>();
 	List<SubstitutionsInterface> subs;
 	// list of all my instances
 	Set<BotInstance> instances = new HashSet<BotInstance>();
@@ -60,6 +65,7 @@ public class Bot {
 		}
 	}
 	
+	public String getName(){return name;}
 
 	// this is a list of topic lists.
 	// When matching, we run through each topic list in turn.
@@ -101,7 +107,7 @@ public class Bot {
 		topicsByName = new HashMap<String,Topic>();
 		parent = null;
 		
-		parseConfig(path);
+		parseConfig(path,"config.conf");
 
 		// read the configuration data
 		
@@ -110,14 +116,6 @@ public class Bot {
 			f.getValue().dump();
 		}
 	}
-	
-	private String name;
-	public String getName(){return name;}
-
-
-	private Path path; // the path of the bot's data, stored for reload
-	private Map<String,Category> cats = new HashMap<String,Category>(); // bot's private categories
-	private static PathProvider pathProvider=null; // the path provider, which must be set!
 	
 	// this runs up the hierarchy of bots scanning the categories that bot knows about.
 	public Category getCategory(String name){
@@ -133,10 +131,21 @@ public class Bot {
 		cats.put(name,c);
 	}
 
+	// this runs up the hierarchy of bots scanning the lists that bot knows about.
+	public PhraseList getPhraseList(String name) {
+		Bot b = this;
+		do {
+			if(b.phraseLists.containsKey(name))return b.phraseLists.get(name);
+			b = b.parent;
+		} while(b!=null);
+		return null;	
+	}
+
+
 	// parse a config.conf in the directory Path
-	private void parseConfig(Path p) throws BotConfigException{
+	private void parseConfig(Path p,String filename) throws BotConfigException{
 		try {
-			StreamTokenizer tok = new Tokenizer(p.resolve("config.conf"));
+			StreamTokenizer tok = new Tokenizer(p.resolve(filename));
 			try {
 				for(;;) {
 					int t = tok.nextToken();
@@ -147,11 +156,27 @@ public class Bot {
 						} catch (ParserError e){
 							throw new BotConfigException(p,tok,"error in a config file function: "+e.getMessage());
 						}
+					} else if(t == '~'){
+						Category.parseCat(this, tok);
+					} else if(t == '^'){
+						if(tok.nextToken()!=StreamTokenizer.TT_WORD)
+							throw new ParserError("expected name in list");
+						String name = tok.sval;
+						if(tok.nextToken()!='=')
+							throw new ParserError("expected =[ after list name");
+						if(tok.nextToken()!='[')
+							throw new ParserError("expected =[ after list name");
+						phraseLists.put(name,new PhraseList(tok));
+						Logger.log(Logger.CONFIG,"^^^ new phrase list: "+name);
 					} else if(t == StreamTokenizer.TT_WORD){
 						if(tok.sval.equals("inherit")){
 							if(tok.nextToken()!=StreamTokenizer.TT_WORD)
 								throw new BotConfigException(p,tok,"need an unquoted bot name after inherit");
 							inherit(tok.sval);
+						} else if(tok.sval.equals("include")){
+							if(tok.nextToken()!='"')
+								throw new BotConfigException(p,tok,"need an quoted filename after include");
+							parseConfig(p,tok.sval);
 						} else if(tok.sval.equals("topics")){
 							List<Topic> list = parseTopicList(p,tok);
 							topicLists.add(list);
@@ -289,6 +314,7 @@ public class Bot {
 			parent.runInits(c);
 		initAction.run(c, true);
 	}
+
 
 
 }

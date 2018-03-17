@@ -140,7 +140,7 @@ public class Conversation extends Runtime {
 	}
 	
 	public String runFunc(String s) throws ActionException{
-		specialpats=null;
+//		specialpats=null;    USED to clear this, but it makes RANDSAY and timer functions interfere with the flow of chat.
 		Function f = instance.bot.getFunc(s);
 		if(f==null)
 			throw new ActionException("bot does not define function "+s);

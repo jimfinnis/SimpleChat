@@ -21,6 +21,7 @@ import org.pale.simplechat.Logger;
 import org.pale.simplechat.Pair;
 import org.pale.simplechat.ParserError;
 import org.pale.simplechat.Pattern;
+import org.pale.simplechat.PhraseList;
 import org.pale.simplechat.values.CatValue;
 import org.pale.simplechat.values.DoubleValue;
 import org.pale.simplechat.values.IntValue;
@@ -105,6 +106,16 @@ public class InstructionCompiler {
 					insts.add(new LiteralInstruction(new CatValue(tok.sval,c)));
 				}
 				break;
+			case '^':
+				if(tok.nextToken()!=StreamTokenizer.TT_WORD)
+					throw new ParserError("expected a list name after ~");
+				else {
+					PhraseList l = bot.getPhraseList(tok.sval);
+					if(l==null)
+						throw new ParserError("unknown phrase list: "+tok.sval);
+					insts.add(new RandomPhraseInstruction(l));
+				}
+				break;				
 			case '$':
 				if(tok.nextToken()!=StreamTokenizer.TT_WORD)
 					throw new ParserError("expected a varname after $");

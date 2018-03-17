@@ -46,17 +46,38 @@ public class Category {
 
 
 	public void add(String phrase){
-		String[] s = Utils.toLowerCase(phrase.split("\\s+"));
+		String[] s = Utils.toLowerCase(phrase.split("[_\\s]+"));
 		if(s.length > 1)
 			lists.add(s);
 		else
 			words.add(s[0]);
 	}
-	
+
 	public void add(Category subcat){
 		cats.add(subcat);
 	}
-	
+
+	// apply various modifiers to a category
+	private void parseModifier(StreamTokenizer tok) throws IOException, ParserError{
+		for(;;){
+			switch(tok.nextToken()){
+			case '+':
+				// add a suffix to every word (not lists or subcats) in the cat, and put that in as duplicates.
+				// This means [say talk]/+ing is [say talk saying talking].
+				if(tok.nextToken()!=StreamTokenizer.TT_WORD)
+					throw new ParserError("Expected suffix after '+' in category modifier");
+				List<String> toAdd = new ArrayList<String>();
+				for(String w: words)
+					toAdd.add(w+tok.sval);
+				for(String w: toAdd)
+					add(w);
+				break;
+			default:
+				tok.pushBack();return;
+			}
+		}
+	}
+
 
 
 	// This compiles ~name=[...], where [...] consists of words or subcategories.
@@ -97,6 +118,13 @@ public class Category {
 					default: throw new ParserError("error in category");
 					}
 				}
+			// check for post modifiers
+			if(tok.nextToken()=='/')
+				c.parseModifier(tok);
+			else
+				tok.pushBack();
+
+
 			// sort the lists by length so longer lists are tried first
 			Collections.sort(c.lists,new Comparator<String[]>(){
 				@Override
@@ -107,7 +135,7 @@ public class Category {
 			return c;
 		}
 	}
-	
+
 
 	public void dump(){
 		_dump(0);
@@ -158,10 +186,10 @@ public class Category {
 		// no match.
 		return false;
 	}
-	
+
 	// return true if the string is a match for the category. This is used for action language
 	// match testing.
-	
+
 	public boolean isMatch(String[] s){
 		s = Utils.toLowerCase(s);
 		// first, try the words. This is only used when length is 1.
@@ -182,7 +210,7 @@ public class Category {
 		}
 		// no match.
 		return false;
-		
+
 	}
 
 	private int matchesList(String[] a, int pos) {

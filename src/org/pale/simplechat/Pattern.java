@@ -118,6 +118,7 @@ public class Pattern {
 			case '?':	n = new MaybeNode(b,this,label,parent);break;
 			case '~':	n = new CategoryNode(b,this,label,parent);break;
 			default:
+				System.out.println("Wut");
 				throw new ParserError("unknown char in pattern: "+c);
 			}
 		}
@@ -141,6 +142,7 @@ public class Pattern {
 		this.name = name==null ? pstring:name;
 		iter = new StringCharacterIterator(pstring);
 		iter.first();
+		Logger.log(Logger.PATTERN, "Parsing pattern "+pstring);
 		root = parseNode(b,null);
 		Logger.log(Logger.PATTERN,"Pattern parsed "+pstring);
 		if(root == null)
