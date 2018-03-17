@@ -265,6 +265,10 @@ For example
 will check if instance variable `foo` is 5. If it is, it will stack "Five!", otherwise
 it will stack "Not five!" These statements can be nested.
 
+NOTE: The `none` value is considered false, so code like
+`?var if ... then` will consider `?var` to be false if that variable
+is not defined.
+
 ### `cases`: or, how to do `else if`
 We don't have `else if` in this language because of the way it's parsed (how would you separate
 the condition part from the action part of the previous `if`?). Instead, the `cases` construction
@@ -286,9 +290,6 @@ Here's an example which converts the string obtained from the pattern, `$n`, int
     ?n 10 < if "Between three and nine" case
     "Something else" otherwise;
 ----
-NOTE: The `none` value is considered false, so code like
-`?var if ... then` will consider `?var` to be false if that variable
-is not defined.
 
 === "Infinite" loops
 
@@ -350,6 +351,11 @@ for example popping an item from the end of a list of zero length or reading
 an unset local variable. You
 can test if the value on the stack is none with `isnone` `(val -- 0 or 1)`,
 and you can stack none yourself with `none`.
+
+NOTE: The `none` value is considered 0 when viewed as an integer,
+so code like
+`?var if ... then` will consider `?var` to be false if that variable
+is not defined.
 
 == User functions
 It's possible to define user functions in `config.conf` or any
