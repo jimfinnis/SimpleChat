@@ -69,9 +69,7 @@ source = new Object(); // could be anything, it's for you to use.
 See the source of the test program
 `org.pale.chattest.MainWindow.java` to see some different code,
 which takes a bot directory from a dialog box and assumes any bots it might
-inherit live in sister directories to it.
-----
-Typically a conversation
+inherit live in sister directories to it.Typically a conversation
 is done by repeatedly calling
 [source,java]
 ----
