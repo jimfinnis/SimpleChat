@@ -21,5 +21,9 @@ public class FuncCallInstruction extends Instruction {
 		}
 		return 1;
 	}
+	
+	@Override public String toString(){
+		return "FuncCallInstruction:"+f.name;
+	}
 
 }

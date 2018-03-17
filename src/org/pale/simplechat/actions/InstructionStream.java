@@ -27,7 +27,8 @@ public class InstructionStream {
 		c.exitflag = false;
 		while(i<insts.size() && !c.exitflag){
 			if(c.debug){
-				Logger.log(Logger.ACTION,i+": "+insts.get(i).getClass().getSimpleName()+":   "+c.stackDump());
+				Logger.log(Logger.ACTION,i+": "+insts.get(i).toString()+":   "+c.stackDump());
+				Logger.log(Logger.ACTION, "    sb: "+c.getOutput());
 				
 			}
 			ActionLog.write("Running instruction at "+i+": "+insts.get(i).getClass().getSimpleName());

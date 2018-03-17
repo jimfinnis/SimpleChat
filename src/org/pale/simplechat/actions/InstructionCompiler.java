@@ -297,9 +297,14 @@ public class InstructionCompiler {
 						resolveJumpForwards(ref,0); // resolve the jump destination
 						ref = next; // get the next jump to resolve.
 					}
-					// "stop" and other quick flow control stuff
+				// "stop" and other quick flow control stuff
 				} else if(tok.sval.equals("stop")){
 					insts.add(new Flow.StopInstruction());
+				// word binops
+				} else if(tok.sval.equals("or")){
+					insts.add(new BinopInstruction(BinopInstruction.Type.OR));
+				} else if(tok.sval.equals("and")){
+					insts.add(new BinopInstruction(BinopInstruction.Type.AND));
 				}
 				// custom commands!
 				else if(cmds.containsKey(tok.sval)){

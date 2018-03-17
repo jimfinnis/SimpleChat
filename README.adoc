@@ -62,7 +62,8 @@ Bot.setPathProvider(new Bot.PathProvider() {
     }
 });
 Bot b = Bot.loadBot("mybot");
-instance = new BotInstance(b);
+// we provide a name - the instance variable (q.v.) @botname is set to this.
+instance = new BotInstance(b,"some name");
 source = new Object(); // could be anything, it's for you to use.
 ----
 See the source of the test program
@@ -90,7 +91,7 @@ your command code:
 [source,java]
 ----
 Bot b = new Bot(Paths.get("/some/directory/or/other");
-instance = new BotInstance(b,mythingy);
+instance = new BotInstance(b,"Fred the Bot",mythingy);
 source = new Object();
 ----
 

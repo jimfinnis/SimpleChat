@@ -29,4 +29,9 @@ public class GetVarInstruction extends Instruction {
 		}
 		return 1;
 	}
+	
+	@Override public String toString(){
+		return "GetVarInstruction:"+type.toString()+"/"+name;
+	}
+
 }

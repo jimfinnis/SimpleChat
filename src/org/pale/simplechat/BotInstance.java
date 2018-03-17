@@ -8,6 +8,7 @@ import org.pale.simplechat.actions.ActionException;
 import org.pale.simplechat.actions.ActionLog;
 import org.pale.simplechat.actions.Value;
 import org.pale.simplechat.values.NoneValue;
+import org.pale.simplechat.values.StringValue;
 
 /**
  * An actual chatting entity, which is backed by a Bot. There may be many BotInstances for one bot;
@@ -23,12 +24,19 @@ public class BotInstance  {
 
 	private Object data; // data connected to the bot instance, could be anything
 	
-	public BotInstance(Bot b) throws BotConfigException{
+	/**
+	 * Construct a new instance of a bot.
+	 * @param b the bot we're going to use.
+	 * @param name the name of the bot (used to set the botname instance var, nothing else).
+	 * @throws BotConfigException
+	 */
+	public BotInstance(Bot b, String name) throws BotConfigException{
 		bot = b;
 		try {
 			// go up the tree, running all the init instances
 			// during the init action, the instance is "talking to itself" as it were.
 			Conversation c = new Conversation(this,this);
+			vars.put("botname",new StringValue(name));
 			b.runInits(c);
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
@@ -41,9 +49,25 @@ public class BotInstance  {
 	}
 	
 	// use this ctor when you want to connect some other data to the instance.
-	public BotInstance(Bot b, Object data) throws BotConfigException{
-		this(b); // call the other ctor
+	// YES I KNOW it's a cut and paste of the other. When 'data' is present, this
+	// needs to be set FIRST in the instance. Can't do that with this()..
+	public BotInstance(Bot b, String name, Object data) throws BotConfigException{
+		bot = b;
 		this.data = data;
+		try {
+			// go up the tree, running all the init instances
+			// during the init action, the instance is "talking to itself" as it were.
+			Conversation c = new Conversation(this,this);
+			vars.put("botname",new StringValue(name));
+			b.runInits(c);
+		} catch (IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			throw new BotConfigException("error running initialisation action: "+e.getMessage());
+		} catch (ActionException e) {
+			ActionLog.show();
+			throw new BotConfigException("error running initialisation action: "+e.getMessage());
+		}
+		bot.instances.add(this);
 	}
 	
 	/// variables private (haha) to this instance.

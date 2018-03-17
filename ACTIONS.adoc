@@ -164,6 +164,8 @@ from the stack and replace them with a single item.
 - `<=` pushes 1 if `a` <= `b`, else pushes 0
 - `>` pushes 1 if `a` > `b`, else pushes 0
 - `>=` pushes 1 if `a` >= `b`, else pushes 0
+- `or` pushes 1 if either value is an nonzero integer. Both sides must be integer or `none` (false)
+- `and` pushes 1 if both values are nonzero integers. Both sides must be integer or `none` (false)
 
 Unary operations have the stack picture `(a -- b)`: they replace a value with a modified value.
 The core operations supported are:

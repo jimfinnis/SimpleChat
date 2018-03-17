@@ -26,5 +26,9 @@ public class SetVarInstruction extends Instruction {
 		}
 		return 1;
 	}
+	
+	@Override public String toString(){
+		return "SetVarInstruction:"+type.toString()+"/"+name;
+	}
 
 }

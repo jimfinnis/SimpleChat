@@ -277,7 +277,7 @@ public class Conversation extends Runtime {
 	}
 	
 	public void clearOutput(){
-		output = new StringBuilder(output);
+		output = new StringBuilder();
 	}
 
 	public void appendOutput(String s) {

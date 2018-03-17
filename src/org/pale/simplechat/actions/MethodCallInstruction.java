@@ -24,11 +24,17 @@ public class MethodCallInstruction extends Instruction {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			Throwable t = e.getCause();
+			e.printStackTrace();
 			Logger.log(Logger.ACTION+Logger.FATAL,"Command "+name+" caused an error: "+t.getClass().getSimpleName()+", "+t.getMessage());
 			throw new ActionException("Command "+name+" caused an error: "+t.getClass().getSimpleName()+", "+t.getMessage());
 			
 		}
 		return 1;
 	}
+	
+	@Override public String toString(){
+		return "MethodCallInstruction:"+name;
+	}
+
 
 }

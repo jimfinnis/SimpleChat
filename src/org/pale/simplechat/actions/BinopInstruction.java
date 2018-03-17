@@ -8,7 +8,8 @@ public class BinopInstruction extends Instruction {
 
 	public enum Type {
 		ADD, SUB, DIV, MUL, MOD, EQUAL, NEQUAL,
-		GT, LT, GE, LE
+		GT, LT, GE, LE,
+		AND, OR
 	}
 
 	private Type type;
@@ -41,5 +42,10 @@ public class BinopInstruction extends Instruction {
 		c.push(r);
 		return 1;
 	}
+	
+	@Override public String toString(){
+		return "BinopInstruction:"+type.toString();
+	}
+
 }
 

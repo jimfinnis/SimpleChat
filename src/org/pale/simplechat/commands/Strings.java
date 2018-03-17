@@ -17,9 +17,7 @@ public class Strings {
 		if(s.length()>0){
 			s = s.substring(0,1).toUpperCase()+s.substring(1);
 			// if the string doesn't end with a punct, add a "."
-			System.out.println(s);
 			s = s.replaceAll("([^\\.,;\\?\\!])\\z", "$1.");
-			System.out.println(s);
 		}
 		c.push(new StringValue(s));
 	}

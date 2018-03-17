@@ -102,6 +102,20 @@ public class IntValue extends Value{
 				r = new IntValue((double)i<=((DoubleValue)snd).d);
 			else return null;
 			break;
+		case AND:
+			if(snd instanceof NoneValue)
+				r = new IntValue(0);
+			else if(snd instanceof IntValue)
+				r = new IntValue(i!=0 && ((IntValue)snd).i!=0);
+			else return null;
+			break;
+		case OR:
+			if(snd instanceof NoneValue)
+				r = new IntValue(0);
+			else if(snd instanceof IntValue)
+				r = new IntValue(i!=0 || ((IntValue)snd).i!=0);
+			else return null;
+			break;
 		default: return null;
 		}
 		return r;

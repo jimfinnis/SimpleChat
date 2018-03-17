@@ -106,7 +106,6 @@ public class Pattern {
 			label = null;
 		Node n;
 		
-//		System.out.println("GOT at top level: "+c);
 		// plain words (or numbers) match themselves
 		if(Character.isAlphabetic(c)||Character.isDigit(c)){
 			n = new WordNode(this, label, parent);

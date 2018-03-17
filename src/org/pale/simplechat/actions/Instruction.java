@@ -10,4 +10,8 @@ public abstract class Instruction {
 	void setJump(int offset) throws ParserError{
 		throw new ParserError("weirdness - tried to set a jump offset on a non-jump instruction");
 	}
+	
+	public String toString(){
+		return this.getClass().getSimpleName();
+	}
 }
