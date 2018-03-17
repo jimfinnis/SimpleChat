@@ -239,7 +239,7 @@ used to initialise instance variables. Setting a conversation
 variable will cause a runtime error, because the bot isn't in
 a conversation.
 
-=== Topics
+== Topics
 Topics are (loosely speaking) subjects of conversation.
 Each topic consists of a list of pattern/action pairs, which
 are run through in order when the user provides input.
@@ -321,13 +321,13 @@ from inside an action.
 Whole topics can also be enabled and disabled, as well as being 
 promoted and demoted to the top or bottom of their list.
 
-== Patterns
+=== Patterns
 For matching, the input is lower-cased, all punctuation is removed
 and finally it is split into words. Pattern matching is done per-word.
 The entire pattern must be in a pair of quotes. Most patterns
 will be sequences, so you'll see a lot of `"(...)"`.
 
-=== Pattern Elements
+==== Pattern Elements
 
 - plain words match themselves
 - `^` negates the next pattern
@@ -349,12 +349,12 @@ pattern. I'm sure there's a clever way around this.
 - Negate nodes are "fun".
 ====
 
-=== Labels
+==== Labels
 Putting `$labelname=` before a pattern element marks it so that
 the data it matches will be stored in a variable. In the case of '*' and
 '+', the variable `$labelname_ct` is set to the match count.
 
-=== Reductions
+==== Reductions
 Following AIML usage, a "reduction" is a pattern/action pair which
 replaces some text with a shorter or canonical form, and then
 sends that straight back into the pattern matcher. For example,
@@ -379,7 +379,7 @@ things. More complex reductions could be:
 ----    
 Reductions typically live in a topic of their own.
 
-== Actions
+=== Actions
 These are in the form of a sequence of instructions in an RPN language,
 which should either leave a string on the stack or build one using 
 print statements. They are always terminated
