@@ -16,6 +16,9 @@ public class NoneValue extends Value {
 	@Override public String str(){
 		return "<<NONE>>";
 	}
+	@Override public int toInt(){
+		return 0;
+	}
 
 	
 	@Override public boolean equals(Object ob){

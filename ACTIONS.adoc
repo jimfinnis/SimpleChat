@@ -286,7 +286,9 @@ Here's an example which converts the string obtained from the pattern, `$n`, int
     ?n 10 < if "Between three and nine" case
     "Something else" otherwise;
 ----
-    
+NOTE: The `none` value is considered false, so code like
+`?var if ... then` will consider `?var` to be false if that variable
+is not defined.
 
 === "Infinite" loops
 

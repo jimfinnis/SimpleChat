@@ -110,6 +110,7 @@ public class Conversation extends Runtime {
 	/// try to handle a pattern/action pair by matching the pattern and if a match, running the action.
 	/// If no match return null.
 	public String handle(String s,Pair p){
+		output = new StringBuilder(); // clear the output string.
 		MatchData m = p.pat.match(s);
 		if(!m.invalid){
 			// output the labelled match results to the log
@@ -144,6 +145,7 @@ public class Conversation extends Runtime {
 		if(f==null)
 			throw new ActionException("bot does not define function "+s);
 		try {
+			output = new StringBuilder(); // clear the output string.
 			f.run(this);
 			return getResult();
 		} catch (IllegalAccessException | IllegalArgumentException
