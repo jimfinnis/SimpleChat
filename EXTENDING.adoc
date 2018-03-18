@@ -86,6 +86,7 @@ them.
 
 
 You should also call
+[source,java]
 ----
 InstructionCompiler.addExtension("name of your extension");
 ----
