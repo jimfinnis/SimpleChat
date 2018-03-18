@@ -25,7 +25,7 @@ import org.pale.simplechat.actions.InstructionStream;
  */
 
 public class Bot {
-	
+
 	/**
 	 * You must define one of these to tell the system where to load the bots from.
 	 * It takes a bot name and returns a path, preferably absolute.
@@ -38,10 +38,10 @@ public class Bot {
 	private static PathProvider pathProvider=null; // the path provider, which must be set!
 	// list of all the bots, used in "inherit".
 	static Map<String,Bot> bots = new HashMap<String,Bot>();
-	
+
 	private String name;
 	private Path path; // the path of the bot's data, stored for reload
-	
+
 	// Things in bot may also be used. It's set by using the "inherit" command.
 	public Bot parent=null;  
 	private Map<String,Topic> topicsByName;
@@ -50,9 +50,9 @@ public class Bot {
 	List<SubstitutionsInterface> subs;
 	// list of all my instances
 	Set<BotInstance> instances = new HashSet<BotInstance>();
-	
+
 	public InstructionStream initAction; // an Action to initialise bot variables etc.
-	
+
 	// we insert this into the subs list when we we want to process parent
 	// substitutions
 	public class SubstitutionsFromParent implements SubstitutionsInterface {
@@ -64,7 +64,7 @@ public class Bot {
 				return s;
 		}
 	}
-	
+
 	public String getName(){return name;}
 
 	// this is a list of topic lists.
@@ -79,7 +79,7 @@ public class Bot {
 	List<List<Topic>> topicLists;
 
 	/// map of user functions we might use,
-	
+
 	private Map<String, Function> funcMap;
 	public Function getFunc(String name){
 		Bot b = this;
@@ -89,11 +89,11 @@ public class Bot {
 		} while(b!=null);
 		return null;
 	}
-	
+
 	public boolean hasFunc(String name){
 		return getFunc(name)!=null;
 	}
-	
+
 	public void putFunc(String n, Function f) {
 		funcMap.put(n,f);
 	}
@@ -106,17 +106,17 @@ public class Bot {
 		funcMap =  new HashMap<String,Function>();
 		topicsByName = new HashMap<String,Topic>();
 		parent = null;
-		
+
 		parseConfig(path,"config.conf");
 
 		// read the configuration data
-		
+
 		for(Entry<String, Category> f: cats.entrySet()){
 			Logger.log(Logger.CONFIG,"Category "+f.getKey()+":");
 			f.getValue().dump();
 		}
 	}
-	
+
 	// this runs up the hierarchy of bots scanning the categories that bot knows about.
 	public Category getCategory(String name){
 		Bot b = this;
@@ -124,7 +124,7 @@ public class Bot {
 			if(b.cats.containsKey(name))return b.cats.get(name);
 			b = b.parent;
 		} while(b!=null);
-			
+
 		return null;	
 	}
 	public void addCategory(String name,Category c){
@@ -201,7 +201,17 @@ public class Bot {
 								skipUntilEndSkip(tok);
 							}
 						} else if(tok.sval.equals("endskip")){ // does nowt
-						} else throw new BotConfigException(p,tok,"unknown word in config: "+tok.sval);
+						} else if(tok.sval.equals("message")){
+							if(tok.nextToken()!='"')
+								throw new BotConfigException("expected a string after message");
+							Logger.log(Logger.ALWAYS,"MESSAGE: "+tok.sval);
+						} else if(tok.sval.equals("abort")){
+							if(tok.nextToken()!='"')
+								throw new BotConfigException("expected a string after abort");
+							Logger.log(Logger.ALWAYS,"ABORT: "+tok.sval);
+							throw new BotConfigException("ABORTED WITH "+tok.sval);
+						}
+						else throw new BotConfigException(p,tok,"unknown word in config: "+tok.sval);
 					}
 				}
 			} catch (ParserError e){
@@ -237,17 +247,17 @@ public class Bot {
 			cond = InstructionCompiler.hasExtension(tok.sval);
 		} else
 			throw new BotConfigException("Unknown skip condition");
-			
+
 		if(negate)cond=!cond;
 		return cond;
 	}
 
-	
+
 	private void inherit(String sval) throws BotConfigException {
 		Logger.log(Logger.CONFIG, " Bot "+name+" inheriting "+sval);
 		if(sval.equals(name))
 			throw new BotConfigException("Bots cannot inherit themselves.");
-			
+
 		parent = loadBot(sval);		
 	}
 
@@ -283,7 +293,7 @@ public class Bot {
 		} while(b!=null);
 		return null;
 	}
-	
+
 	/**
 	 * Use this to set the thingy which turns bot names into paths - i.e. which tells the 
 	 * system where the bots live in the filesystem.
@@ -292,7 +302,7 @@ public class Bot {
 	public static void setPathProvider(PathProvider p){
 		pathProvider = p;
 	}
-	
+
 	/**
 	 * Use this to load a bot
 	 * @param name  name of the bot
@@ -327,13 +337,13 @@ public class Bot {
 		this.path = path; // store this so we can reload
 		this.name = name;
 		reload();
-		
+
 		// store the loaded bot under its name
 		bots.put(name, this);
 
 		Logger.log(Logger.LOAD,name+" : created bot OK");
 	}
-	
+
 	/// process substitutions on a string
 	public String processSubs(String s) {
 		for(SubstitutionsInterface sub: subs){
@@ -341,7 +351,7 @@ public class Bot {
 		}
 		return s;
 	}
-	
+
 	// run the init function on an instance, through a conversation, running all the parents first.
 	// Recurses.
 	public void runInits(Conversation c) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, ActionException{

@@ -83,3 +83,10 @@ InstructionCompiler.register(MyCommands.class);
 You can register multiple classes. The instruction compiler will
 run through the class, finding the `Cmd` annotations and registering
 them.
+
+
+You should also call
+----
+InstructionCompiler.addExtension("name of your extension");
+----
+so that <<README.adoc#Skip blocks>> can be used to appropriately detect it.

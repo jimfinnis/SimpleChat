@@ -238,8 +238,8 @@ that there is no `?` here, because you cannot set a pattern variable.
 - `recurse` `(s --)` feeds the string back into the conversation system as if it were
 spoken to the bot, and stacks the result. Take care you don't recurse infinitely!
 - `next` `(p --)` specifies the subpattern block to use for preferential matching of the next input.
-- `hasnext`( -- bool)` pushes whether the conversation has a special subpattern to run; typically used for suppressing random comments from action functions called with `runFunc()` 
-- `holdnext`()` tells the system NOT to clear the special subpatterns when this action runs. An example use is in "catch all" actions, to avoid
+- `hasnext` `( -- bool)` pushes whether the conversation has a special subpattern to run; typically used for suppressing random comments from action functions called with `runFunc()` 
+- `holdnext` `()` tells the system NOT to clear the special subpatterns when this action runs. An example use is in "catch all" actions, to avoid
 the thread of the conversation being lost when the use types something odd.
 - `promote` `(topicname --)` promotes a topic to the top of its list
 - `demote` `(topicname --)` demotes a topic to the bottom of its list
@@ -588,7 +588,6 @@ could be written to store in instance variables as
     ["dog","dogs","puppy","puppies"] cat dup !@dog,
     ["cat","cats","kittens","puddy tat"] cat dup !@cat
     ] cat !@animal
-----
 ----
 It is also possible to add to an existing category with `addcat`.
 This takes a value and a category, and adds the value (either a string
