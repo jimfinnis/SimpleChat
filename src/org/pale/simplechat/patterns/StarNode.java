@@ -1,14 +1,15 @@
 package org.pale.simplechat.patterns;
 
+import java.io.StreamTokenizer;
+
 import org.pale.simplechat.ParserError;
 import org.pale.simplechat.Pattern;
 
 public class StarNode extends Node {
 	private Node node;
 	private int minCount,maxCount; // the number of matches must be in this range
-	public StarNode(Pattern pattern, Node n,String lab,boolean atLeastOne,Node parent) throws ParserError {
+	public StarNode(Pattern pattern, Node n,String lab,boolean atLeastOne,Node parent, StreamTokenizer tok) throws ParserError {
 		super(pattern,lab,parent);
-		pattern.iter.next();
 		node = n; // the node we are wrapping
 		node.parent = this;
 		minCount= atLeastOne ? 1 : 0;

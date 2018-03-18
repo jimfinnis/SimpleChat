@@ -10,7 +10,7 @@ toc::[]
 The action language is used inside pattern actions and user functions,
 for example in a topic file:
 ----
-+.*:
++.*
     "I have no idea what to say to that";
 ----
 the last line
@@ -50,7 +50,7 @@ output by leaving a value on the stack at the end of the code.
 But here's a real example, which is a pattern/action pair you might find
 in a topic to read two numbers and add them together:
 ----
-+"(add $foo=. $bar=.)"
++(add $foo=. $bar=.)
     $foo double # stack the first argument and convert to double
     $bar double # stack the second argument and convert to double
     + str       # add together the two top stack values and convert to string
@@ -89,7 +89,7 @@ small fragments of code in them in between `${` and `}`. For example:
 ```
 or even
 ```
-+"gronk"
++ gronk
     "this is the ${?@gronk 1+ dup !@gronk}th time you've said that.";
 ```
 Don't do what I did in the example above and try to be too clever in your embedded code -
@@ -97,7 +97,7 @@ just use it for accessing variables.
 They are generally best used for accessing the pattern variables assigned in the matched
 pattern:
 ```
-+"(is $n=(?a ~cat) a cat)" "Yes ${$n} is a cat";
++(is $n=(?a ~cat) a cat) "Yes ${$n} is a cat";
 ```
 [NOTE]
 ====
@@ -110,11 +110,11 @@ literal is rather complex, and looks like a list of patterns inside curly bracke
 just as you would find in a topic, but without the preceding `+` or name on each pattern:
 ----
     {
-        "(?Iam [ok good fine well] .*)"
+        +(?Iam [ok good fine well] .*)
             "Glad to hear it.";
-        "(?Iam [bad (not ?too ^bad)] .*)"
+        +(?Iam [bad (not ?too ^bad)] .*)
             "Oh, I'm sorry";
-        ".*" "Righto.";
+        +.* "Righto.";
     } next
 ----
 will stack a subpattern list, which is then used to try to match the next input with
@@ -284,7 +284,7 @@ cases
 ----
 Here's an example which converts the string obtained from the pattern, `$n`, into an integer conversation variable for testing.
 ----        
-    +"(case test $n=.)"
++(case test $n=.)
     $n int !n
     ?n 0 = if "Zero" case
     ?n 1 = if "One" case
@@ -301,7 +301,7 @@ from the stack and leaves the loop if it is non-zero; as such it is equivalent t
 `if leave then`. Loops may be nested.
 This example counts to the number user specifies:
 ----
-    +"(count to $n=.*)"
++(count to $n=.*)
     0!ct
     ""
     loop
@@ -404,7 +404,7 @@ so you can have a function and pattern like this:
     then   
 ;
 
-+"(fac $n=.)"
++(fac $n=.)
     $n int fac
 ;
 ----
@@ -420,7 +420,7 @@ in a config file like:
 ----
 We can use the name in action language to stack a random phrase:
 ----
-+"(open .* door ?please)"
++(open .* door ?please)
     ^ok clean;
 ----
 This is useful, because sub-bots can override the lists to provide
@@ -553,7 +553,7 @@ in the right hand column:
 "Thin Barry" ~human iscat       1
 "Thin barry" ~human iscat       1
 "Thin barry smith" ~human iscat 0
-
+----
 
 === Creating local categories
 It's sometimes useful to create and manipulate categories which are local
@@ -585,7 +585,7 @@ It is also possible to add to an existing category with `addcat`.
 This takes a value and a category, and adds the value (either a string
 or another category) to the category:
 ----
-+"($a=(?[a an] $n=.+) is an animal)"
++($a=(?[a an] $n=.+) is an animal)
     $n ?@anims addcat
     "I now know that ${$a} is an animal!"
 ;

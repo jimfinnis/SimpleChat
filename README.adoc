@@ -107,7 +107,7 @@ the commands!
 
 === Calling action language functions
 Sometimes you might want to get a string or perform an action in response to some kind of event
-rather than user text. Pattern matching here would be wasteful, so it's possible to run
+rather than user text. Pattern matching here (see below) would be wasteful, so it's possible to run
 user-defined action language functions directly:
 [source,java]
 ----
@@ -275,32 +275,35 @@ so the line
 
 Here is an example topic file:
 ----
-# this is a named pattern/action pair. The string is the the pattern,
-# the bit between it and the semicolon is the action. This one stacks
-# the output "Hi, how are you?", and then sets up a subpattern tree
-# and tells the system to use it to parse responses to this output.
+# this is a named pattern/action pair. Following the '+' is an optional
+# pattern name (preceded by a slash if present). Then a pattern node,
+# in this case a sequence. The bit between the end of the sequence,
+# which is delimited by brackets (other pattern nodes  have other delimiters)
+# and the semicolon is the action. This one stacks the output "Hi, how are you?",
+# and then sets up a subpattern tree and tells the system to use it to parse
+# responses to this output.
 
-+hellopattern "([hello hi] .*)"
++/hellopattern ([hello hi] .*)
     "hi how are you?"
     {
         # each subpattern is a pattern/action pair.
         # the pattern is this bit. It matches:
-        # - possibly "Iam" (substituted for "I am" or "I'm")
+        # - possibly "I am" 
         # - then either good, fine or well
         # - then everything else.
 
-        "(?Iam [good fine well] .*)"
+        +(?(I am) [good fine well] .*)
 
             # and this is the action, which just stacks an output
 
             "Glad to hear it.";
 
         # This pattern matches
-        # - "Iam" optionally
+        # - "I am" optionally
         # - then "bad" or the sequence "not too"
         # - then everything else
         
-        "(?Iam [bad (not too)] .*)"
+        +(?(I am) [bad (not too)] .*)
             "Oh, I'm sorry";
     }
     # "next" tells the system to try to match from the subpattern list
@@ -312,11 +315,11 @@ Here is an example topic file:
 # and this gets used to generate the output. You'd normally
 # put this in a topic in the bottom topic list.
 
-+"$foo=.*"
++$foo=.*
     "I don't know how to respond to " $foo +;
 ----
-Note that each pair is preceded by `+` and an optional name, followed
-by the pattern string in quotes, followed by the actions and a semicolon.
+Note that each pair is preceded by `+`, and if the next character is '/' the optional name.
+Then comes a single pattern node, followed by the actions and a semicolon.
 The pattern name can be used to disable and enable a pattern in a topic
 from inside an action.
 
@@ -327,7 +330,7 @@ promoted and demoted to the top or bottom of their list.
 For matching, the input is lower-cased, all punctuation is removed
 and finally it is split into words. Pattern matching is done per-word.
 The entire pattern must be in a pair of quotes. Most patterns
-will be sequences, so you'll see a lot of `"(...)"`.
+will be sequences, so you'll see a lot of `(...)`.
 
 === Pattern Elements
 
@@ -344,15 +347,11 @@ A common pattern might be `^cat .` which will match "not a cat"
 
 [NOTE]
 ====
-- A pattern like `(bar foo)+ bar` may cause problems, because when presented
-with a string like "bar foo bar" immediately match the end token (bar)
-and so fail. Make sure your end pattern is not the start of a star sequence
-pattern. I'm sure there's a clever way around this.
 - Negate nodes are "fun".
 ====
 
 === Labels
-Putting `$labelname=` before a pattern element marks it so that
+Putting `$labelname=` before a pattern node marks it so that
 the data it matches will be stored in a variable. In the case of '*' and
 '+', the variable `$labelname_ct` is set to the match count.
 
@@ -363,12 +362,12 @@ sends that straight back into the pattern matcher. For example,
 there are lots of ways of saying "Hello". We could reduce them to
 one pattern by something like this:
 ----
-+ "(hi .*)" "HELLO" recurse;
-+ "(wotcher .*)" "HELLO" recurse;
-+ "(good [morning afternoon evening])" "HELLO" recurse;
-+ "[awright (all right)] .*" "HELLO" recurse;
-+ "(hello .+)" "HELLO" recurse
-+ "(hey .*)" "HELLO" recurse
++ (hi .*)" "HELLO" recurse;
++ (wotcher .*) "HELLO" recurse;
++ (good [morning afternoon evening]) "HELLO" recurse;
++ ([awright (all right)] .*) "HELLO" recurse;
++ (hello .+) "HELLO" recurse
++ (hey .*) "HELLO" recurse
 ----
 and so on. The `recurse` command sends the string on top of the stack
 back into the interpreter. Naturally we could do a lot of this
@@ -376,8 +375,8 @@ with string substitutions (and it's probably faster), but often
 reductions are easier to read, and are able to do more complicated
 things. More complex reductions could be:
 ----
-+ "(I think $a=.+)" "${$a}" recurse;
-+ "(do you think that $a=.+ is $b=.+)"  "is ${$a} ${$b}" recurse;
++ (I think $a=.+) "${$a}" recurse;
++ (do you think that $a=.+ is $b=.+)  "is ${$a} ${$b}" recurse;
 ----    
 Reductions typically live in a topic of their own.
 
@@ -388,19 +387,19 @@ print statements. They are always terminated
 by a semicolon. The simplest is just a string:
 ----
 +([hello hi] $name=.*)
-"Hi, how are you?";
+    "Hi, how are you?";
 ----
 One special and complex instruction is an entire set of subpatterns and
 actions. When these are set using the `next` command, the conversation will
 try these patterns first. They are pattern/action pairs as normal, but
 defined in curly brackets:
 ----
-+pat "([hello hi] .*)"
++pat ([hello hi] .*)
     "hi how are you?"
     {
-        "([good fine well] .*)"
+        +([good fine well] .*)
             "Glad to hear it.";
-        "([bad (not too)] .*)"
+        +([bad (not too)] .*)
             "Oh, I'm sorry";
     }
 ----
@@ -445,10 +444,10 @@ words, while lists of words have to match all the words in order.
 
 Matching in a pattern is done with the `~categoryname' symbol. Here's an example:
 ----
-+"(is $n=(?a ~cat) a cat)" "Yes ${$n} is a cat";
-+"(is ?a ~dog a cat)" "No, it's a dog";
-+"(is $n=(?a ~animal) a cat)" "No, but a ${$n} is some kind of animal!"+;
-+"(is $n=.+ cat)" "No, I don't know what ${$n} is"+;
++(is $n=(?a ~cat) a cat) "Yes ${$n} is a cat";
++(is ?a ~dog a cat) "No, it's a dog";
++(is $n=(?a ~animal) a cat) "No, but a ${$n} is some kind of animal!"+;
++(is $n=.+ cat) "No, I don't know what ${$n} is"+;
 ----
 === Category post-modifiers
 Some useful hacks are available for modifying a category list. After

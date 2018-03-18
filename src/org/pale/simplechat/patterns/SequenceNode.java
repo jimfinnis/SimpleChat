@@ -1,5 +1,7 @@
 package org.pale.simplechat.patterns;
 
+import java.io.IOException;
+import java.io.StreamTokenizer;
 import java.util.List;
 
 import org.pale.simplechat.Bot;
@@ -14,9 +16,9 @@ public class SequenceNode extends Node {
 	 */
 	private List<Node> nodes;
 	
-	public SequenceNode(Bot t,Pattern pattern, String lab, Node parent) throws ParserError{
+	public SequenceNode(Bot t,Pattern pattern, String lab, Node parent,StreamTokenizer tok) throws ParserError, IOException{
 		super(pattern,lab, parent);
-		nodes = this.pattern.parseNodeList(t,')',this);
+		nodes = this.pattern.parseNodeList(t,')',this,tok);
 		Node pnode=null;
 		// link the child nodes together into a linked list
 		for(Node n: nodes){

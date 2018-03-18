@@ -32,26 +32,6 @@ public class Topic {
 	public String name;
 	StreamTokenizer tok;
 
-	@SuppressWarnings("unused")
-	private double getNextDouble() throws IOException, ParserError{
-		if(tok.nextToken()!=StreamTokenizer.TT_NUMBER)
-			throw new ParserError("Expected a number");
-		return (double)tok.nval;
-	}
-
-	private String getNextString() throws IOException, ParserError{
-		int tt = tok.nextToken();
-		if(tt != '\'' && tt != '\"')
-			throw new ParserError("Expected a string");
-		return tok.sval;
-	}
-
-	@SuppressWarnings("unused")
-	private String getNextIdent() throws IOException, ParserError{
-		if(tok.nextToken()!=StreamTokenizer.TT_WORD)
-			throw new ParserError("Expected an identifier");
-		return tok.sval;
-	}
 	/**
 	 * Load the topic data, and add it to the given bot. May recurse, in that topics
 	 * may trigger the loading of other topics.
@@ -74,20 +54,16 @@ public class Topic {
 				else if(t == ':')InstructionCompiler.parseNamedFunction(bot,tok);
 				else if(t == '~')Category.parseCat(bot, tok);
 				else if(t == '+'){
-					// pattern line is +"pattern" .. OR +name "pattern"
-					String pname,pstring;
+					// pattern line is + .. OR +/name ...
+					String pname=null;
 					int tt = tok.nextToken();
-					if(tt==StreamTokenizer.TT_WORD){
+					if(tt=='/'){
 						// pattern has a name
+						if(tok.nextToken()!=StreamTokenizer.TT_WORD)
+							throw new ParserError("expected a pattern name after '+/'");
 						pname = tok.sval;
-						pstring = getNextString();
-					} else if(tt=='\''||tt=='\"'){
-						// pattern is anonymous
-						pname = null;
-						pstring = tok.sval;
-					} else
-						throw new BotConfigException(f,tok,"badly formed pattern definition");
-					Pattern pat = new Pattern(bot,pname,pstring);
+					} else tok.pushBack();
+					Pattern pat = new Pattern(bot,pname,tok);
 					InstructionStream act = new InstructionStream(bot,tok);
 					Pair pair = new Pair(pat,act);
 					if(pname!=null)

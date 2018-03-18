@@ -1,5 +1,7 @@
 package org.pale.simplechat.patterns;
 
+import java.io.IOException;
+import java.io.StreamTokenizer;
 import java.util.List;
 
 import org.pale.simplechat.Bot;
@@ -12,9 +14,9 @@ public class AnyOfNode extends Node {
 	 * 
 	 */
 	private List<Node> nodes;
-	public AnyOfNode(Bot b,Pattern pattern, String lab,Node parent) throws ParserError{
+	public AnyOfNode(Bot b,Pattern pattern, String lab,Node parent,StreamTokenizer tok) throws ParserError, IOException{
 		super(pattern,lab,parent);
-		nodes = this.pattern.parseNodeList(b,']',this);
+		nodes = this.pattern.parseNodeList(b,']',this,tok);
 	}
 	@Override
 	public void match(MatchData m) {

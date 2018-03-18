@@ -6,11 +6,20 @@ Jim Finnis <jim.finnis@gmail.com>
 
 = Todo
 
+- pattern parsing with the stream tokeniser
+- adding "if/ifnot extension present" compile directive so MC can be 
+  stubbed out; also "message" directive(?)
+- "stored patterns"
 - hashes
-- facts (and check subbots work)
+- relations (and check subbots work)
 - tidy up testbot and parent (and talk about them)
 - try to write Shopkeeper and Soldier
 - document chat test program (including :event)
 
 
+
+
+
+- now use loadBot() to load a bot, which requires a way of getting
+a bot's filename, provided by an instance of BotPathProvider().
 

@@ -1,4 +1,4 @@
-+"(case test $n=.)"
++(case test $n=.)
     $n int !n
     "case is ".
     cases
@@ -11,27 +11,23 @@
    [] ?r each loop i, endloop
 ;
 
-+"looptest"
++looptest
     0 10 range range2list
 ;
 
-+test1 "wibble"
++/test1 wibble
     "test1" curtopic disablepattern
     "test2" curtopic enablepattern
     :[1,2,3,4]; !f
-    ""
-    loop
-        ?f pop dup isnone ifleave +
-    endloop
-    drop
-    "Test 1 fires " swap +;
+    "Test 1 fires " 
+    ?f each loop i+ endloop;
     
-+test2 "wibble"
++/test2 wibble
     "test1" curtopic enablepattern
     "test2" curtopic disablepattern
     "Test 2 fires";
     
-+"rubbish" 
++rubbish
 [] ["dog","fish","cat","bird"] each loop 
     ["head","leg","arm"] each loop
         j i + ,
@@ -48,20 +44,18 @@ endloop
     then
 ;
 
-+"(fac $n=.)"
++(fac $n=.)
     $n int fac
 ;
 
-+"(get $n=.)" "result is " $n int ?@list get +;
++(get $n=.) "result is " $n int ?@list get +;
 
-+"(foo is $foo=.*)"
++(foo is $foo=.*)
     $foo !@foo
     "You're telling me that foo is " ?@foo + "." +
     ;
 
-+"snark" "greet" enabletopic "OK.";
-    
-+"(count to $n=.*)"
++(count to $n=.*)
     0!ct
     ""
     loop
@@ -70,19 +64,19 @@ endloop
         ?ct $n int = ifleave
     endloop trim;
     
-+"(what is foo)"
++(what is foo)
     "foo is " ?@foo +;
 
-+"([hello hi] $n=.+)"
++([hello hi] $n=.+)
     $n !@name
     ["So, my name is",$n,"now, is it?"] " " join
     {
-        "[yes (.* it is)]" "OK then.";
+        +[yes (.* it is)] "OK then.";
     } next
     ;
     
-+"(.* name)"
++(.* name)
     "My name is " ?@name + "." +;
 
-+"([hello hi])"
++([hello hi])
     "Wotcher!" curtopic demote;

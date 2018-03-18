@@ -7,7 +7,7 @@
         ~hippo=[hippo Clover Letys]
     ]
 
-+"(test $n=.+)" 
++(test $n=.+)
         $n ~animal iscat if
             "Top level animal\n".
         then
@@ -20,17 +20,17 @@
         else "Nope". then out sentence;
         
 
-+"($a=(?[a an] $n=.+) is an animal)"
++($a=(?[a an] $n=.+) is an animal)
     $n ?@anims addcat
     $n dp
     "I now know that ${$a} is an animal!"
 ;
         
-+"(is $n=(?a ~cat) a cat)" "Yes ${$n} is a cat";
-+"(is ?a ~dog a cat)" "No, it's a dog";
-+"(is ?a ~hippo a cat)" "No, she's a hippo!";
-+"(is ?a ~hippo a cat)" "No, she's a hippo!";
-+"(is ?a $n=~animal a cat)" "No, but a " $n + " is some kind of animal!"+;
-+"(is ?a $n=.+ a cat)" "No, I don't know what " $n+ " is"+;
++(is $n=(?a ~cat) a cat) "Yes ${$n} is a cat";
++(is ?a ~dog a cat) "No, it's a dog";
++(is ?a ~hippo a cat) "No, she's a hippo!";
++(is ?a ~hippo a cat) "No, she's a hippo!";
++(is ?a $n=~animal a cat) "No, but a " $n + " is some kind of animal!"+;
++(is ?a $n=.+ a cat) "No, I don't know what " $n+ " is"+;
 
 

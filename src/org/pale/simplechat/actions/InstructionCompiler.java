@@ -1,16 +1,15 @@
 package org.pale.simplechat.actions;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import org.pale.simplechat.Bot;
@@ -60,7 +59,18 @@ public class InstructionCompiler {
 		register(org.pale.simplechat.commands.Topics.class);
 		register(org.pale.simplechat.commands.Types.class);
 		register(org.pale.simplechat.commands.Maths.class);
-
+	}
+	
+	// this is a set of which extensions this bot has. Extensions should add to it with
+	// addExtension().
+	private static Set<String> extensions = new HashSet<String>();
+	
+	public static boolean hasExtension(String sval) {
+		return extensions.contains(sval);
+	}
+	
+	public static void addExtension(String name){
+		extensions.add(name);
 	}
 
 	// call this to register new commands!
@@ -396,7 +406,7 @@ public class InstructionCompiler {
 
 	/**
 	 * Parse subpatterns to match after this response.
-	 * Syntax is { "pattern string" action... ; "pattern string" action...; }
+	 * Syntax is { pattern action... ; pattern action...; }
 	 * We have already parsed the opening. Naturally can nest.
 	 * @param tok
 	 * @throws BotConfigException 
@@ -408,15 +418,16 @@ public class InstructionCompiler {
 		for(;;){
 			int tt = tok.nextToken();
 			if(tt=='}')break;
-			if(tt != '\"' && tt != '\'')
-				throw new ParserError("error in parsing subpattern, expected a pattern string");
-			Pattern pat = new Pattern(bot,null,tok.sval);
+			if(tt != '+' && tt != '\'')
+				throw new ParserError("error in parsing subpattern, expected a pattern beginning with '+'");
+			Pattern pat = new Pattern(bot,null,tok);
 			InstructionStream act = new InstructionStream(bot,tok);
 			Pair p = new Pair(pat,act);
 			subpatterns.add(p);
 		}
 		return subpatterns;
 	}
+
 
 
 }

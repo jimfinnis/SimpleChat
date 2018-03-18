@@ -1,5 +1,8 @@
 package org.pale.simplechat.patterns;
 
+import java.io.IOException;
+import java.io.StreamTokenizer;
+
 import org.pale.simplechat.Bot;
 import org.pale.simplechat.Category;
 import org.pale.simplechat.ParserError;
@@ -8,14 +11,14 @@ import org.pale.simplechat.Pattern;
 public class CategoryNode extends Node {
 	private Category c;
 	String cname;
-	public CategoryNode(Bot b,Pattern pattern, String label,Node parent) throws ParserError {
+	public CategoryNode(Bot b,Pattern pattern, String label,Node parent, StreamTokenizer tok) throws ParserError, IOException {
 		super(pattern,label,parent);
-		pattern.iter.next();
-		String name = pattern.parseWord(); // get cat name
-		this.cname = name;
-		c = b.getCategory(name);
+		if(tok.nextToken()!=StreamTokenizer.TT_WORD)
+			throw new ParserError("expected a category name after ~ in pattern");
+		this.cname = tok.sval;
+		c = b.getCategory(cname);
 		if(c==null)
-			throw new ParserError("cannot find category ~"+name);
+			throw new ParserError("cannot find category ~"+cname);
 	}
 
 	@Override

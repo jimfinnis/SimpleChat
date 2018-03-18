@@ -1,7 +1,7 @@
 package org.pale.simplechat;
 
-import java.text.CharacterIterator;
-import java.text.StringCharacterIterator;
+import java.io.IOException;
+import java.io.StreamTokenizer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +23,6 @@ import org.pale.simplechat.patterns.WordNode;
  *
  */
 public class Pattern {
-	public CharacterIterator iter;
-	
 	private Node root;
 
 	private String name; // name of pattern or string if anonymous, used in debugging output
@@ -33,120 +31,79 @@ public class Pattern {
 		return name;
 	}
 
-	/// get word, assumes current char is alphanumeric, terminated by non-alphanumeric
-	public String parseWord(){
-		StringBuilder sb = new StringBuilder();
-		for(;;){
-			char c = iter.current();
-			if(Character.isAlphabetic(c) || Character.isDigit(c)){
-				sb.append(c);
-				iter.next();
-			}
-			else
-				break;
-		}
-		return sb.toString();	
-	}
-	
-	/// get a label terminated with '='. We are currently on the char before the label, usually '$'
-	String parseLabel() throws ParserError{
-		StringBuilder sb = new StringBuilder();
-		iter.next();
-		for(;;){
-			char c = iter.current();
-			if(c == CharacterIterator.DONE)
-				throw new ParserError("pattern label should end with '='");
-			iter.next();
-			if(c=='=')
-				break;
-			sb.append(c);
-		}
-		return sb.toString();	
-	}
-	
-
-	// parse a white-space separated list of nodes. Parser is on the opening terminator, so we have
-	// to skip past it.
-	public List<Node> parseNodeList(Bot b,char terminator,Node parent) throws ParserError{
+	// parse a white-space separated list of nodes. Parser is after the opening 'terminator'.
+	public List<Node> parseNodeList(Bot b,char terminator,Node parent, StreamTokenizer tok) throws ParserError, IOException{
 		List<Node> nodes = new ArrayList<Node>();
-		iter.next(); // skip past opening terminator.
 		for(;;){
-			skipspaces();
-			char c = iter.current();
-			if(c==CharacterIterator.DONE)
-				throw new ParserError("expected node in pattern or '"+terminator+"', got end of string");
-			else if(c==terminator)break;
-			else {
-				Node n = parseNode(b,parent);
-				nodes.add(n);
-			}
+			if(tok.nextToken() == terminator)
+				break;
+			tok.pushBack();
+			Node n = parseNode(b,parent,tok);
+			nodes.add(n);
 		}
-		iter.next();
 		return nodes;
 	}
 	
-	// make the iterator point to the next non-space
-	private void skipspaces(){
-		while(Character.isWhitespace(iter.current())){
-			iter.next();
-		}
-	}
-	
-	/// parse a node. Start parse position is first char in node, end position is just after
-	/// last char in node.
-	public Node parseNode(Bot b,Node parent) throws ParserError{
-		char c = iter.current();
-		if(c==CharacterIterator.DONE)return null;
+	/// parse a node. 
+	public Node parseNode(Bot b,Node parent,StreamTokenizer tok) throws ParserError, IOException{
 		String label;
-		if(c=='$'){
+		if(tok.nextToken() == '$'){
 			// get a label for the node we are about to parse
-			label = parseLabel();
-			c = iter.current();
-		} else
-			label = null;
-		Node n;
-		
-		// plain words (or numbers) match themselves
-		if(Character.isAlphabetic(c)||Character.isDigit(c)){
-			n = new WordNode(this, label, parent);
+			if(tok.nextToken()!=StreamTokenizer.TT_WORD)
+				throw new ParserError("expected pattern node label after $");
+			label = tok.sval; 
+			if(tok.nextToken()!='=')
+				throw new ParserError("expected = after pattern node label");
 		} else {
-			switch(c){
-			case '[':	n = new AnyOfNode(b,this, label,parent);break;
-			case '(':	n = new SequenceNode(b,this, label,parent);break;
-			case '^':	n = new NegateNode(b,this,label,parent); break;
-			case '.':	n = new DotNode(this,label,parent);break;
-			case '?':	n = new MaybeNode(b,this,label,parent);break;
-			case '~':	n = new CategoryNode(b,this,label,parent);break;
-			default:
-				System.out.println("Wut");
-				throw new ParserError("unknown char in pattern: "+c);
-			}
+			label = null;
+			tok.pushBack();
 		}
+		Node n;
+
+		switch(tok.nextToken()){
+		case StreamTokenizer.TT_WORD:
+			// plain words (or numbers) match themselves
+			n = new WordNode(this, label, parent,tok.sval);
+			break;
+		case '[':	n = new AnyOfNode(b,this, label,parent,tok);break;
+		case '(':	n = new SequenceNode(b,this, label,parent,tok);break;
+		case '^':	n = new NegateNode(b,this,label,parent,tok); break;
+		case '.':	n = new DotNode(this,label,parent,tok);break;
+		case '?':	n = new MaybeNode(b,this,label,parent,tok);break;
+		case '~':	n = new CategoryNode(b,this,label,parent,tok);break;
+		default:
+			System.out.println("Wut");
+			throw new ParserError("unknown char in pattern: "+tok.ttype);
+		}
+
 		// we're now on the next char; it may be a post-modifier to wrap the node in a star.
-		switch(iter.current()){
-		case '+': n = new StarNode(this,n,label,true,parent);break;
-		case '*': n = new StarNode(this,n,label,false,parent);break;
-		default:break;
+		switch(tok.nextToken()){
+			case '+': n = new StarNode(this,n,label,true,parent,tok);break;
+			case '*': n = new StarNode(this,n,label,false,parent,tok);break;
+			default:
+				tok.pushBack();
+				break;
 		}
 		return n;
 	}
 
+	static private int anonCt=0;
 	/**
-	 * parse a pattern from a string
+	 * parse a pattern, tokeniser is just before first token in pattern proper.
 	 * @param b
 	 * @param name
 	 * @param pstring
 	 * @throws ParserError
+	 * @throws IOException 
 	 */
-	public Pattern(Bot b, String name, String pstring) throws ParserError{
-		this.name = name==null ? pstring:name;
-		iter = new StringCharacterIterator(pstring);
-		iter.first();
-		Logger.log(Logger.PATTERN, "Parsing pattern "+pstring);
-		root = parseNode(b,null);
-		Logger.log(Logger.PATTERN,"Pattern parsed "+pstring);
-		if(root == null)
-			throw new ParserError("empty pattern");
+	public Pattern(Bot b, String name, StreamTokenizer tok) throws ParserError, IOException{
+		if(name==null)
+			this.name = "anonymous"+anonCt++;
+		else
+			this.name = name;
+		Logger.log(Logger.PATTERN, "Parsing pattern "+this.name);
+		root = parseNode(b,null,tok);
+		Logger.log(Logger.PATTERN,"Pattern parsed "+this.name);
 	}
 	
 	

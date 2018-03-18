@@ -1,13 +1,14 @@
 package org.pale.simplechat.patterns;
 
+import java.io.StreamTokenizer;
+
 import org.pale.simplechat.Pattern;
 
 // matches one of any word
 public class DotNode extends Node {
 
-	public DotNode(Pattern p, String lab,Node parent) {
+	public DotNode(Pattern p, String lab,Node parent, StreamTokenizer tok) { 
 		super(p, lab,parent);
-		p.iter.next();
 	}
 
 	@Override

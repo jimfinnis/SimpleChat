@@ -196,6 +196,11 @@ public class Bot {
 							default:
 								throw new BotConfigException(p,tok,"'subs' should be followed by 'parent' or a subs file name in \"quotes\"");
 							}
+						} else if(tok.sval.equals("skipif")){
+							if(parseCondition(tok)){
+								skipUntilEndSkip(tok);
+							}
+						} else if(tok.sval.equals("endskip")){ // does nowt
 						} else throw new BotConfigException(p,tok,"unknown word in config: "+tok.sval);
 					}
 				}
@@ -204,10 +209,40 @@ public class Bot {
 
 			}
 		} catch (IOException e) {
-			throw new BotConfigException("cannot open config file: "+p.toAbsolutePath().resolve("config.conf").toString());
+			throw new BotConfigException("cannot open config file: "+p.toAbsolutePath().resolve(filename).toString());
 		}
 	}
 
+	private void skipUntilEndSkip(StreamTokenizer tok) throws IOException {
+		for(;;){
+			int t = tok.nextToken();
+			if(t == StreamTokenizer.TT_EOF)break;
+			if(t == StreamTokenizer.TT_WORD && tok.sval.equals("endskip"))break;
+		}
+	}
+
+	private boolean parseCondition(StreamTokenizer tok) throws IOException, BotConfigException {
+		boolean negate,cond;
+		if(tok.nextToken()=='!')
+			negate = true;
+		else {
+			negate=false;
+			tok.pushBack();
+		}
+		if(tok.nextToken()!=StreamTokenizer.TT_WORD)
+			throw new BotConfigException("Expected a word in skip condition");
+		if(tok.sval.equals("extension")){
+			if(tok.nextToken()!=StreamTokenizer.TT_WORD)
+				throw new BotConfigException("Expected an extension name in skip condition");
+			cond = InstructionCompiler.hasExtension(tok.sval);
+		} else
+			throw new BotConfigException("Unknown skip condition");
+			
+		if(negate)cond=!cond;
+		return cond;
+	}
+
+	
 	private void inherit(String sval) throws BotConfigException {
 		Logger.log(Logger.CONFIG, " Bot "+name+" inheriting "+sval);
 		if(sval.equals(name))

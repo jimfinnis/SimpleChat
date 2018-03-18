@@ -1,5 +1,8 @@
 package org.pale.simplechat.patterns;
 
+import java.io.IOException;
+import java.io.StreamTokenizer;
+
 import org.pale.simplechat.Bot;
 import org.pale.simplechat.ParserError;
 import org.pale.simplechat.Pattern;
@@ -7,10 +10,9 @@ import org.pale.simplechat.Pattern;
 public class MaybeNode extends Node {
 
 	Node node;
-	public MaybeNode(Bot b,Pattern p, String lab,Node parent) throws ParserError {
+	public MaybeNode(Bot b,Pattern p, String lab,Node parent, StreamTokenizer tok) throws ParserError, IOException {
 		super(p, lab,parent);
-		p.iter.next();
-		node = p.parseNode(b,this);
+		node = p.parseNode(b,this,tok);
 	}
 	
 	@Override
