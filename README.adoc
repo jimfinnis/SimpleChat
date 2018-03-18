@@ -348,12 +348,13 @@ will be sequences, so you'll see a lot of `(...)`.
 - `^` negates the next pattern
 - `[..]` matches any of the included patterns
 - `(..)` matches all the included patterns in sequence
-- `..*` matches anything (including nothing) until the previous pattern has a match;
 it always succeeds
-- `?..` matches the next pattern, but carries on if it fails
-- `..+` matches at least one token until the previous pattern has a match;
-- `^` negates the following pattern, but does not consume - it should be followed by what you want in that place.
-A common pattern might be `^cat .` which will match "not a cat"
+- `?` matches the next pattern, but carries on if it fails
+- `+` matches at least one token of the previous node until the next node matches;
+so the `.+` in `(.+ foo)` will match one or more tokens until it hits a "foo";
+- `*` is similar, but matches zero or more of the previous node;
+- `^` negates the following pattern, but does not consume - it should be followed by
+what you want in that place. A common pattern might be `^cat .` which will match "not a cat"
 
 [NOTE]
 ====
