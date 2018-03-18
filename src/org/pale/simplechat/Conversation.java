@@ -106,6 +106,14 @@ public class Conversation extends Runtime {
 	/// if not null, the action we ran before has set explicit patterns
 	//// perhaps a dialog tree in subpatterns.
 	public List<Pair> specialpats = null;
+	/// these are held subpatterns - although the action system wipes subpatterns before an
+	/// action runs, these remember what they were so they can be restored if we run "holdnext".
+	private List<Pair> heldSubPats;
+	
+	// called from the "holdnext" command.
+	public void holdnext(){
+		specialpats = heldSubPats;
+	}
 
 	/// try to handle a pattern/action pair by matching the pattern and if a match, running the action.
 	/// If no match return null.
@@ -121,6 +129,9 @@ public class Conversation extends Runtime {
 			try {
 				// clear subpatterns here. We might set them in the resulting action,
 				// but if we don't we should default to the top level search.
+				// However, we store them in heldSubPats, so that if the "holdnext" command runs
+				// we can restore them. This is so that catchall patterns can not clear the subpatterns.
+				heldSubPats = specialpats;
 				specialpats = null; 
 				p.act.run(this,true);
 				// at this point there should be something on the stack or in the SB, and subpatterns

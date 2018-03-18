@@ -19,6 +19,12 @@ public class Topics {
 	@Cmd public static void hasnext(Conversation c) throws ActionException {
 		c.push(new IntValue(c.specialpats != null));
 	}
+	
+	// tell the system NOT to throw away the special patterns!
+	@Cmd public static void holdnext(Conversation c) throws ActionException {
+		c.holdnext();
+	}
+	
 
 	@Cmd public static void recurse(Conversation c) throws ActionException {
 		// recurse the entire string (like SRAI in AIML)
