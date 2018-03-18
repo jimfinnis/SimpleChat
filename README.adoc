@@ -69,9 +69,7 @@ source = new Object(); // could be anything, it's for you to use.
 See the source of the test program
 `org.pale.chattest.MainWindow.java` to see some different code,
 which takes a bot directory from a dialog box and assumes any bots it might
-inherit live in sister directories to it.
-----
-Typically a conversation
+inherit live in sister directories to it.Typically a conversation
 is done by repeatedly calling
 [source,java]
 ----
@@ -241,7 +239,7 @@ used to initialise instance variables. Setting a conversation
 variable will cause a runtime error, because the bot isn't in
 a conversation.
 
-=== Topics
+== Topics
 Topics are (loosely speaking) subjects of conversation.
 Each topic consists of a list of pattern/action pairs, which
 are run through in order when the user provides input.
@@ -326,13 +324,13 @@ from inside an action.
 Whole topics can also be enabled and disabled, as well as being 
 promoted and demoted to the top or bottom of their list.
 
-== Patterns
+=== Patterns
 For matching, the input is lower-cased, all punctuation is removed
 and finally it is split into words. Pattern matching is done per-word.
 The entire pattern must be in a pair of quotes. Most patterns
 will be sequences, so you'll see a lot of `(...)`.
 
-=== Pattern Elements
+==== Pattern Elements
 
 - plain words match themselves
 - `^` negates the next pattern
@@ -355,7 +353,7 @@ Putting `$labelname=` before a pattern node marks it so that
 the data it matches will be stored in a variable. In the case of '*' and
 '+', the variable `$labelname_ct` is set to the match count.
 
-=== Reductions
+==== Reductions
 Following AIML usage, a "reduction" is a pattern/action pair which
 replaces some text with a shorter or canonical form, and then
 sends that straight back into the pattern matcher. For example,
@@ -380,7 +378,7 @@ things. More complex reductions could be:
 ----    
 Reductions typically live in a topic of their own.
 
-== Actions
+=== Actions
 These are in the form of a sequence of instructions in an RPN language,
 which should either leave a string on the stack or build one using 
 print statements. They are always terminated
@@ -459,8 +457,6 @@ to them. Thus `[say talk]/+ing` is stored as `[say talk saying talking]`.
 
 
 == Lists
-IMPORTANT: Lists are not yet implemented
-
 Lists are lists of strings which are accessible from
 that language. They are in many ways like categories, but cannot be 
 matched on - instead they are intended for generating content and customising
