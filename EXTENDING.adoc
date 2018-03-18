@@ -89,4 +89,4 @@ You should also call
 ----
 InstructionCompiler.addExtension("name of your extension");
 ----
-so that <<README.adoc#Skip blocks>> can be used to appropriately detect it.
+so that <<README.adoc#Skip blocks,skip blocks>> can be used to appropriately detect it.
