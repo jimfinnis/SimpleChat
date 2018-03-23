@@ -14,6 +14,7 @@ import org.pale.simplechat.patterns.NegateNode;
 import org.pale.simplechat.patterns.Node;
 import org.pale.simplechat.patterns.SequenceNode;
 import org.pale.simplechat.patterns.StarNode;
+import org.pale.simplechat.patterns.StoredPatternNode;
 import org.pale.simplechat.patterns.WordNode;
 
 /**
@@ -71,6 +72,7 @@ public class Pattern {
 		case '.':	n = new DotNode(this,label,parent,tok);break;
 		case '?':	n = new MaybeNode(b,this,label,parent,tok);break;
 		case '~':	n = new CategoryNode(b,this,label,parent,tok);break;
+		case '&':	n = new StoredPatternNode(b,this,label,parent,tok);break;
 		default:
 			System.out.println("Wut");
 			throw new ParserError("unknown char in pattern: "+tok.ttype);
@@ -122,10 +124,8 @@ public class Pattern {
 		
 		MatchData m = new MatchData(arr);
 		
-		// And here we go. We traverse the nodes, consuming items (or not) in the match data.
-		// If a match fails we set the invalid flag, and subsequent nodes should bomb out early.
-		
-		root.match(m);
+		// attempt to match
+		match(m);
 		
 		// if any tokens remain, that's a fail
 		if(!m.allConsumed()){
@@ -135,7 +135,9 @@ public class Pattern {
 		return m;
 	}
 	
-	
-	
-	
+	public void match(MatchData m){
+		// And here we go. We traverse the nodes, consuming items (or not) in the match data.
+		// If a match fails we set the invalid flag, and subsequent nodes should bomb out early.
+		root.match(m);
+	}
 }

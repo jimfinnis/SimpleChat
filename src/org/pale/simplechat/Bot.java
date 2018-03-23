@@ -45,6 +45,7 @@ public class Bot {
 	// Things in bot may also be used. It's set by using the "inherit" command.
 	public Bot parent=null;  
 	private Map<String,Topic> topicsByName;
+	private Map<String,Pattern> storedPats;
 	private Map<String,Category> cats = new HashMap<String,Category>(); // bot's private categories
 	private Map<String,PhraseList> phraseLists = new HashMap<String,PhraseList>();
 	List<SubstitutionsInterface> subs;
@@ -140,6 +141,15 @@ public class Bot {
 		} while(b!=null);
 		return null;	
 	}
+	
+	public Pattern getStoredPattern(String name){
+		Bot b = this;
+		do {
+			if(b.storedPats.containsKey(name))return b.storedPats.get(name);
+			b = b.parent;
+		} while(b!=null);
+		return null;
+	}
 
 
 	// parse a config.conf in the directory Path
@@ -158,6 +168,7 @@ public class Bot {
 						}
 					} else if(t == '~'){
 						Category.parseCat(this, tok);
+
 					} else if(t == '^'){
 						if(tok.nextToken()!=StreamTokenizer.TT_WORD)
 							throw new ParserError("expected name in list");
@@ -167,6 +178,14 @@ public class Bot {
 						if(tok.nextToken()!='[')
 							throw new ParserError("expected =[ after list name");
 						phraseLists.put(name,new PhraseList(tok));
+						Logger.log(Logger.CONFIG,"^^^ new phrase list: "+name);
+					} else if(t == '&'){
+						if(tok.nextToken()!=StreamTokenizer.TT_WORD)
+							throw new ParserError("expected name in stored pattern");
+						String name = tok.sval;
+						if(tok.nextToken()!='=')
+							throw new ParserError("expected = after pattern name");
+						storedPats.put(name,new Pattern(this,null,tok));
 						Logger.log(Logger.CONFIG,"^^^ new phrase list: "+name);
 					} else if(t == StreamTokenizer.TT_WORD){
 						if(tok.sval.equals("inherit")){
