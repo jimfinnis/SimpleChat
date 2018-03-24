@@ -11,6 +11,8 @@ import org.pale.simplechat.Pattern;
 public class CategoryNode extends Node {
 	private Category c;
 	String cname;
+	String typeSpec = null;
+	
 	public CategoryNode(Bot b,Pattern pattern, String label,Node parent, StreamTokenizer tok) throws ParserError, IOException {
 		super(pattern,label,parent);
 		if(tok.nextToken()!=StreamTokenizer.TT_WORD)
@@ -19,6 +21,13 @@ public class CategoryNode extends Node {
 		c = b.getCategory(cname,true);
 		if(c==null)
 			throw new ParserError("cannot find category ~"+cname);
+		if(tok.nextToken() == '/'){
+			// get type specifier
+			if(tok.nextToken()!=StreamTokenizer.TT_WORD)
+				throw new ParserError("expected type specifier");
+			typeSpec = tok.sval;
+		} else
+			tok.pushBack();
 	}
 
 	@Override
@@ -31,6 +40,10 @@ public class CategoryNode extends Node {
 		// a lot of Category because of the shenanigans when matching has to recurse down
 		// the category tree.
 		if(!c.match(m)){
+			// TODO type specifiers.
+			
+			
+			
 			log("failed");
 			m.invalid=true;
 		} else 

@@ -9,4 +9,13 @@ public class Utils {
 		return s2;
 	}
 	
+	public static String removeSuffix(String s,String suffix){
+		int pos = s.lastIndexOf(suffix);
+		if (pos == s.length()-suffix.length()) {
+			return s.substring(0, pos);
+		} else {
+			return s;
+		}
+	}
+	
 }

@@ -159,12 +159,15 @@ public class MainWindow implements ActionListener, MenuListener {
 	public void actionPerformed(ActionEvent e) {
 		String s;
 		if(instance != null){
+			long startTime = System.currentTimeMillis();
 			String in = textField.getText();
 			if(in.substring(0,1).equals(":")) { // :name means run a func
 				s = instance.runFunc(in.substring(1), source);
 			} else {
 				s = instance.handle(in, source);				
 			}
+			long endTime = System.currentTimeMillis();
+			s = s + " ["+(endTime-startTime)+"ms]";
 		} else
 			s = "No bot loaded yet.";
 		textArea.append(s+"\n");

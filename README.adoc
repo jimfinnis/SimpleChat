@@ -465,9 +465,9 @@ Some useful hacks are available for modifying a category list. After
 the square brackets, the `/` symbol precedes a set of modifiers.
 These are characters followed by some data.
 
-- `/+suffix` duplicates all the words in the category, adding the suffix
-to them. Thus `[say talk]/+ing` is stored as `[say talk saying talking]`.
-
+- `/+suffix` adds an optional suffix to a category. If the match fails,
+then we can try again with the suffix removed from the matching data.
+Thus `[say talk]/+ing` will match "saying" and "talking."
 
 == Lists
 Lists are lists of strings which are accessible from

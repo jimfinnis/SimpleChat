@@ -33,5 +33,14 @@ public class Strings {
 		c.push(new StringValue(r));
 		sentence(c);
 	}
+	
+	@Cmd public static void article(Conversation c) throws ActionException {
+		String s = c.popString();
+		if(s.length()>0 && "aeiou".indexOf(s.charAt(0))>=0)
+			s = "an";
+		else
+			s = "a";
+		c.push(new StringValue(s));
+	}
 
 }

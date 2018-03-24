@@ -21,8 +21,6 @@ public class Tokenizer extends StreamTokenizer {
 	public Tokenizer setForCats(){
 		resetSyntax();
 		wordChars(0x21, 0xFF);
-		ordinaryChar('=');
-		ordinaryChar('[');
 		ordinaryChar(']');
 		ordinaryChar('~');
 		whitespaceChars(0x00, 0x20);

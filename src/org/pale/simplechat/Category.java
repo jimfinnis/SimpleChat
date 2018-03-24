@@ -32,6 +32,7 @@ public class Category {
 	private Set<String> words = new HashSet<String>(); // leaf nodes of this category
 	private Set<Category> cats = new HashSet<Category>(); // branches
 	private List<String[]> lists = new ArrayList<String[]>(); // more leaf nodes for multiple word leafs, sorted in descending length
+	private Set<String> suffixes = new HashSet<String>(); // suffixes the category may have
 	/**
 	 * depth first search of this category
 	 * @param w
@@ -44,7 +45,7 @@ public class Category {
 		}
 		return false;
 	}
-	
+
 	public Category(String name){
 		this.name = name;
 	}
@@ -70,15 +71,13 @@ public class Category {
 		for(;;){
 			switch(tok.nextToken()){
 			case '+':
-				// add a suffix to every word (not lists or subcats) in the cat, and put that in as duplicates.
-				// This means [say talk]/+ing is [say talk saying talking].
+				// add a suffix to the category. If it doesn't find a match with
+				// the bare word, it will add this to the words (and last word in list)
+				// and retry.
+
 				if(tok.nextToken()!=StreamTokenizer.TT_WORD)
 					throw new ParserError("Expected suffix after '+' in category modifier");
-				List<String> toAdd = new ArrayList<String>();
-				for(String w: words)
-					toAdd.add(w+tok.sval);
-				for(String w: toAdd)
-					add(w);
+				suffixes.add(tok.sval);
 				break;
 			default:
 				tok.pushBack();return;
@@ -96,8 +95,7 @@ public class Category {
 
 	static Category parseCat(Bot b,Tokenizer tok) throws ParserError, IOException{
 
-		tok.setForCats();
-		
+
 		if(tok.nextToken()!=StreamTokenizer.TT_WORD)
 			throw new ParserError("expected name in category");
 		String name = tok.sval;
@@ -113,6 +111,7 @@ public class Category {
 			if(tok.nextToken()!='[')
 				throw new ParserError("expected [ in category definition");
 			Category c = b.getCategory(name,false);
+			tok.setForCats();
 			outerloop:
 				for(;;){
 					int t = tok.nextToken();
@@ -128,6 +127,8 @@ public class Category {
 					default: throw new ParserError("error in category");
 					}
 				}
+			tok.setDefault();
+
 			// check for post modifiers
 			if(tok.nextToken()=='/')
 				c.parseModifier(tok);
@@ -142,8 +143,7 @@ public class Category {
 					return arg1.length-arg0.length;
 				}
 			});
-			tok.setDefault();
-			
+
 			return c;
 		}
 	}
@@ -168,8 +168,8 @@ public class Category {
 			c._dump(level+1);
 		}
 	}
-	
-	
+
+
 	private boolean containsRecurse(Category c,int depth){
 		if(depth>10)
 			return true;
@@ -181,19 +181,22 @@ public class Category {
 		}
 		return false;
 	}
-	
+
 	public boolean containsRecurse(Category c) {
 		return containsRecurse(c,0);
 	}
 
-	public boolean match(MatchData m) {
+
+
+
+	public boolean matchWithSuffix(MatchData m,String suffix){
 		// first, try the words.
-		if(words.contains(m.cur())){
+		if(words.contains(Utils.removeSuffix(m.cur(),suffix))){
 			m.consumed = m.consume();
-			return true;			
+			return true;		
 		}
 		// then try the lists. This returns 0 or the number of words matches.
-		int n = matchesList(m.words,m.pos);
+		int n = matchesList(m.words,m.pos,suffix);
 		if(n>0){
 			// if we got one, consume those words and concatenate into a string for
 			// the new consumed data from this node.
@@ -209,10 +212,23 @@ public class Category {
 		}
 		// otherwise try the subcategories.
 		for(Category sc: cats){
-			if(sc.match(m))
+			if(sc.matchWithSuffix(m,suffix))
 				return true;
 		}
-		// no match.
+		return false;
+
+	}
+
+
+	public boolean match(MatchData m) {
+		if(matchWithSuffix(m,""))
+			return true;
+		else {
+			for(String suffix : suffixes){
+				if(matchWithSuffix(m,suffix))
+					return true;
+			}
+		}
 		return false;
 	}
 
@@ -221,28 +237,11 @@ public class Category {
 
 	public boolean isMatch(String[] s){
 		s = Utils.toLowerCase(s);
-		// first, try the words. This is only used when length is 1.
-		if(s.length==1 && words.contains(s[0])){
-			return true;			
-		}
-		// then try the lists. This returns 0 or the number of words matches.
-		// In this function we only have a positive match if the number of words
-		// matched is the same as the number passed in (i.e. "red dog with nose" will not match the list "red dog").
-		int n = matchesList(s,0);
-		if(n == s.length){
-			return true;
-		}
-		// otherwise try the subcategories.
-		for(Category sc: cats){
-			if(sc.isMatch(s))
-				return true;
-		}
-		// no match.
-		return false;
-
+		MatchData m = new MatchData(s);
+		return match(m);
 	}
 
-	private int matchesList(String[] a, int pos) {
+	private int matchesList(String[] a, int pos,String suffix) {
 		// Do the words in the array a starting at pos match any of our lists?
 		// If so, return the number of items in the matching list. Match only complete lists, obviously.
 		// There may well be a quicker way to do this.
@@ -252,7 +251,12 @@ public class Category {
 			for(String[] lst: lists){
 				if(lst.length > maxwords)continue; // too many words to match
 				for(int i=0;i<lst.length;i++){
-					if(!lst[i].equals(a[i+pos]))continue outerloop; // match failed, abandon
+					String w;
+					if(i==lst.length-1)
+						w = Utils.removeSuffix(a[i+pos],suffix);
+					else
+						w = a[i+pos];
+					if(!lst[i].equals(w))continue outerloop; // match failed, abandon
 				}
 				// all matched OK
 				return lst.length;
