@@ -107,9 +107,15 @@ public class Bot {
 		subs = new ArrayList<SubstitutionsInterface>();
 		funcMap =  new HashMap<String,Function>();
 		topicsByName = new HashMap<String,Topic>();
+		cats = new HashMap<String,Category>();
 		parent = null;
 
 		parseConfig(path,"config.conf");
+		
+		for(Entry<String, Category> e: cats.entrySet()){
+			if(e.getValue().containsRecurse(e.getValue()))
+				throw new BotConfigException("Category contains recursion: "+e.getKey());
+		}
 
 /*
 		for(Entry<String, Category> f: cats.entrySet()){
@@ -129,7 +135,7 @@ public class Bot {
 		if(mustExist)
 			return null;
 		else {
-			Category blankCat = new Category();
+			Category blankCat = new Category(name);
 			cats.put(name, blankCat);
 			return blankCat;
 		}

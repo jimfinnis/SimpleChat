@@ -1,0 +1,8 @@
+#!/bin/bash
+
+angort cs2cats.ang q0 >nouns.conf
+angort cs2cats.ang q1 >adjectives.conf
+angort cs2cats.ang q2 >adverbs.conf
+angort cs2cats.ang q3 >affect.conf
+angort cs2cats.ang q4 >prepos.conf
+angort cs2cats.ang q5 >verbs.conf

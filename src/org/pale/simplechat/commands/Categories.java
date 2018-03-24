@@ -30,7 +30,7 @@ public class Categories {
 	 */
 	@Cmd public static void cat(Conversation c) throws ActionException {
 		List<Value> lst = c.popList();
-		c.push(new CatValue("instcat",listToCat(lst)));
+		c.push(new CatValue("instcat",listToCat("instcat",lst)));
 	}
 	
 	@Cmd public static void addcat(Conversation c) throws ActionException {
@@ -51,7 +51,7 @@ public class Categories {
 
 	private static void addToCat(Category c,Value v){
 		if(v instanceof ListValue){
-			c.add(listToCat(((ListValue)v).list));
+			c.add(listToCat("listcat",((ListValue)v).list));
 		} else if(v instanceof CatValue){
 			c.add(((CatValue)v).c);
 		} else {
@@ -59,8 +59,8 @@ public class Categories {
 		}		
 	}
 	
-	private static Category listToCat(List<Value> lst){
-		Category c = new Category();
+	private static Category listToCat(String name,List<Value> lst){
+		Category c = new Category(name);
 		for(Value v : lst){
 			addToCat(c,v);
 		}

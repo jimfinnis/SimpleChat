@@ -28,6 +28,7 @@ import org.pale.simplechat.patterns.MatchData;
  *
  */
 public class Category {
+	String name;
 	private Set<String> words = new HashSet<String>(); // leaf nodes of this category
 	private Set<Category> cats = new HashSet<Category>(); // branches
 	private List<String[]> lists = new ArrayList<String[]>(); // more leaf nodes for multiple word leafs, sorted in descending length
@@ -43,6 +44,10 @@ public class Category {
 		}
 		return false;
 	}
+	
+	public Category(String name){
+		this.name = name;
+	}
 
 
 	public void add(String phrase){
@@ -54,7 +59,10 @@ public class Category {
 	}
 
 	public void add(Category subcat){
-		cats.add(subcat);
+		if(subcat.containsRecurse(this))
+			System.out.println("Category recursion detected, not adding "+subcat.name+" to "+name);
+		else
+			cats.add(subcat);
 	}
 
 	// apply various modifiers to a category
@@ -159,6 +167,23 @@ public class Category {
 		for(Category c:cats){
 			c._dump(level+1);
 		}
+	}
+	
+	
+	private boolean containsRecurse(Category c,int depth){
+		if(depth>10)
+			return true;
+		if(cats.contains(c))
+			return true;
+		for(Category cc: cats){
+			if(cc.containsRecurse(c,depth+1))
+				return true;
+		}
+		return false;
+	}
+	
+	public boolean containsRecurse(Category c) {
+		return containsRecurse(c,0);
 	}
 
 	public boolean match(MatchData m) {
