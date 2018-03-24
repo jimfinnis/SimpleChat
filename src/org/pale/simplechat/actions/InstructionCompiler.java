@@ -110,7 +110,7 @@ public class InstructionCompiler {
 				if(tok.nextToken()!=StreamTokenizer.TT_WORD)
 					throw new ParserError("expected a category name after ~");
 				else {
-					Category c = bot.getCategory(tok.sval);
+					Category c = bot.getCategory(tok.sval,true);
 					if(c==null)
 						throw new ParserError("unknown category: "+tok.sval);
 					insts.add(new LiteralInstruction(new CatValue(tok.sval,c)));

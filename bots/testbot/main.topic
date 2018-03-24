@@ -1,36 +1,3 @@
-~animal=
-    [
-        "small one"
-        bird pigeon aardvark yak
-        ~dog=[dog dogs puppy puppies]
-        ~cat=[cat cats kittens "puddy tat"]
-        ~hippo=[hippo Clover Letys]
-    ]
-
-+(test $n=.+)
-        $n ~animal iscat if
-            "Top level animal\n".
-        then
-        $n ~cat iscat if
-            "Cat\n".
-        then
-        $n ?@anims iscat if 
-            "Yup".
-            $n ?@weirdanims iscat if ", and it's weird". then
-        else "Nope". then out sentence;
-        
-
-+($a=(?[a an] $n=.+) is an animal)
-    $n ?@anims addcat
-    $n dp
-    "I now know that ${$a} is an animal!"
-;
-        
-+(is $n=(?a ~cat) a cat) "Yes ${$n} is a cat";
-+(is ?a ~dog a cat) "No, it's a dog";
-+(is ?a ~hippo a cat) "No, she's a hippo!";
-+(is ?a ~hippo a cat) "No, she's a hippo!";
-+(is ?a $n=~animal a cat) "No, but a " $n + " is some kind of animal!"+;
-+(is ?a $n=.+ a cat) "No, I don't know what " $n+ " is"+;
-
-
++(.* $s=~animals .+ ~goodness .*)
+    "That's nice.".
+    "I like ${$s} too.".;

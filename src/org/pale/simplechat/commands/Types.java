@@ -1,10 +1,8 @@
 package org.pale.simplechat.commands;
 
 import org.pale.simplechat.Conversation;
-import org.pale.simplechat.Logger;
 import org.pale.simplechat.actions.ActionException;
 import org.pale.simplechat.actions.Cmd;
-import org.pale.simplechat.actions.InstructionCompiler;
 import org.pale.simplechat.values.DoubleValue;
 import org.pale.simplechat.values.IntValue;
 import org.pale.simplechat.values.NoneValue;

@@ -3,6 +3,7 @@ package org.pale.simplechat;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.MalformedInputException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,26 +111,29 @@ public class Bot {
 
 		parseConfig(path,"config.conf");
 
-		// read the configuration data
-
+/*
 		for(Entry<String, Category> f: cats.entrySet()){
 			Logger.log(Logger.CONFIG,"Category "+f.getKey()+":");
 			f.getValue().dump();
 		}
-	}
+*/	}
 
 	// this runs up the hierarchy of bots scanning the categories that bot knows about.
-	public Category getCategory(String name){
+	public Category getCategory(String name, boolean mustExist){
 		Bot b = this;
 		do {
 			if(b.cats.containsKey(name))return b.cats.get(name);
 			b = b.parent;
 		} while(b!=null);
 
-		return null;	
-	}
-	public void addCategory(String name,Category c){
-		cats.put(name,c);
+		if(mustExist)
+			return null;
+		else {
+			Category blankCat = new Category();
+			cats.put(name, blankCat);
+			return blankCat;
+		}
+			
 	}
 
 	// this runs up the hierarchy of bots scanning the lists that bot knows about.
@@ -154,8 +158,10 @@ public class Bot {
 
 	// parse a config.conf in the directory Path
 	private void parseConfig(Path p,String filename) throws BotConfigException{
+		String fn = p.resolve(filename).toAbsolutePath().toString();
 		try {
-			StreamTokenizer tok = new Tokenizer(p.resolve(filename));
+			Tokenizer tok = new Tokenizer(p.resolve(filename));
+
 			try {
 				for(;;) {
 					int t = tok.nextToken();
@@ -234,11 +240,13 @@ public class Bot {
 					}
 				}
 			} catch (ParserError e){
-				throw new BotConfigException(p,tok,"error in init action : "+e.getMessage());
+				throw new BotConfigException(p,tok,"error in config "+fn+": "+e.getMessage());
 
 			}
+		} catch (MalformedInputException e){
+			throw new BotConfigException("Config file "+fn+" is malformed (bad charset?)");
 		} catch (IOException e) {
-			throw new BotConfigException("cannot open config file: "+p.toAbsolutePath().resolve(filename).toString());
+			throw new BotConfigException("cannot open config file: "+fn);
 		}
 	}
 

@@ -16,7 +16,7 @@ public class CategoryNode extends Node {
 		if(tok.nextToken()!=StreamTokenizer.TT_WORD)
 			throw new ParserError("expected a category name after ~ in pattern");
 		this.cname = tok.sval;
-		c = b.getCategory(cname);
+		c = b.getCategory(cname,true);
 		if(c==null)
 			throw new ParserError("cannot find category ~"+cname);
 	}

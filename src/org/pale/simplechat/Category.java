@@ -86,14 +86,17 @@ public class Category {
 	// Names will be put into the given namespace.
 	// Parsing starts *after* the tilde.
 
-	static Category parseCat(Bot b,StreamTokenizer tok) throws ParserError, IOException{
+	static Category parseCat(Bot b,Tokenizer tok) throws ParserError, IOException{
+
+		tok.setForCats();
+		
 		if(tok.nextToken()!=StreamTokenizer.TT_WORD)
 			throw new ParserError("expected name in category");
 		String name = tok.sval;
 		if(tok.nextToken()!='='){
 			tok.pushBack();
 			// return pre-existing cat
-			Category c = b.getCategory(name);
+			Category c = b.getCategory(name,false);
 			if(c==null)
 				throw new ParserError("cannot find category ~"+name);
 			return c;
@@ -101,8 +104,7 @@ public class Category {
 			// we're defining a new one!
 			if(tok.nextToken()!='[')
 				throw new ParserError("expected [ in category definition");
-			Category c = new Category();
-			b.addCategory(name,c);
+			Category c = b.getCategory(name,false);
 			outerloop:
 				for(;;){
 					int t = tok.nextToken();
@@ -132,6 +134,8 @@ public class Category {
 					return arg1.length-arg0.length;
 				}
 			});
+			tok.setDefault();
+			
 			return c;
 		}
 	}

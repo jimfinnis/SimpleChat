@@ -6,10 +6,13 @@ Jim Finnis <jim.finnis@gmail.com>
 
 = Todo
 
-- pattern parsing with the stream tokeniser
-- adding "if/ifnot extension present" compile directive so MC can be 
-  stubbed out; also "message" directive(?)
+- masses of categories; mods to cat parser: can use cats in other cats before they are declared, tokenizer changes in cat parser
+- sort out the pluralisation and make sense of top level cats (what do
+ the weird digit suffices in the chatscript data mean?
+
 - "stored patterns"
+
+
 - hashes
 - relations (and check subbots work)
 - tidy up testbot and parent (and talk about them)

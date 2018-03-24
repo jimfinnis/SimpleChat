@@ -30,7 +30,7 @@ public class Topic {
 	
 
 	public String name;
-	StreamTokenizer tok;
+	Tokenizer tok;
 
 	/**
 	 * Load the topic data, and add it to the given bot. May recurse, in that topics
@@ -45,6 +45,7 @@ public class Topic {
 		try {
 			this.name = name;
 			tok = new Tokenizer(f);
+
 			Logger.log(Logger.CONFIG, "+++++++++++++++++++++++++++++++++ Parsing topic file for "+bot.getName()+": "+name);
 			
 			// we got the name of the topic, so parse a list of pattern/action pairs, or possibly other topic includes
