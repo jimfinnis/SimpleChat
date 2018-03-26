@@ -20,6 +20,26 @@ public class ListValue extends Value {
 		this.list = new ArrayList<Value>();
 	}
 	
+	@Override
+	public Value get(Value k) throws ActionException {
+		int i = k.toInt();
+		
+		if(i<0 || i>=list.size())
+			return NoneValue.instance;
+		else
+			return list.get(i);
+	}
+	
+	@Override
+	public void set(Value k,Value v) throws ActionException {
+		int i = k.toInt();
+		if(i<0 || i>=list.size())
+			throw new ActionException("set out of range in list");
+		else
+			list.set(i, v);
+		
+	}
+	
 	// sort-of copy ctor.
 	public ListValue copy(List<Value> l){
 		ListValue out = new ListValue();

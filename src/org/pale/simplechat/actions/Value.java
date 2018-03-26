@@ -28,5 +28,13 @@ public abstract class Value {
 	public Value neg() throws ActionException {
 		throw new ActionException("cannot negate a "+this.getClass().getSimpleName());
 	}
+
+	public Value get(Value k) throws ActionException {
+		throw new ActionException(this.getClass().getSimpleName()+" is not a collection (list or hash");
+	}
+	
+	public void set(Value k,Value v) throws ActionException {
+		throw new ActionException(this.getClass().getSimpleName()+" is not a collection (list or hash");		
+	}
 	
 }

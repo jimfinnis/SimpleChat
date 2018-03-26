@@ -11,26 +11,22 @@ import org.pale.simplechat.values.IntValue;
 import org.pale.simplechat.values.NoneValue;
 import org.pale.simplechat.values.StringValue;
 
-public class Lists {
+public class Collections {
 	
 	
 	@Cmd public static void get(Conversation c) throws ActionException {
-		// (idx list -- val)
-		List<Value> lst = c.popList();
-		int key = c.pop().toInt();
-		if(key>=0 && key<lst.size())
-			c.push(lst.get(key));
-		else
-			c.push(NoneValue.instance);
+		// (key listORhash -- val)
+		Value collection = c.pop();
+		Value k = c.pop();
+		c.push(collection.get(k));
 	}
 	
 	@Cmd public static void set(Conversation c) throws ActionException {
-		// (val idx list -- )
-		List<Value> lst = c.popList();
-		int key = c.pop().toInt();
+		// (val key listORhash -- )
+		Value collection = c.pop();
+		Value k = c.pop();
 		Value v = c.pop();
-		if(key>=0 && key<lst.size())
-			lst.set(key, v);
+		collection.set(k, v);
 	}
 	
 	@Cmd public static void pop(Conversation c) throws ActionException {

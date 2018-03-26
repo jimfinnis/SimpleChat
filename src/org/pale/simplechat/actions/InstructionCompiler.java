@@ -52,7 +52,7 @@ public class InstructionCompiler {
 		Logger.log(Logger.CONFIG, "registering builtins");
 		register(org.pale.simplechat.commands.Categories.class);
 		register(org.pale.simplechat.commands.Debugging.class);
-		register(org.pale.simplechat.commands.Lists.class);
+		register(org.pale.simplechat.commands.Collections.class);
 		register(org.pale.simplechat.commands.OutputString.class);
 		register(org.pale.simplechat.commands.Stack.class);
 		register(org.pale.simplechat.commands.Strings.class);
@@ -210,12 +210,17 @@ public class InstructionCompiler {
 				}
 				break;
 			case '[':
-				insts.add(new Lists.NewListInstruction());
+				if(tok.nextToken()=='[')
+					insts.add(new Collections.NewHashInstruction());
+				else {
+					tok.pushBack();
+					insts.add(new Collections.NewListInstruction());
+				}
 				if(tok.nextToken()!=']')tok.pushBack(); // skip ] in [].
 				break;
 			case ']':
 			case ',':
-				insts.add(new Lists.AppendInstruction());
+				insts.add(new Collections.AppendInstruction());
 				break;
 			case ':':
 			{
