@@ -84,6 +84,17 @@ public class BotInstance  {
 		vars.put(s, v);
 	}
 	
+	/// used in persistence.
+	public Map<String,Value> getVars(){
+		return vars;
+	}
+	
+	/// another crude hack, which the minecraft stuff uses so the bot instance vars
+	/// can be set from persisted data.
+	public void setVars(Map<String,Value> m){
+		vars = m;
+	}
+	
 	// return the private data object you may have set; you'll need to cast.
 	public Object getData(){
 		return data;
