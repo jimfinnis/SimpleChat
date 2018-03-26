@@ -31,6 +31,10 @@ public class MapValue extends Value {
 		String sk = k.str();
 		map.put(sk, v);
 	}
+	@Override
+	public boolean containsKey(Value k) throws ActionException {
+		return map.containsKey(k.str());
+	}
 
 	
 	@Override

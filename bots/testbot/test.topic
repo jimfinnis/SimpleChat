@@ -15,6 +15,10 @@
     0 10 range range2list
 ;
 
++hash
+    ?@testhash
+;
+
 +/test1 wibble
     "test1" curtopic disablepattern
     "test2" curtopic enablepattern

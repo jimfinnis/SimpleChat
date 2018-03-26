@@ -87,16 +87,10 @@ public class Collections {
 	}
 	
 	@Cmd public static void in(Conversation c) throws ActionException {
-		// (val list -- boolean)
-		List<Value> lst = c.popList();
+		// (key listORhash -- boolean)
+		Value collection = c.pop();
 		Value v = c.pop();
-		for(Value vv: lst){
-			if(vv.equals(v)){
-				c.push(new IntValue(true));
-				return;
-			}
-		}
-		c.push(new IntValue(false));
+		c.push(new IntValue(collection.containsKey(v)));
 	}
 
 

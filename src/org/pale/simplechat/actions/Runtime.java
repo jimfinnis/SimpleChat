@@ -1,9 +1,11 @@
 package org.pale.simplechat.actions;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import org.pale.simplechat.Pair;
 import org.pale.simplechat.values.ListValue;
+import org.pale.simplechat.values.MapValue;
 import org.pale.simplechat.values.SubPatValue;
 
 public class Runtime {
@@ -71,11 +73,18 @@ public class Runtime {
 			throw new ActionException("requires a list on the stack");
 		return ((ListValue)v).list;
 	}
+	public Map<String,Value> popMap() throws ActionException {
+		Value v = pop();
+		if(!(v instanceof MapValue))
+			throw new ActionException("requires a map on the stack");
+		return ((MapValue)v).map;
+	}
 	
 
 	public String popString() throws ActionException {
 		return pop().str();
 	}
+	
 	
 	public String stackDump(){
 		StringBuilder sb = new StringBuilder();

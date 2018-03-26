@@ -1,8 +1,11 @@
 package org.pale.simplechat.actions;
 
+import java.util.Map;
+
 import org.pale.simplechat.Conversation;
 import org.pale.simplechat.values.ListValue;
 import org.pale.simplechat.values.MapValue;
+import org.pale.simplechat.values.NoneValue;
 
 public class Collections  {
 
@@ -31,7 +34,6 @@ public class Collections  {
 				((ListValue)lst).list.add(append); // should this be a clone??
 			return 1;
 		}
-
 	}
 
 	public static class NewListInstruction extends Instruction {
@@ -41,4 +43,34 @@ public class Collections  {
 			return 1;
 		}
 	}
+
+	public static class SymbolGetInstruction extends Instruction {
+		String sym;
+		public SymbolGetInstruction(String sym) {
+			this.sym=sym;
+		}
+		@Override
+		int execute(Conversation c) throws ActionException {
+			Map<String,Value> m = c.popMap();
+			Value v = m.get(sym);
+			if(v==null)v=NoneValue.instance;
+			c.push(v);
+			return 1;
+		}
+	}
+
+	public static class SymbolSetInstruction extends Instruction {
+		String sym;
+		public SymbolSetInstruction(String sym) {
+			this.sym=sym;
+		}
+		@Override
+		int execute(Conversation c) throws ActionException {
+			Map<String,Value> m = c.popMap();
+			Value v = c.pop();
+			m.put(sym,v);
+			return 1;
+		}
+	}
+
 }

@@ -37,7 +37,10 @@ public class ListValue extends Value {
 			throw new ActionException("set out of range in list");
 		else
 			list.set(i, v);
-		
+	}
+	@Override
+	public boolean containsKey(Value k) throws ActionException {
+		return list.contains(k);
 	}
 	
 	// sort-of copy ctor.

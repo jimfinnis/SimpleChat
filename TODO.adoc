@@ -13,7 +13,9 @@ Jim Finnis <jim.finnis@gmail.com>
 - "stored patterns"
 
 
-- hashes
+- hashes and ?` !` shortcuts. Hash and list commands like get, set and in.
+
+
 - relations (and check subbots work)
 - tidy up testbot and parent (and talk about them)
 - try to write Shopkeeper and Soldier

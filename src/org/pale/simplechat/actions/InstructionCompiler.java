@@ -60,15 +60,15 @@ public class InstructionCompiler {
 		register(org.pale.simplechat.commands.Types.class);
 		register(org.pale.simplechat.commands.Maths.class);
 	}
-	
+
 	// this is a set of which extensions this bot has. Extensions should add to it with
 	// addExtension().
 	private static Set<String> extensions = new HashSet<String>();
-	
+
 	public static boolean hasExtension(String sval) {
 		return extensions.contains(sval);
 	}
-	
+
 	public static void addExtension(String name){
 		extensions.add(name);
 	}
@@ -131,37 +131,51 @@ public class InstructionCompiler {
 					throw new ParserError("expected a varname after $");
 				insts.add(new GetVarInstruction(tok.sval,GetVarInstruction.Type.PATVAR));
 				break;
-			case '?':
-				switch(tok.nextToken()){
-				case StreamTokenizer.TT_WORD:
-					insts.add(new GetVarInstruction(tok.sval,GetVarInstruction.Type.CONVVAR));
-					break;
-				case '@':
-					if(tok.nextToken()!=StreamTokenizer.TT_WORD)
-						throw new ParserError("expected a varname after ?@");
-					insts.add(new GetVarInstruction(tok.sval,GetVarInstruction.Type.INSTVAR));
-					break;
-				default: throw new ParserError("expected a varname or sigil after ?");
-				}
-				break;
 			case '.': // append to print output
 				insts.add(new Printing.PrintInstruction());
+				break;
+			case '?':
+				if(tok.nextToken()=='`'){
+					if(tok.nextToken()!=StreamTokenizer.TT_WORD)
+						throw new ParserError("expected a symbol name after ?`");
+					insts.add(new Collections.SymbolGetInstruction(tok.sval));
+				} else {
+					tok.pushBack();
+					switch(tok.nextToken()){
+					case StreamTokenizer.TT_WORD:
+						insts.add(new GetVarInstruction(tok.sval,GetVarInstruction.Type.CONVVAR));
+						break;
+					case '@':
+						if(tok.nextToken()!=StreamTokenizer.TT_WORD)
+							throw new ParserError("expected a varname after ?@");
+						insts.add(new GetVarInstruction(tok.sval,GetVarInstruction.Type.INSTVAR));
+						break;
+					default: throw new ParserError("expected a varname or sigil after ?");
+					}
+				}
 				break;
 			case '!':
 				if(tok.nextToken()=='=')
 					insts.add(new BinopInstruction(BinopInstruction.Type.NEQUAL));
 				else {
 					tok.pushBack();
-					switch(tok.nextToken()){
-					case StreamTokenizer.TT_WORD:
-						insts.add(new SetVarInstruction(tok.sval,SetVarInstruction.Type.CONVVAR));
-						break;
-					case '@':
+					if(tok.nextToken()=='`'){
 						if(tok.nextToken()!=StreamTokenizer.TT_WORD)
-							throw new ParserError("expected a varname after !@");
-						insts.add(new SetVarInstruction(tok.sval,SetVarInstruction.Type.INSTVAR));
-						break;
-					default: throw new ParserError("expected a varname or sigil after !");
+							throw new ParserError("expected a symbol name after !`");
+						insts.add(new Collections.SymbolSetInstruction(tok.sval));						
+					} else {
+						tok.pushBack();
+						switch(tok.nextToken()){
+						case StreamTokenizer.TT_WORD:
+							insts.add(new SetVarInstruction(tok.sval,SetVarInstruction.Type.CONVVAR));
+							break;
+						case '@':
+							if(tok.nextToken()!=StreamTokenizer.TT_WORD)
+								throw new ParserError("expected a varname after !@");
+							insts.add(new SetVarInstruction(tok.sval,SetVarInstruction.Type.INSTVAR));
+							break;
+						default: throw new ParserError("expected a varname or sigil after !");
+						}
 					}
 				}
 				break;
@@ -210,7 +224,7 @@ public class InstructionCompiler {
 				}
 				break;
 			case '[':
-				if(tok.nextToken()=='[')
+				if(tok.nextToken()=='%')
 					insts.add(new Collections.NewHashInstruction());
 				else {
 					tok.pushBack();
@@ -323,10 +337,10 @@ public class InstructionCompiler {
 						resolveJumpForwards(ref,0); // resolve the jump destination
 						ref = next; // get the next jump to resolve.
 					}
-				// "stop" and other quick flow control stuff
+					// "stop" and other quick flow control stuff
 				} else if(tok.sval.equals("stop")){
 					insts.add(new Flow.StopInstruction());
-				// word binops
+					// word binops
 				} else if(tok.sval.equals("or")){
 					insts.add(new BinopInstruction(BinopInstruction.Type.OR));
 				} else if(tok.sval.equals("and")){

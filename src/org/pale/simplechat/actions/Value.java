@@ -37,4 +37,9 @@ public abstract class Value {
 		throw new ActionException(this.getClass().getSimpleName()+" is not a collection (list or hash");		
 	}
 	
+	public boolean containsKey(Value k) throws ActionException {
+		throw new ActionException(this.getClass().getSimpleName()+" is not a collection (list or hash");		
+		
+	}
+	
 }
