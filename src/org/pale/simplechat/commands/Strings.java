@@ -23,7 +23,6 @@ public class Strings {
 		c.push(new StringValue(s));
 	}
 	
-	
 	@Cmd public static void clean(Conversation c) throws ActionException {
 		String r = c.popString();
 		r = r.replaceAll("\\s+", " "); // replace mult. whitespace with space
@@ -69,7 +68,7 @@ public class Strings {
 		else c.push(new StringValue(s));
 	}
 
-	// (ct string -- ct + string + "s" if ct>1) noun pluralizer which includes number
+	// (ct string -- ct + string + "s" if ct>1) crude noun pluralizer which includes number
 	@Cmd public static void pluralisenum(Conversation c) throws ActionException {
 		String s = c.popString();
 		int ct = c.pop().toInt();
@@ -78,5 +77,12 @@ public class Strings {
 		else numstr = numstr+" "+s;
 		c.push(new StringValue(numstr));
 	}
+	
+	// (n -- string) convert number to english words
+	@Cmd public static void englishnum(Conversation c) throws Exception {
+		 int n = c.pop().toInt();
+		 c.push(new StringValue(NumberUtils.numberToWords(n)));
+		 
+	 }
 
 }

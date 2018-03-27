@@ -73,6 +73,15 @@ public class Collections {
 		c.push(lst.get(n));
 	}
 	
+	@Cmd public static void fst(Conversation c) throws ActionException {
+		List<Value> lst = c.popList();
+		c.push(lst.get(0));
+	}
+	@Cmd public static void snd(Conversation c) throws ActionException {
+		List<Value> lst = c.popList();
+		c.push(lst.get(1));
+	}
+	
 	@Cmd public static void join(Conversation c) throws ActionException {
 		// (list string -- string)
 		String js = c.popString();

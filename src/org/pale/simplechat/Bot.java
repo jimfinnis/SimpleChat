@@ -344,6 +344,13 @@ public class Bot {
 	 */
 	public static Bot loadBot(String n) throws BotConfigException{
 		Bot b;
+
+		Logger.log(Logger.LOAD, "");
+		Logger.log(Logger.LOAD, "##############################################################################################");
+		Logger.log(Logger.LOAD, "#### ATTEMPTING TO LOAD BOT: "+n);
+		Logger.log(Logger.LOAD, "##############################################################################################");
+		Logger.log(Logger.LOAD, "");
+		
 		if(bots.containsKey(n)){
 			b = bots.get(n);
 		} else {

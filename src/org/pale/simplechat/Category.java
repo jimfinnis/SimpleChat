@@ -28,7 +28,7 @@ import org.pale.simplechat.patterns.MatchData;
  *
  */
 public class Category {
-	String name;
+	public String name;
 	private Set<String> words = new HashSet<String>(); // leaf nodes of this category
 	private Set<Category> cats = new HashSet<Category>(); // branches
 	private List<String[]> lists = new ArrayList<String[]>(); // more leaf nodes for multiple word leafs, sorted in descending length
@@ -100,6 +100,7 @@ public class Category {
 			throw new ParserError("expected name in category");
 		String name = tok.sval;
 		if(tok.nextToken()!='='){
+//			Logger.log(Logger.CONFIG, "Old category "+name);
 			tok.pushBack();
 			// return pre-existing cat
 			Category c = b.getCategory(name,false);
@@ -108,6 +109,7 @@ public class Category {
 			return c;
 		} else {
 			// we're defining a new one!
+//			Logger.log(Logger.CONFIG, "New category "+name);
 			if(tok.nextToken()!='[')
 				throw new ParserError("expected [ in category definition");
 			Category c = b.getCategory(name,false);
@@ -262,5 +264,18 @@ public class Category {
 				return lst.length;
 			}
 		return 0; // nope
+	}
+
+	/**
+	 * Return the subcategory (1 level down only) which matches the array, or null
+	 * @param arr
+	 * @return
+	 */
+	public Category getSubcat(String[] arr) {
+		for(Category c: cats){
+			if(c.isMatch(arr))
+				return c;
+		}
+		return null;
 	}		
 }

@@ -10,6 +10,7 @@ import org.pale.simplechat.actions.Value;
 import org.pale.simplechat.values.CatValue;
 import org.pale.simplechat.values.IntValue;
 import org.pale.simplechat.values.ListValue;
+import org.pale.simplechat.values.StringValue;
 
 public class Categories {
 	
@@ -19,6 +20,12 @@ public class Categories {
 		String s = c.popString();
 		String[] arr = s.split("\\s+");
 		c.push(new IntValue(cat.isMatch(arr)?1:0));
+	}
+	
+	// (cat -- string) get name
+	@Cmd public static void catname(Conversation c) throws ActionException {
+		Category cat = popCat(c);
+		c.push(new StringValue(cat.name));
 	}
 
 	/**
@@ -36,6 +43,17 @@ public class Categories {
 	@Cmd public static void addcat(Conversation c) throws ActionException {
 		Category cat = popCat(c);
 		addToCat(cat,c.pop());
+	}
+	
+	// (string cat -- subcat) If string is in a category "cat", which of its subcategories is it in?
+	// This will return the next level down. Generally done if a pattern finds a category match on "cat"
+	@Cmd public static void subcat(Conversation c) throws ActionException {
+		Category cat = popCat(c);
+		String s = c.popString();
+		String[] arr = s.split("\\s+");
+		
+		Category subcat = cat.getSubcat(arr);
+		c.push(new CatValue(subcat.name,subcat));
 	}
 
 	
