@@ -57,9 +57,23 @@ public class BotInstance  {
 		try {
 			// go up the tree, running all the init instances
 			// during the init action, the instance is "talking to itself" as it were.
-			Conversation c = new Conversation(this,this);
 			vars.put("botname",new StringValue(name));
-			b.runInits(c);
+		} catch (IllegalArgumentException e) {
+			throw new BotConfigException("error running initialisation action: "+e.getMessage());
+		}
+		bot.instances.add(this);
+	}
+	
+	/// Run the init clauses (including parents). This is done at the dev's discretion rather than automatically in the ctor
+	/// because we might want to do some extra data loading or something clever - for example, the Minecraft
+	/// code has this run only when the bot instance is first constructed to avoid constantly overwriting
+	/// things with loaded data.
+	public void runInits() throws BotConfigException{
+		try {
+			// go up the tree, running all the init instances
+			// during the init action, the instance is "talking to itself" as it were.
+			Conversation c = new Conversation(this,this);
+			bot.runInits(c);
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
 			throw new BotConfigException("error running initialisation action: "+e.getMessage());
@@ -67,7 +81,7 @@ public class BotInstance  {
 			ActionLog.show();
 			throw new BotConfigException("error running initialisation action: "+e.getMessage());
 		}
-		bot.instances.add(this);
+		
 	}
 	
 	/// variables private (haha) to this instance.

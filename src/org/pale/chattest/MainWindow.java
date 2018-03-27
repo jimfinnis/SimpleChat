@@ -95,6 +95,7 @@ public class MainWindow implements ActionListener, MenuListener {
 		try {
 			Bot b = Bot.loadBot(f.getName());
 			instance = new BotInstance(b,f.getName());
+			instance.runInits();
 		} catch (BotConfigException e) {
 			JOptionPane.showMessageDialog(frame,"Could not load bot.\n"+e.getMessage());			
 		}

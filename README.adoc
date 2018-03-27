@@ -64,12 +64,14 @@ Bot.setPathProvider(new Bot.PathProvider() {
 Bot b = Bot.loadBot("mybot");
 // we provide a name - the instance variable (q.v.) @botname is set to this.
 instance = new BotInstance(b,"some name");
+instance.runInits();
 source = new Object(); // could be anything, it's for you to use.
 ----
 See the source of the test program
 `org.pale.chattest.MainWindow.java` to see some different code,
 which takes a bot directory from a dialog box and assumes any bots it might
-inherit live in sister directories to it.Typically a conversation
+inherit live in sister directories to it.
+Typically a conversation
 is done by repeatedly calling
 [source,java]
 ----
@@ -77,9 +79,15 @@ String reply = instance.handle(string,source);
 ----
 [NOTE]
 ====
-`handle()` can return a string, or null if a `none` value
+- `handle()` can return a string, or null if a `none` value
 was on the stack at the end of the action (you'll find out
 what this means). Be prepared to deal with null return values!
+- The `init` block is not run automatically, you have to invoke
+it with `runInits()`. This is because some applications need to do
+slightly odd things. For example, Minecraft loads and unloads bots
+quite often as it loads and unloads the chunks they are in. It automatically
+saves and loads the instance variables when it does this. We therefore
+only run the inits when the bot is first created.
 ====
 
 Custom commands you write might need to access some special data
@@ -90,6 +98,7 @@ your command code:
 ----
 Bot b = new Bot(Paths.get("/some/directory/or/other");
 instance = new BotInstance(b,"Fred the Bot",mythingy);
+instance.runInits();
 source = new Object();
 ----
 
@@ -146,6 +155,7 @@ The bot directory should contain
 == The configuration file
 The config file must be called `config.conf`. It contains the following:
 
+- a `#` starts a comment
 - `topics` entries each giving a list of topics, each of which is loaded
 from a `.topic` file. A topic is a set of pattern/action pairs: when a
 pattern is matched, the action fires and pattern matching stops.
@@ -153,7 +163,7 @@ pattern is matched, the action fires and pattern matching stops.
 from a `.sub` file
 - an optional `init` entry followed by a block of Action language (see below)
 which will set up initial values for conversation variables and maybe do
-some other things. A `#` starts a comment
+some other things.
 - category and list definitions (q.v.)
 - any number of action language functions, which can be called from action language or
 from your application code.
