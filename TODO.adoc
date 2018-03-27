@@ -10,11 +10,15 @@ Jim Finnis <jim.finnis@gmail.com>
 - sort out the pluralisation and make sense of top level cats (what do
  the weird digit suffices in the chatscript data mean?
 
-- "stored patterns"
+- doc "stored patterns"
+- doc maps and ?` !` shortcuts. Map and list commands like get, set and in.
+- doc map iteration with `keys`
+- doc new string commands
 
-
-- hashes and ?` !` shortcuts. Hash and list commands like get, set and in.
-
+- better "articlisation" so that "seeds" -> some seeds, and mass nouns
+  are dealt with. This is messy and requires a corpus, perhaps a 
+  "special cat" we can set up.
+  
 
 - relations (and check subbots work)
 - tidy up testbot and parent (and talk about them)

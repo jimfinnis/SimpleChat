@@ -1,6 +1,7 @@
 package org.pale.simplechat.commands;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.pale.simplechat.Conversation;
@@ -8,6 +9,7 @@ import org.pale.simplechat.actions.ActionException;
 import org.pale.simplechat.actions.Cmd;
 import org.pale.simplechat.actions.Value;
 import org.pale.simplechat.values.IntValue;
+import org.pale.simplechat.values.ListValue;
 import org.pale.simplechat.values.NoneValue;
 import org.pale.simplechat.values.StringValue;
 
@@ -91,6 +93,14 @@ public class Collections {
 		Value collection = c.pop();
 		Value v = c.pop();
 		c.push(new IntValue(collection.containsKey(v)));
+	}
+	
+	@Cmd public static void keys(Conversation c) throws ActionException {
+		Map<String,Value> m = c.popMap();
+		ListValue lv = new ListValue();
+		for(String s: m.keySet())
+			lv.list.add(new StringValue(s));
+		c.push(lv);
 	}
 
 
