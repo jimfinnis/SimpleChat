@@ -37,4 +37,8 @@ public class NoneValue extends Value {
 		if(ob instanceof NoneValue)return true;
 		return false;
 	}
+	
+	@Override public boolean containsKey(Value v){
+		return false;
+	}
 }

@@ -149,7 +149,6 @@ public class BotInstance  {
 	 * @param s the function name
 	 * @param source a source object, typically the performer of an action on the bot.
 	 * @return
-	 * @throws ActionException 
 	 */
 	public String runFunc(String s,Object source) {
 		Conversation c = getConversation(source);

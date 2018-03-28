@@ -76,6 +76,7 @@ public class Conversation extends Runtime {
 
 	// used for creating "dummy" conversations for constant blocks 
 	public Conversation(){
+		reset();
 		source = null;
 		instance = null;
 		topicLists = new ArrayList<Deque<Topic>>();
@@ -83,6 +84,7 @@ public class Conversation extends Runtime {
 	
 	// the usual ctor for creating real conversations (and also the init conversation with myself)
 	Conversation(BotInstance i,Object p){
+		reset();
 		source = p;
 		instance = i;
 		cloneTopicLists();

@@ -31,7 +31,7 @@ public class Strings {
 		// replace "  punc" with "punc"
 		r = r.replaceAll("\\s+([\\.,;\\?\\!])", "$1");
 		// replace "puncLetter" with "punc Letter"
-		r = r.replaceAll("([\\.,;\\?\\!])(\\w)", "$1$2");
+		r = r.replaceAll("([\\.,;\\?\\!])(\\w)", "$1 $2");
 		
 		c.push(new StringValue(r));
 		sentence(c);

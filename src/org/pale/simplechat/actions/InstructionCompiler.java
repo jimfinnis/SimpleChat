@@ -59,6 +59,7 @@ public class InstructionCompiler {
 		register(org.pale.simplechat.commands.Topics.class);
 		register(org.pale.simplechat.commands.Types.class);
 		register(org.pale.simplechat.commands.Maths.class);
+		register(org.pale.simplechat.commands.Other.class);
 	}
 
 	// this is a set of which extensions this bot has. Extensions should add to it with

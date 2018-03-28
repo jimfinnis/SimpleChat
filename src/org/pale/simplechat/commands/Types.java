@@ -26,6 +26,11 @@ public class Types {
 	@Cmd (name="double") public static void todouble(Conversation c) throws ActionException {
 		c.push(new DoubleValue(c.pop().toDouble()));
 	}
+	
+	
+	@Cmd (name="type") public static void gettype(Conversation c) throws ActionException {
+		c.push(new StringValue(c.pop().getClass().getSimpleName()));
+	}
 
 	/*
 	 * None handling
