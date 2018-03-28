@@ -21,7 +21,9 @@ public class BotInstance  {
 	
 	// this is a map of each instance to each possible conversational partner.
 	private Map<Object,Conversation> conversations = new HashMap<Object,Conversation>();
-
+	/// variables private (haha) to this instance.
+	Map<String,Value> vars = new HashMap<String,Value>();
+	
 	private Object data; // data connected to the bot instance, could be anything
 	
 	/**
@@ -32,6 +34,7 @@ public class BotInstance  {
 	 */
 	public BotInstance(Bot b, String name) throws BotConfigException{
 		bot = b;
+		this.data=null;
 		try {
 			// go up the tree, running all the init instances
 			// during the init action, the instance is "talking to itself" as it were.
@@ -84,14 +87,14 @@ public class BotInstance  {
 		
 	}
 	
-	/// variables private (haha) to this instance.
-	private Map<String,Value> vars = new HashMap<String,Value>();
-	
+	// Look for an instance variable. If we can't find it in the instance, look in the dummy instance
+	// the bot created (and the dummies for the parents of that). If it's not there (or there isn't such an instance) return none.
 	public Value getVar(String s){
 		if(vars.containsKey(s))
 			return vars.get(s);
-		else
-			return NoneValue.instance;
+		else {
+			return bot.getGlobalVar(s);
+		}
 	}
 	
 	public void setVar(String s,Value v){

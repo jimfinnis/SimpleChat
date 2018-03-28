@@ -13,10 +13,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.xml.bind.JAXBElement.GlobalScope;
+
 import org.pale.simplechat.actions.ActionException;
 import org.pale.simplechat.actions.Function;
 import org.pale.simplechat.actions.InstructionCompiler;
 import org.pale.simplechat.actions.InstructionStream;
+import org.pale.simplechat.actions.Value;
+import org.pale.simplechat.values.NoneValue;
 
 /**
  * encapsulates a bot - a style of conversation loaded from a file.
@@ -53,21 +57,8 @@ public class Bot {
 	// list of all my instances
 	Set<BotInstance> instances = new HashSet<BotInstance>();
 
-	public InstructionStream initAction; // an Action to initialise bot variables etc.
-
-	// we insert this into the subs list when we we want to process parent
-	// substitutions
-	public class SubstitutionsFromParent implements SubstitutionsInterface {
-		@Override
-		public String process(String s) {
-			if(parent!=null)
-				return parent.processSubs(s);
-			else
-				return s;
-		}
-	}
-
-	public String getName(){return name;}
+	public InstructionStream initAction=null; // an Action to initialise INSTANCE variables etc.
+	public InstructionStream globalAction=null; // an Action to initialise GLOBAL variables AND THAT'S ALL.
 
 	// this is a list of topic lists.
 	// When matching, we run through each topic list in turn.
@@ -83,6 +74,30 @@ public class Bot {
 	/// map of user functions we might use,
 
 	private Map<String, Function> funcMap;
+	
+	/// this is a "dummy" bot instance used to store global variable data.
+	/// How it works: the globals action is run with this instance, so instance variables are stored here.
+	/// If a search for an instance variable in getVar fails, it falls back to looking in here. Thus, only one
+	/// copy of constant data is kept. If this variable is set, it will of course create a private copy which
+	/// will be in the instance and override the global data (and not change it for any other instance).
+	BotInstance globalInstance = null;
+
+	
+
+	// we insert this into the subs list when we we want to process parent
+	// substitutions
+	public class SubstitutionsFromParent implements SubstitutionsInterface {
+		@Override
+		public String process(String s) {
+			if(parent!=null)
+				return parent.processSubs(s);
+			else
+				return s;
+		}
+	}
+
+	public String getName(){return name;}
+
 	public Function getFunc(String name){
 		Bot b = this;
 		do {
@@ -160,6 +175,19 @@ public class Bot {
 		} while(b!=null);
 		return null;
 	}
+	
+	public Value getGlobalVar(String s) {
+		Bot b = this;
+		do {
+			if(b.globalInstance!=null && b.globalInstance.vars.containsKey(s))
+				return b.globalInstance.vars.get(s);
+			b = b.parent;
+		} while(b!=null);
+		return NoneValue.instance;
+	}
+
+
+
 
 
 	// parse a config.conf in the directory Path
@@ -213,6 +241,8 @@ public class Bot {
 							topicLists.add(list);
 						} else if(tok.sval.equals("init")){
 							initAction = new InstructionStream(this,tok);
+						} else if(tok.sval.equals("global")){
+							globalAction = new InstructionStream(this,tok);
 						} else if(tok.sval.equals("subs")){
 							switch(tok.nextToken()){
 							case StreamTokenizer.TT_WORD:
@@ -245,6 +275,22 @@ public class Bot {
 						else throw new BotConfigException(p,tok,"unknown word in config: "+tok.sval);
 					}
 				}
+				
+				// we now create a "fake" instance just for storing global data (ONLY if we have some)
+				if(globalAction != null){
+					globalInstance = new BotInstance(this, "globals");
+					Conversation conv = new Conversation(globalInstance,globalInstance);
+					try {
+						globalAction.run(conv, true);
+					} catch (IllegalAccessException | IllegalArgumentException
+							| InvocationTargetException | ActionException e) {
+						e.printStackTrace();
+						throw new BotConfigException("Error in global action "+e.getMessage());
+					}
+				}
+				
+				
+				
 			} catch (ParserError e){
 				throw new BotConfigException(p,tok,"error in config "+fn+": "+e.getMessage());
 
@@ -397,9 +443,9 @@ public class Bot {
 	public void runInits(Conversation c) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, ActionException{
 		if(parent!=null)
 			parent.runInits(c);
-		initAction.run(c, true);
+		if(initAction!=null)
+			initAction.run(c, true);
 	}
-
 
 
 }
