@@ -41,5 +41,9 @@ public abstract class Value {
 		throw new ActionException(this.getClass().getSimpleName()+" is not a collection (list or hash");		
 		
 	}
+
+	public int size() throws ActionException {
+		throw new ActionException("cannot find size of "+this.getClass().getSimpleName());
+	}
 	
 }

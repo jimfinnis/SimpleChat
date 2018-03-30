@@ -237,8 +237,29 @@ public class Bot {
 								throw new BotConfigException(p,tok,"need an quoted filename after include");
 							parseConfig(p,tok.sval);
 						} else if(tok.sval.equals("topics")){
-							List<Topic> list = parseTopicList(p,tok);
-							topicLists.add(list);
+							switch(tok.nextToken()){
+							case '{':
+								if(parent!=null && topicLists == parent.topicLists)
+									throw new BotConfigException("cannot add a topic list when we've inherited them from the parent");
+								List<Topic> list = parseTopicList(p,tok);
+								topicLists.add(list);
+								break;
+							case StreamTokenizer.TT_WORD:
+								if(tok.sval.equals("inherit")){
+									if(parent == null)
+										throw new BotConfigException("cannot inherit parent topics when we don't have a parent");
+									// we just inherit the parent topics - and make sure we haven't got any yet
+									// and that we don't add any more!
+									if(topicLists.isEmpty())
+										topicLists = parent.topicLists;
+									else
+										throw new BotConfigException("cannot inherit topic lists when we have created some here already");
+									break; // end case
+								}
+								// fall through
+							default:
+								throw new BotConfigException(p,tok,"expected '{' or 'inherit' after 'topics'");
+							}
 						} else if(tok.sval.equals("init")){
 							initAction = new InstructionStream(this,tok);
 						} else if(tok.sval.equals("global")){
@@ -342,7 +363,7 @@ public class Bot {
 
 	private List<Topic> parseTopicList(Path p, StreamTokenizer tok) throws IOException, BotConfigException {
 		List<Topic> topicList = new ArrayList<Topic>();
-		if(tok.nextToken() != '{')throw new BotConfigException(p,tok,"expected '{' after 'topics'");
+		
 		for(;;){
 			if(tok.nextToken() == '}')break;
 			else tok.pushBack();
@@ -410,6 +431,11 @@ public class Bot {
 				b = new Bot(n,p);
 			}
 		}
+		Logger.log(Logger.LOAD, "");
+		Logger.log(Logger.LOAD, "##############################################################################################");
+		Logger.log(Logger.LOAD, "#### SUCCESSFULLY LOADED BOT: "+n);
+		Logger.log(Logger.LOAD, "##############################################################################################");
+		Logger.log(Logger.LOAD, "");
 		return b;
 	}
 

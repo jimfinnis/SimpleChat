@@ -1,5 +1,6 @@
 package org.pale.simplechat.values;
 
+import org.pale.simplechat.actions.ActionException;
 import org.pale.simplechat.actions.Value;
 import org.pale.simplechat.actions.BinopInstruction.Type;
 
@@ -33,6 +34,11 @@ public class StringValue extends Value {
 			return new StringValue(s+snd.str());
 		else
 			return null;
+	}
+	
+	@Override
+	public int size() throws ActionException {
+		return s.length();
 	}
 
 

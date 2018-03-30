@@ -35,4 +35,9 @@ public class RangeValue extends Value {
 	public LoopIterator makeIterator() throws ActionException {
 		return new RangeLoopIterator(this);
 	}
+	
+	@Override
+	public int size() throws ActionException {
+		return end-start;
+	}
 }

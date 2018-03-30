@@ -89,6 +89,12 @@ public class ListValue extends Value {
 			return null;
 		}
 	}
+	
+	@Override
+	public int size() throws ActionException {
+		return list.size();
+	}
+
 
 	@Override
 	public LoopIterator makeIterator() throws ActionException {

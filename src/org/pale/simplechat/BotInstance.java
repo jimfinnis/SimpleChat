@@ -7,7 +7,6 @@ import java.util.Map;
 import org.pale.simplechat.actions.ActionException;
 import org.pale.simplechat.actions.ActionLog;
 import org.pale.simplechat.actions.Value;
-import org.pale.simplechat.values.NoneValue;
 import org.pale.simplechat.values.StringValue;
 
 /**

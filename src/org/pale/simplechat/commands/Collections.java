@@ -64,7 +64,7 @@ public class Collections {
 	}
 
 	@Cmd public static void len(Conversation c) throws ActionException {
-		c.push(new IntValue(c.popList().size()));
+		c.push(new IntValue(c.pop().size()));
 	}
 	
 	@Cmd public static void choose(Conversation c) throws ActionException {

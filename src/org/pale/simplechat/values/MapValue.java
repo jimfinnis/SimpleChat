@@ -35,7 +35,6 @@ public class MapValue extends Value {
 	public boolean containsKey(Value k) throws ActionException {
 		return map.containsKey(k.str());
 	}
-
 	
 	@Override
 	public Value binop(Type t, Value snd) {
@@ -62,5 +61,10 @@ public class MapValue extends Value {
 			sb.append(e.getValue().str());
 		}
 		return sb.toString();
+	}
+
+	@Override
+	public int size() throws ActionException {
+		return map.size();
 	}
 }
