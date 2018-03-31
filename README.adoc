@@ -612,5 +612,32 @@ exist when an extension is not loaded, as shown in the example in
 
 == Bot-global variables and global blocks
 [[global]]
+If you create many instances of the same bot, each instance will have its own
+copy of the instance variables set up in the `init` block. Often, they'll be identical
+and never change. This is wasteful. Even worse, some systems will often delete and re-instantiate
+bots -- the Minecraft Citizens2 plugin does this whenever the instance's chunk is unloaded
+and reloaded. This causes a lot of activity if you have a lot of instance variables, or
+very large instance variables - consider the materials lists we discussed in <<Categories>>
+above.
 
+To avoid this, we can create "bot-global" variables using a `global` block.
+Here, the code runs exactly as it does for an `init` block, but it runs on a "dummy" instance
+which is not visible to the user. Whenever we request an instance variable, and it cannot
+be found in the instance, we look in the dummy instance. If it cannot be found there,
+we look in the dummy instance created for the parent, and so on up the inheritance tree.
 
+The upshot is that
+
+- bot-global variables look exactly like instance variables
+- there is only one copy of them for each loaded bot, not separate copies for each instance
+of that bot
+- they can be inherited
+- writing to a bot-global variable will create a new instance variable visible only to
+the instance, it will not change the variable for other instances
+
+This last point is important. Reading bot-global variables will get the shared data; writing
+to them will cause a new instance variable to be created which will override the shared
+data in the instance which did the writing. If you really want to have writable global
+data, you can do this by having a bot-global <<ACTION.adoc#Maps,map>>, and storing your data there: since it's
+always the same map and we never write to the variable holding the map,
+stored data in the map will always be global.
