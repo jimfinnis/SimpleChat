@@ -1,5 +1,7 @@
 package org.pale.simplechat;
 
+import org.pale.simplechat.actions.Value;
+
 
 public class Utils {
 
@@ -16,6 +18,19 @@ public class Utils {
 		} else {
 			return s;
 		}
+	}
+	
+	// java 8 has this but bukkit advised java 7.
+	public static String join(String[] lst, String js){
+		StringBuilder sb = new StringBuilder();
+		boolean first=true;
+		for(String v:lst)
+		{
+			if(first)first=false;
+			else sb.append(js);
+			sb.append(v);
+		}
+		return sb.toString();
 	}
 	
 }

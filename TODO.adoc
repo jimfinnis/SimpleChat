@@ -10,17 +10,19 @@ Jim Finnis <jim.finnis@gmail.com>
 - sort out the pluralisation and make sense of top level cats (what do
  the weird digit suffices in the chatscript data mean?
  
-- global vars: they look like instance vars, but are defined in the 
+- doc global vars: they look like instance vars, but are defined in the 
   globals block and exist only in the bot. Setting an instance var
   overrides them, so the implementation is something like:
    - setting instvars works as currently
    - if getting an instvar fails, fall back to the globals.
    - We actually create a fake "bot instance" to store the data in.
-
 - doc "stored patterns"
 - doc maps and ?` !` shortcuts. Map and list commands like get, set and in.
 - doc map iteration with `keys`
 - doc new string commands
+- doc logger
+- doc "topics inherit" and "len"
+- doc "call" and "type"
 
 - relations (and check subbots work)
 - tidy up testbot and parent (and talk about them)

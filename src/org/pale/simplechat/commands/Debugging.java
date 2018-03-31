@@ -19,4 +19,8 @@ public class Debugging {
 		c.debug = c.pop().toInt()==0 ? false : true;
 	}
 
+	@Cmd public static void setlog(Conversation c) throws ActionException {
+		Logger.setLog(c.pop().toInt());
+	}
+
 }

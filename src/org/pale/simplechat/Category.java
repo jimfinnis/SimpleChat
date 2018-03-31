@@ -192,12 +192,9 @@ public class Category {
 
 
 	public boolean matchWithSuffix(MatchData m,String suffix){
-		// first, try the words.
-		if(words.contains(Utils.removeSuffix(m.cur(),suffix))){
-			m.consumed = m.consume();
-			return true;		
-		}
-		// then try the lists. This returns 0 or the number of words matches.
+		Logger.log(Logger.CATMATCH, "------- attempting match of "+name);
+		
+		// FIRST try the lists. This returns 0 or the number of words matches.
 		int n = matchesList(m.words,m.pos,suffix);
 		if(n>0){
 			// if we got one, consume those words and concatenate into a string for
@@ -211,6 +208,11 @@ public class Category {
 			}
 			m.consumed = sb.toString();
 			return true;
+		}
+		// THEN, try the words.
+		if(words.contains(Utils.removeSuffix(m.cur(),suffix))){
+			m.consumed = m.consume();
+			return true;		
 		}
 		// otherwise try the subcategories.
 		for(Category sc: cats){
@@ -249,8 +251,10 @@ public class Category {
 		// There may well be a quicker way to do this.
 
 		int maxwords = a.length-pos;
+		Logger.log(Logger.CATMATCH," maxword length "+maxwords);
 		outerloop:
 			for(String[] lst: lists){
+				Logger.log(Logger.CATMATCH, "   "+Utils.join(lst, ","));
 				if(lst.length > maxwords)continue; // too many words to match
 				for(int i=0;i<lst.length;i++){
 					String w;
@@ -261,8 +265,10 @@ public class Category {
 					if(!lst[i].equals(w))continue outerloop; // match failed, abandon
 				}
 				// all matched OK
+				Logger.log(Logger.CATMATCH, "Matched!");
 				return lst.length;
 			}
+		Logger.log(Logger.CATMATCH, "No match!");
 		return 0; // nope
 	}
 
