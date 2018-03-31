@@ -508,9 +508,16 @@ category which matches the string. Given our example, this means that if we call
 ----
 we will get the category `~stone` as the result.
 
-NOTE: We could add multiple levels of subcategory in our materials exampe, but this
+[NOTE]
+====
+- We could add multiple levels of subcategory in our materials exampe, but this
 would make it harder to use `subcat`.
-
+- The file `matlists.conf` was generated using an 
+https://github.com/jimfinnis/Angort[Angort]
+https://github.com/jimfinnis/ChatCitizen2/blob/master/bots/root/processmatlist.ang[script]
+script from a https://github.com/jimfinnis/ChatCitizen2/blob/master/bots/root/matlist[CSV file].
+You could write a similar thing in a more mainstream language fairly easily.
+====
 
 == Lists
 Lists are lists of strings which are accessible from
