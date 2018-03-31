@@ -166,7 +166,7 @@ which will set up initial values for conversation variables and maybe do
 some other things.
 - an optional `global` entry followed by a block of Action language (see below)
 which will set up values for bot-global variables, which are rather more
-system-friendly than instance variables but cannot be changed (see <<global>> below)
+system-friendly than instance variables but cannot be changed (see <<global,bot-global variables>> below)
 - category and list definitions (q.v.)
 - any number of action language functions, which can be called from action language or
 from your application code.
