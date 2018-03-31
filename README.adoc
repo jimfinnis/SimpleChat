@@ -508,7 +508,7 @@ of how use categories to handle pluralisation and synonyms, look at the structur
 https://github.com/jimfinnis/ChatCitizen2/blob/master/bots/root/matlists.conf[matlists.conf]
 in the ChatCitizens2 root robot. This handles material names in Minecraft.
 Here, we set up two 
-<<ACTIONS.adoc#Maps,maps>>, both of which map from categories (the materials) to lists of
+<<ACTIONS.adoc#maps>>, both of which map from categories (the materials) to lists of
 strings (possible plurals and singulars). These maps give us choices of strings to output.
 
 After these maps, we define a category for each material giving all the possible singular and plural
@@ -638,6 +638,6 @@ the instance, it will not change the variable for other instances
 This last point is important. Reading bot-global variables will get the shared data; writing
 to them will cause a new instance variable to be created which will override the shared
 data in the instance which did the writing. If you really want to have writable global
-data, you can do this by having a bot-global <<ACTIONS.adoc#Maps,map>>, and storing your data there: since it's
+data, you can do this by having a bot-global <<ACTIONS.adoc#maps,map>>, and storing your data there: since it's
 always the same map and we never write to the variable holding the map,
 stored data in the map will always be global.
