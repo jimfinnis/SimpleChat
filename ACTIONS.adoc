@@ -233,6 +233,7 @@ english words, so `10 "house" pluralizeWithNum` returns "ten houses".
 - `dup (a -- a a)` duplicates the item on top of the stack
 - `swap (a b -- b a)` swap the top two items
 - `drop (a --)` discard the top stack value
+
 === Debugging
 - `dp (a --)` prints a value to the system logger
 
