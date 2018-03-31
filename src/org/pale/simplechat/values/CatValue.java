@@ -17,11 +17,9 @@ public class CatValue extends Value {
 	public String str() {
 		return name;
 	}
-	
 
 	@Override
 	public Value binop(Type t, Value snd) {
 		return null;
 	}
-
 }

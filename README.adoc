@@ -164,6 +164,9 @@ from a `.sub` file
 - an optional `init` entry followed by a block of Action language (see below)
 which will set up initial values for conversation variables and maybe do
 some other things.
+- an optional `global` entry followed by a block of Action language (see below)
+which will set up values for bot-global variables, which are rather more
+system-friendly than instance variables but cannot be changed (see <<global>> below)
 - category and list definitions (q.v.)
 - any number of action language functions, which can be called from action language or
 from your application code.
@@ -346,6 +349,19 @@ from inside an action.
 Whole topics can also be enabled and disabled, as well as being 
 promoted and demoted to the top or bottom of their list.
 
+=== Inherited topics
+If you want to create a sub-bot which has exactly the same topics as its parent,
+you can just write
+----
+topics inherit
+----
+instead of a full topics block. If you do this, you can't add any more topics blocks: your bot
+will have exactly the same topics as the parent. Naturally, you must have used `inherit` to set
+a parent bot. 
+This is useful for creating sub-bots which just have different variables and maybe functions. I
+use it for creating different kinds of "shopkeeper", all of which have the same topics but sell
+and buy different items.
+
 === Patterns
 For matching, the input is lower-cased, all punctuation is removed
 and finally it is split into words. Pattern matching is done per-word.
@@ -491,7 +507,8 @@ For an example
 of how use categories to handle pluralisation and synonyms, look at the structures in 
 https://github.com/jimfinnis/ChatCitizen2/blob/master/bots/root/matlists.conf[matlists.conf]
 in the ChatCitizens2 root robot. This handles material names in Minecraft.
-Here, we set up two maps, both of which map from categories (the materials) to lists of
+Here, we set up two 
+<<ACTION.adoc#Maps,maps>>, both of which map from categories (the materials) to lists of
 strings (possible plurals and singulars). These maps give us choices of strings to output.
 
 After these maps, we define a category for each material giving all the possible singular and plural
@@ -591,3 +608,9 @@ as described in link:EXTENDING.adoc[this document]. A typical use is
 to provide action language "stub" functions for functions which don't
 exist when an extension is not loaded, as shown in the example in
 <<bookmark-example-config,the example config file>>.
+
+
+== Bot-global variables and global blocks
+[[global]]
+
+

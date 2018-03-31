@@ -24,7 +24,7 @@ is a very simple action which outputs a string.
 
 The action language is based on Angort, because it was pretty easy to write
 a quick-and-dirty parser and interpreter for such a language. As such, it's
-a Forth-based RPN stack language. This means that there is a notional
+a FORTH-based RPN stack language. This means that there is a notional
 "stack" of values, and each command in the language does thing to the stack.
 In most languages, you'd perform a simple calculation and output a value
 with a command like
@@ -56,6 +56,27 @@ in a topic to read two numbers and add them together:
     + str       # add together the two top stack values and convert to string
 ;
 ----
+
+== Stack pictures
+Much of the discussion below talks about language functions which take items
+from the stack and push items onto the stack afterwards. The notation we'll
+use for describing these operations is called a "stack picture", and is borrowed
+from FORTH. A stack picture consists of a description of the stack before
+the function runs and a description of the stack afterwards, separated by `--`.
+For example, the `in` function determines whether an item is in a list or map.
+To do this, it takes the item and the list/map, and returns an integer 0 or 1. We write
+the stack picture as 
+----
+in (item collection -- 0|1)
+----
+meaning that we write the code to use `in` like this:
+----
+?ouritem ?ourcollection in
+----
+and after that runs we will have 0 or 1 on the stack. Some functions don't have 
+any arguments, such as `curtopic (-- name)` which returns the name of the current topic,
+and some don't leave anything on the stack, such as `promote (topicname --)`.
+
 
 === Stacking constants
 A quoted string or number compile to instructions which stack them as strings, double-precision
@@ -103,6 +124,7 @@ pattern:
 ====
 Code cannot be embedded in symbols.
 ====
+
 
 ==== Subpattern lists
 The *subpattern list*
@@ -180,27 +202,38 @@ The core operations supported are:
 - `not` replaces a nonzero value with zero, and vice versa
 - `neg` replaces the value with its negative (having converted it to a number)
 
-=== Conversion functions
+=== Type conversion and query functions
 These all have the picture `(a -- b)`, like unary operators, and convert between types.
 
 - `double` converts to a string
 - `int` converts to an integer
 - `str` converts to a string
+- `type` returns the type name, as a string
 
 === String functions
-- `trim` `(a -- b)` trims leading and trailing whitespace from a string
-- `sentence` `(a -- b)` capitalize initial letter and ensure the string
+- `trim (a -- b)` trims leading and trailing whitespace from a string
+- `sentence (a -- b)` capitalize initial letter and ensure the string
 ends with a full stop.
-- `clean` `(a -- b)` as `sentence`, but also replaces multiple whitespace
+- `clean (a -- b)` as `sentence`, but also replaces multiple whitespace
 with space, ensures sentences and comma-phrases are space-separated,
 and various other things.
+- `article (s -- a|an)` return the correct indefinite article for the string (see below)
+- `addarticle (s -- a|an s)` add the correct indefinite article to the string so
+"house" becomes "a house", but "ant" becomes "an ant".
+- `englishnum (n -- s)` will return the number as English words, so "411" will give "four hundred
+and eleven".
+- `pluralize (ct s --)` returns `s` with an added "s" if ct>1, otherwise just `s`.
+Note that the pluralizer is very crude at the moment - "pony" will give "ponys" and "ox" will
+give "oxs"!
+- `pluralizeWithNum (ct s --)` returns the above, but prefixed with the number `ct` as
+english words, so `10 "house" pluralizeWithNum` returns "ten houses".
 
 === Stack manipulation
-- `dup` `(a -- a a)` duplicates the item on top of the stack
-- `swap` `(a b -- b a)` swap the top two items
-- `drop` `(a --)` discard the top stack value
+- `dup (a -- a a)` duplicates the item on top of the stack
+- `swap (a b -- b a)` swap the top two items
+- `drop (a --)` discard the top stack value
 === Debugging
-- `dp` `(a --)` prints a value to the system logger
+- `dp (a --)` prints a value to the system logger
 
 === Variable access
 There are four sets of variables:
@@ -235,25 +268,25 @@ it has not been set.
 that there is no `?` here, because you cannot set a pattern variable.
 
 == Pattern manipulation
-- `recurse` `(s --)` feeds the string back into the conversation system as if it were
+- `recurse (s --)` feeds the string back into the conversation system as if it were
 spoken to the bot, and stacks the result. Take care you don't recurse infinitely!
-- `next` `(p --)` specifies the subpattern block to use for preferential matching of the next input.
-- `hasnext` `( -- bool)` pushes whether the conversation has a special subpattern to run; typically used for suppressing random comments from action functions called with `runFunc()` 
-- `holdnext` `()` tells the system NOT to clear the special subpatterns when this action runs. An example use is in "catch all" actions, to avoid
+- `next (p --)` specifies the subpattern block to use for preferential matching of the next input.
+- `hasnext ( -- bool)` pushes whether the conversation has a special subpattern to run; typically used for suppressing random comments from action functions called with `runFunc()` 
+- `holdnext ()` tells the system NOT to clear the special subpatterns when this action runs. An example use is in "catch all" actions, to avoid
 the thread of the conversation being lost when the use types something odd.
-- `promote` `(topicname --)` promotes a topic to the top of its list
-- `demote` `(topicname --)` demotes a topic to the bottom of its list
-- `enabletopic` `(topicname --)` enables a topic if it was disabled
-- `disabletopic` `(topicname --)` disables a topic if it was enabled
-- `enablepattern` `(patternname topicname --)` enables a disabled named pattern in a topic
-- `disablepattern` `(patternname topicname --)` disables an enabled named pattern in a topic
-- `curtopic` `(-- name)` return name of matched topic or `none` if not in a topic
+- `promote (topicname --)` promotes a topic to the top of its list
+- `demote (topicname --)` demotes a topic to the bottom of its list
+- `enabletopic (topicname --)` enables a topic if it was disabled
+- `disabletopic (topicname --)` disables a topic if it was enabled
+- `enablepattern (patternname topicname --)` enables a disabled named pattern in a topic
+- `disablepattern (patternname topicname --)` disables an enabled named pattern in a topic
+- `curtopic (-- name)` return name of matched topic or `none` if not in a topic
 
 == Flow control
 
 ### `if .. then .. else`
 This is the basic flow control statement. It might seem a bit odd if you're not used to
-languages of the Forth family, but it works like this:
+languages of the FORTH family, but it works like this:
 ----
 <code that leaves integer on stack>
 if
@@ -356,11 +389,15 @@ We can exit from an action early using the `stop` word. Note that we must still
 leave a string on the stack for the action to sent to the user. This word will
 work inside loops and other control structures.
 
+=== Calling functions by name
+This is possible with the `call` function, which takes a function name
+on the stack, and any arguments that function may have.
+
 == The `none` value
 Some operations may return this special value when they fail in some way,
 for example popping an item from the end of a list of zero length or reading
 an unset local variable. You
-can test if the value on the stack is none with `isnone` `(val -- 0 or 1)`,
+can test if the value on the stack is none with `isnone (val -- 0 or 1)`,
 and you can stack none yourself with `none`.
 
 NOTE: The `none` value is considered 0 when viewed as an integer,
@@ -473,21 +510,30 @@ setting up large constant lists in instance variables in your config file's `ini
 
 Operations on lists are:
 
-- `get` `(idx list -- val)` gets an item from a list, or `none`
-- `set` `(val idx list --)` sets an item in a list which must be of the required length; it will not grow the list
-- `push` `(val list --)` appends an item to the end of the list
-- `pop` `(list -- val)` removes an item from the end of the list and stacks it, or `none` if there were no items
-- `unshift` `(val list --)` appends an item to the start of the list
-- `shift` `(list -- val)` removes an item from the start of the list and stacks it, or `none` if there were no items
-- `len` `(list -- int)` pushes the length of a list
-- `choose` `(list -- item)` selects a random item from the list
-- `in` `(item list -- int)` stack 1 if the item is in the list, 0 if not
-- `join` `(list string -- string)` join the string representations of
+- `get (idx list -- val)` gets an item from a list, or `none`
+- `set (val idx list --)` sets an item in a list which must be of the required length; it will not grow the list
+- `push (val list --)` appends an item to the end of the list
+- `pop (list -- val)` removes an item from the end of the list and stacks it, or `none` if there were no items
+- `unshift (val list --)` appends an item to the start of the list
+- `fst (list -- item)` get first item (useful for tuples)
+- `snd (list -- item)` get second item
+- `shift (list -- val)` removes an item from the start of the list and stacks it, or `none` if there were no items
+- `len (list -- int)` pushes the length of a list, will also get the length of a string or the number of items in a map
+- `choose (list -- item)` selects a random item from the list
+- `in (item list -- int)` stack 1 if the item is in the list, 0 if not
+- `join (list string -- string)` join the string representations of
 items in a list with another string, to produce a new string
+- `sort (list --)` sort a list in place, removing it from the stack (a common idiom is `dup sort`
+to make sure the list is still on the stack to work with). This will sort numerically if it can,
+but will fall back to an alphabetic sort if not all the elements are numeric.
+Actually, it's more complicated than that -- each Value type has its own comparator, and numeric
+types use numeric comparators. Other types will use string comparators. So parts of the a list
+with numbers and other types in might end up numerically sorted, and other parts alphabetically.
+Beware of sorting lists of big maps and lists, because then it will sort by the (very long)
+string representation!
 
 The `choose` is particularly useful in selecting random responses, or even
 starting random dialogue trees.
-
 
 [NOTE]
 ====
@@ -496,9 +542,11 @@ Lists are implemented as Java ArrayList objects, which means that the `unshift` 
 ====
 
 == Ranges
-Ranges are values which represent ranges of integers. For example, the range created
-by `0 4 range` represents the numbers 0, 1, 2 and 3. The list doesn't include 4 so
-that it's 4 integers long. The only thing that you can do with a range is iterate
+Ranges are values which represent ranges of integers, and are created
+by the `range (start end -- range)` function. The start is inclusive, the end exclusive.
+For example, the range created
+by `0 4 range` represents the numbers 0, 1, 2 and 3.
+The only thing that you can do with a range is iterate
 over it. For example:
 ----
 10 20 range each loop {i " " +.}
@@ -511,6 +559,61 @@ to convert it to a list. Here's a function to do that:
    [] ?r each loop i, endloop
 ;
 ----
+
+
+
+== Maps
+Maps are the second major collection type in action language. These map from values
+(or rather from the unique string representations of values) to other values.
+Syntactically they are very similar to lists, but are started with the `[%` combination.
+Here's an example:
+----
+[%
+    1   "one",
+    2   "two",
+    `foo    [1,2,3,"fish"]
+] !@someMap
+----
+Here we define a map, which maps from the integer 1 to the string "one", the integer
+2 to the string "two" and the string "foo" to a list. We then set the value
+of the instance variable `someMap` to this map.
+[NOTE]
+====
+Similar to how the syntax of lists can be "abused" to build lists dynamically, we can
+do this sort of thing:
+----
+[%] 0 10 range each loop { i i dup*,} !@squares
+----
+This will build a map of the integers 0-9 to their squares.
+====
+
+=== Setting and getting map values
+This can be done using the `get` and `set` operations, just like lists but with a
+key instead of an index. Alternatively, if the key is a symbol (a single-word string)
+we can use a special shorthand with a backtick. To set and get the value of "foo" in a map,
+this looks like
+----
+?@somemap?`foo      # get value
+20 ?@somemap!`foo   # set value to 20
+----
+
+=== Other map operations
+
+- `in (key map -- int) ` will work to see if an key is defined in a map
+- `len (map -- int)` will give the number of defined keys
+- `keys (map -- list)` will return a list of the map's keys
+
+Maps may also have their keys iterated over:
+----
+[]
+?@somemap each loop 
+    i "=" + i ?@testhash get +,
+endloop
+"," join.;
+----
+If you can work your way through the code above and understand it you'll have
+a pretty good grasp of action language!
+
 
 == Constant expressions
 Sometimes it is useful to write code which manipulates constants: a trivial
@@ -614,7 +717,7 @@ use `iscat` in the action, returning `none` if there is no match.
 
 == Random numbers
 
-- `rand` `(int --)` pushes an integer from 0 to n-1 onto the stack.
+- `rand (int --)` pushes an integer from 0 to n-1 onto the stack.
 It's useful in constructions like `4 rand not if...then` which will
 happen 1 in 4 times.
 

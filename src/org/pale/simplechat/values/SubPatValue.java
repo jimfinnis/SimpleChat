@@ -17,12 +17,11 @@ public class SubPatValue extends Value {
 	}
 	
 	@Override public String str(){
-		return "<SUBPAT VALUE> (did you forget 'next'?)";
+		return "<SUBPAT VALUE>";
 	}
 	@Override
 	public Value binop(Type t, Value snd) {
 		return null;
 	}
-
 
 }

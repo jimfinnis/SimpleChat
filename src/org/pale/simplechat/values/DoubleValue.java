@@ -1,6 +1,7 @@
 package org.pale.simplechat.values;
 
 import org.pale.simplechat.actions.BinopInstruction.Type;
+import org.pale.simplechat.actions.ActionException;
 import org.pale.simplechat.actions.Value;
 
 public class DoubleValue extends Value {
@@ -23,6 +24,16 @@ public class DoubleValue extends Value {
 	@Override public double toDouble(){
 		return d;
 	}
+
+	@Override
+	public int compareTo(Value v){
+		try {
+			return Double.compare(d, v.toDouble());
+		} catch (ActionException e) {
+			return str().compareTo(v.str());
+		}
+	}
+
 	
 	@Override public String str(){
 		return Double.toString(d);

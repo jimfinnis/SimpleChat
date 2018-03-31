@@ -15,13 +15,9 @@ Jim Finnis <jim.finnis@gmail.com>
   If you *really* want to change global data you can create a map
   in (say) root's globals and use set and get to access that map. Since
   it's always the same map, it's always global.
-  for getting - doc "stored patterns"
-- doc maps and ?` !` shortcuts. Map and list commands like get, set and in.
-- doc map iteration with `keys`
-- doc new string commands
+
+- doc "stored patterns"
 - doc logger
-- doc "topics inherit" and "len"
-- doc "call" and "type"
 
 - relations (and check subbots work)
 - tidy up testbot and parent (and talk about them)

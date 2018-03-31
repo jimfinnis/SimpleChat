@@ -40,4 +40,5 @@ public class RangeValue extends Value {
 	public int size() throws ActionException {
 		return end-start;
 	}
+
 }

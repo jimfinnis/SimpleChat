@@ -40,6 +40,4 @@ public class StringValue extends Value {
 	public int size() throws ActionException {
 		return s.length();
 	}
-
-
 }

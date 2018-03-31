@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.pale.simplechat.actions.ActionException;
 import org.pale.simplechat.actions.BinopInstruction.Type;
+import org.pale.simplechat.actions.MapLoopIterator;
+import org.pale.simplechat.actions.Runtime.LoopIterator;
 import org.pale.simplechat.actions.Value;
 
 public class MapValue extends Value {
@@ -29,7 +31,10 @@ public class MapValue extends Value {
 	@Override
 	public void set(Value k,Value v) throws ActionException {
 		String sk = k.str();
-		map.put(sk, v);
+		if(v == NoneValue.instance)
+			map.remove(sk);
+		else
+			map.put(sk, v);
 	}
 	@Override
 	public boolean containsKey(Value k) throws ActionException {
@@ -67,4 +72,12 @@ public class MapValue extends Value {
 	public int size() throws ActionException {
 		return map.size();
 	}
+	
+	@Override
+	public LoopIterator makeIterator() throws ActionException {
+		return new MapLoopIterator(map);
+	}
+
+
+
 }

@@ -1,3 +1,9 @@
 +(.* $s=~animals .+ ~goodness .*)
     "That's nice.".
     "I like ${$s} too.".;
+
++test
+    [8,4,5,8,6,8,50,3] dup sort
+    "," join.
+    ;
+       

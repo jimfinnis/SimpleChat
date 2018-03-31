@@ -5,9 +5,14 @@ import org.pale.simplechat.actions.Runtime.LoopIterator;
 
 
 
-public abstract class Value {
+public abstract class Value implements Comparable<Value> {
 	public String str() {
 		return "??";
+	}
+	
+	@Override
+	public int compareTo(Value v){
+		return str().compareTo(v.str());
 	}
 	
 	public int toInt() throws ActionException{

@@ -82,6 +82,11 @@ public class Collections {
 		c.push(lst.get(1));
 	}
 	
+	@Cmd public static void sort(Conversation c) throws ActionException {
+		List<Value> lst = c.popList();
+		java.util.Collections.sort(lst);
+	}
+	
 	@Cmd public static void join(Conversation c) throws ActionException {
 		// (list string -- string)
 		String js = c.popString();
