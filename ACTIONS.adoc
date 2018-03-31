@@ -263,16 +263,16 @@ in scope, the function variable hides the conversation variable
 ====
 
 ==== Fetching variables
-- `?varname` will push the value of conversation/function variable `varname`, or the string `none` if 
+- `?varname` will push the value of conversation/function variable `varname`, or the `none` value if 
 it has not been set.
 - `!varname` will pop the stack and store into the conversation/function variable `varname`. 
 - `?@varname` will push the value of instance variable `varname`,  or the bot-global
 variable of the same name if that can't be found, or the bot-global in the closest ancestor if
-that can't be found (and so on all the way up the inheritance tree) or the string `"??"` if 
+that can't be found (and so on all the way up the inheritance tree) or the `none` if 
 it has not been set anywhere
 - `!@varname` will pop the stack and store into the instance variable `varname`, thus overriding
 any bot-global variable of the same name
-- `$varname` will push the value of pattern variable `varname`, or `"??"` if not set - note
+- `$varname` will push the value of pattern variable `varname`, or `none` if not set - note
 that there is no `?` here, because you cannot set a pattern variable.
 
 == Pattern manipulation
