@@ -563,7 +563,7 @@ in the right hand column:
 "Thin barry" ~human iscat       1
 "Thin barry smith" ~human iscat 0
 ----
-See also the <<README.adoc#Categories, an example>> documentation on `subcat` for finding strings which match
+See also the <<README.adoc#subcats, main documentation>> documentation on `subcat` for finding strings which match
 categories inside other categories.
 
 

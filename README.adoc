@@ -498,6 +498,7 @@ After these maps, we define a category for each material giving all the possible
 strings. We can match on these categories. Finally, a single `~material` category
 contains all these categories so we can match on it to see if we have a material.
 
+[#subcats]
 A very useful function here is `subcat (string category -- category)` This takes a string
 and a category which contains other categories (like `~material` in our example). The
 string must match the input category. The function will return the subcategory of the input
