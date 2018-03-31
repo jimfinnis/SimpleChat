@@ -94,7 +94,7 @@ See below for more details.
 ====
 
 There is a useful shortcut for stacking single words, often called "symbols".
-Any single word which begins with a backtick is a symbol to be placed on 
+Any single word which begins with a backtick is a string to be placed on 
 the stack:
 ----
 `cat `dog +
@@ -129,7 +129,7 @@ Code cannot be embedded in symbols.
 ==== Subpattern lists
 The *subpattern list*
 literal is rather complex, and looks like a list of patterns inside curly brackets,
-just as you would find in a topic, but without the preceding `+` or name on each pattern:
+just as you would find in a topic:
 ----
     {
         +(?Iam [ok good fine well] .*)
@@ -159,7 +159,7 @@ be converted to a string and sent to the user. All the examples so far have been
 kind.
 - *The string builder*: Sometimes it's necessary to build a more complex string.
 You could do this by concatenation (e.g. `"building " "a "+ "string"+`) but all the stack
-operations be hard to read. Instead, the string builder can be used. Here, the
+operations can be hard to read. Instead, the string builder can be used. Here, the
 `.` operation appends to a string inside the conversation. If there is no value left on
 the stack at the end of the action's run, the resulting string is returned.
 Here's a simple example:
@@ -203,7 +203,8 @@ The core operations supported are:
 - `neg` replaces the value with its negative (having converted it to a number)
 
 === Type conversion and query functions
-These all have the picture `(a -- b)`, like unary operators, and convert between types.
+These all have the picture `(a -- b)`, like unary operators, and convert between types or
+query types:
 
 - `double` converts to a string
 - `int` converts to an integer
@@ -236,8 +237,10 @@ english words, so `10 "house" pluralizeWithNum` returns "ten houses".
 - `dp (a --)` prints a value to the system logger
 
 === Variable access
-There are four sets of variables:
+There are five sets of variables:
 
+- *bot global* variables are private to each `Bot` (actually a dummy 
+instance within each `Bot`)
 - *instance* variables are private to each `BotInstance`, each communicating entity.
 - *conversation* variables are private to each `BotInstance/source` pair, that is,
 each conversation between a bot and a user.
@@ -248,7 +251,8 @@ above.
 The different sorts of variables have different sigils in front of their name:
 
 - conversation and function variables have no sigil, they are the default.
-- instance variables have the `@` sigil
+- instance and bot global variables have the `@` sigil (see <<README.adoc#global,here>>
+for how bot global variables differ from instance variables)
 - pattern variables have the `$` sigil
 
 [NOTE]
@@ -258,12 +262,15 @@ in scope, the function variable hides the conversation variable
 ====
 
 ==== Fetching variables
-- `!varname` will pop the stack and store into the conversation/function variable `varname`. 
 - `?varname` will push the value of conversation/function variable `varname`, or the string `none` if 
 it has not been set.
-- `?@varname` will pop the stack and store into the instance  variable `varname`. 
-- `?@varname` will push the value of instance variable `varname`, or the string `"??"` if 
-it has not been set.
+- `!varname` will pop the stack and store into the conversation/function variable `varname`. 
+- `?@varname` will push the value of instance variable `varname`,  or the bot-global
+variable of the same name if that can't be found, or the bot-global in the closest ancestor if
+that can't be found (and so on all the way up the inheritance tree) or the string `"??"` if 
+it has not been set anywhere
+- `!@varname` will pop the stack and store into the instance variable `varname`, thus overriding
+any bot-global variable of the same name
 - `$varname` will push the value of pattern variable `varname`, or `"??"` if not set - note
 that there is no `?` here, because you cannot set a pattern variable.
 
