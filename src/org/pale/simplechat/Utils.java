@@ -1,6 +1,5 @@
 package org.pale.simplechat;
 
-import org.pale.simplechat.actions.Value;
 
 
 public class Utils {

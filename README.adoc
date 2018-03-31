@@ -470,6 +470,11 @@ Matching in a pattern is done with the `~categoryname' symbol. Here's an example
 +(is $n=(?a ~animal) a cat) "No, but a ${$n} is some kind of animal!"+;
 +(is $n=.+ cat) "No, I don't know what ${$n} is"+;
 ----
+NOTE: You can use categories inside other categories before the former categories are
+declared; the outer category will create an entry which the later declaration will fill in.
+
+
+
 === Category post-modifiers
 Some useful hacks are available for modifying a category list. After
 the square brackets, the `/` symbol precedes a set of modifiers.
@@ -478,6 +483,33 @@ These are characters followed by some data.
 - `/+suffix` adds an optional suffix to a category. If the match fails,
 then we can try again with the suffix removed from the matching data.
 Thus `[say talk]/+ing` will match "saying" and "talking."
+
+While these are occasionally useful, we don't use them often.
+
+=== Categories - an example
+For an example
+of how use categories to handle pluralisation and synonyms, look at the structures in 
+https://github.com/jimfinnis/ChatCitizen2/blob/master/bots/root/matlists.conf[matlists.conf]
+in the ChatCitizens2 root robot. This handles material names in Minecraft.
+Here, we set up two maps, both of which map from categories (the materials) to lists of
+strings (possible plurals and singulars). These maps give us choices of strings to output.
+
+After these maps, we define a category for each material giving all the possible singular and plural
+strings. We can match on these categories. Finally, a single `~material` category
+contains all these categories so we can match on it to see if we have a material.
+
+A very useful function here is `subcat (string category -- category)` This takes a string
+and a category which contains other categories (like `~material` in our example). The
+string must match the input category. The function will return the subcategory of the input
+category which matches the string. Given our example, this means that if we call
+----
+"blocks of stone" ~material subcat
+----
+we will get the category `~stone` as the result.
+
+NOTE: We could add multiple levels of subcategory in our materials exampe, but this
+would make it harder to use `subcat`.
+
 
 == Lists
 Lists are lists of strings which are accessible from
