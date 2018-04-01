@@ -4,17 +4,40 @@ Jim Finnis <jim.finnis@gmail.com>
 :toc:
 :toc-placement!:
 
-AIML is terribly verbose, and writing complex conversational structures
-is a nightmare. Yes, you can do it - and it's really powerful - but
-the XML nature of everything and the way topics work really burns my
-brain. Chatscript is easier, much easier, but it's in C++. And my essential
-usecase is Minecraft chatbots, so I can't use that. 
-So this is a simplified (hah) thing. This documentation is really 
-just for me, at the moment.
-
-THIS IS VERY EARLY WORK. (See the link:TODO.md[todo list])
+SimpleChat is a system for creating chatbots, written in Java.
+It provides the (unique, as far as I can tell) facility for multiple
+instances of individual bots, and for multiple bots and their instances
+to be running at the same time. It provides the core for 
+the http://github.com/jimfinnis/ChatCitizen2[ChatCitizen project], a
+Minecraft plugin which uses Citizens2 to make conversational NPCs.
 
 toc::[]
+
+
+== Rationale
+There are a few chatbot systems out there already - why write another?
+One of the most popular is AIML, which is written in Java and has already
+been incorporated into a Minecraft plugin.
+However, AIML is terribly verbose, and writing complex conversational structures
+is a nightmare. Yes, you can do it - and it's really powerful - but
+the XML nature of everything and the way topics work really burns my
+brain.
+
+Chatscript is another system which is easier, much easier, but it's in C++.
+And my essential usecase is Minecraft chatbots, so I can't use that. It also
+has quite a hefty runtime with a lot of (to me) unnecessary stuff. I don't
+want to pass the Turing test just yet, I just want to have some simple
+conversations.
+
+So SimpleChat is a simplified (hah) thing, written in Java, but based
+heavily on Chatscript. There is also an emphasis on actions which are
+procedural rather than necessarily being just text responses: I want
+my NPCs to do things, rather than just say them.
+
+This documentation is really just for me, at the
+moment.
+
+NOTE: THIS WHOLE PROJECT IS VERY EARLY WORK. (See the link:TODO.md[todo list])
 
 == Building
 For SimpleChat itself, there are two Maven manifests POMs provided:
