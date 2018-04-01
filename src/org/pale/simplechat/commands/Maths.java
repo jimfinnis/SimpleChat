@@ -6,6 +6,7 @@ import org.pale.simplechat.Conversation;
 import org.pale.simplechat.actions.ActionException;
 import org.pale.simplechat.actions.Cmd;
 import org.pale.simplechat.actions.Value;
+import org.pale.simplechat.values.DoubleValue;
 import org.pale.simplechat.values.IntValue;
 
 public class Maths {
@@ -25,4 +26,22 @@ public class Maths {
 		c.push(v.neg());
 	}
 	
+	@Cmd public static void pow(Conversation c) throws ActionException {
+		double y = c.pop().toDouble();
+		double x = c.pop().toDouble();
+		c.push(new DoubleValue(Math.pow(x, y)));
+	}
+	
+	@Cmd public static void sin(Conversation c) throws ActionException {
+		c.push(new DoubleValue(Math.sin(c.pop().toDouble())));
+	}
+	@Cmd public static void log(Conversation c) throws ActionException {
+		c.push(new DoubleValue(Math.log(c.pop().toDouble())));
+	}
+	@Cmd public static void cos(Conversation c) throws ActionException {
+		c.push(new DoubleValue(Math.cos(c.pop().toDouble())));		
+	}
+	@Cmd public static void tan(Conversation c) throws ActionException {
+		c.push(new DoubleValue(Math.tan(c.pop().toDouble())));
+	}
 }

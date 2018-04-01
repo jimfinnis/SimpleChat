@@ -9,7 +9,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.pale.simplechat.actions.Value;
 import org.pale.simplechat.patterns.MatchData;
+import org.pale.simplechat.values.StringValue;
 
 /**
  * Categories are like concepts in ChatScript, and have a similar syntax.
@@ -169,6 +171,18 @@ public class Category {
 		for(Category c:cats){
 			c._dump(level+1);
 		}
+	}
+	
+	private void addCatToValueList(List<Value> l){
+		for(String w: words)l.add(new StringValue(w));
+		for(String[] a: lists)l.add(new StringValue(Utils.join(a, " ")));
+		for(Category c: cats)c.addCatToValueList(l);
+	}
+	
+	public List<Value> catToValueList(){
+		List<Value> out = new ArrayList<Value>();
+		addCatToValueList(out);
+		return out;
 	}
 
 

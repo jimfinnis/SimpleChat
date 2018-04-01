@@ -8,13 +8,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class Tokenizer extends StreamTokenizer {
-	public Tokenizer(Reader s){
+	public String sourceName;
+	public Tokenizer(String sourceName,Reader s){
 		super(s);
+		this.sourceName = sourceName;
 		setDefault();
 	}
 
 	public Tokenizer(Path p) throws IOException{
-		this(Files.newBufferedReader(p,StandardCharsets.UTF_8));
+		this(p.toString(),Files.newBufferedReader(p,StandardCharsets.UTF_8));
 	}
 	
 	// when tokenizing categories, everything apart from spaces is a word char.

@@ -202,6 +202,14 @@ The core operations supported are:
 - `not` replaces a nonzero value with zero, and vice versa
 - `neg` replaces the value with its negative (having converted it to a number)
 
+Other functions:
+
+- `sin (x -- y)` sine in radians
+- `cos (x -- y)` cosine in radians
+- `tan (x -- y)` tangent in radians
+- `pow (x y -- result)` x to the power y
+- `log (x -- y)` natural log
+
 === Type conversion and query functions
 These all have the picture `(a -- b)`, like unary operators, and convert between types or
 query types:
@@ -289,6 +297,59 @@ the thread of the conversation being lost when the use types something odd.
 - `enablepattern (patternname topicname --)` enables a disabled named pattern in a topic
 - `disablepattern (patternname topicname --)` disables an enabled named pattern in a topic
 - `curtopic (-- name)` return name of matched topic or `none` if not in a topic
+
+== User functions
+It's possible to define user functions in `config.conf` or any
+topic file. To do this, use a function definition of the form
+----
+:name |arg1,arg2...,local1,local2...|
+    function body in action language
+----
+The arguments will we popped off the stack, and local variables
+will be allocated. Inside a function, accessing local variables and
+arguments (known as *function variables*) is done the same way as
+accessing conversation variables,
+using the '!' and '?' sigils. Function variables take precedence over
+conversation variables: if no function variable exists of that name,
+the function will try to access the conversation variable.
+Here's an example function:
+----
+:addints |s1,s2:|
+    ?s1 int ?s2 int +;
+----
+All local variables are initialised to `none`.
+You may omit the args and locals if you wish, and you can use values 
+already on the stack on entry to the function:
+----
+addints int swap int +;
+----
+will do the same: convert two values to ints and add them. This latter
+form is a bit more efficient (four instructions rather than five and
+no function variable setup) and works by converting the top int,
+swapping the top two stack members, converting the second int,
+and adding. Of course if you did it with a non-commutative operation
+like division this wouldn't work, but you could write:
+----
+:divints int swap int swap /;
+----
+Functions can also call other functions, and can recurse,
+so you can have a function and pattern like this:
+----
+:fac |n:|
+    ?n 1 = if
+        1
+    else
+        ?n 1 - fac ?n *
+    then   
+;
+
++(fac $n=.)
+    $n int fac
+;
+----
+Important: functions are global to all files - a function defined in a
+config file or a topic will be there for all subsequent topics.
+
 
 == Flow control
 
@@ -413,57 +474,30 @@ so code like
 `?var if ... then` will consider `?var` to be false if that variable
 is not defined.
 
-== User functions
-It's possible to define user functions in `config.conf` or any
-topic file. To do this, use a function definition of the form
-----
-:name |arg1,arg2...,local1,local2...|
-    function body in action language
-----
-The arguments will we popped off the stack, and local variables
-will be allocated. Inside a function, accessing local variables and
-arguments (known as *function variables*) is done the same way as
-accessing conversation variables,
-using the '!' and '?' sigils. Function variables take precedence over
-conversation variables: if no function variable exists of that name,
-the function will try to access the conversation variable.
-Here's an example function:
-----
-:addints |s1,s2:|
-    ?s1 int ?s2 int +;
-----
-All local variables are initialised to `none`.
-You may omit the args and locals if you wish, and you can use values 
-already on the stack on entry to the function:
-----
-addints int swap int +;
-----
-will do the same: convert two values to ints and add them. This latter
-form is a bit more efficient (four instructions rather than five and
-no function variable setup) and works by converting the top int,
-swapping the top two stack members, converting the second int,
-and adding. Of course if you did it with a non-commutative operation
-like division this wouldn't work, but you could write:
-----
-:divints int swap int swap /;
-----
-Functions can also call other functions, and can recurse,
-so you can have a function and pattern like this:
-----
-:fac |n:|
-    ?n 1 = if
-        1
-    else
-        ?n 1 - fac ?n *
-    then   
-;
+=== Running one of several different bits of code randomly
 
-+(fac $n=.)
-    $n int fac
-;
+It's sometimes useful in a chat bot to run one of a number of code
+blocks at random. This is easy enough with a `cases` statement:
 ----
-Important: functions are global to all files - a function defined in a
-config file or a topic will be there for all subsequent topics.
+3 rand!n
+cases
+    ?n 0 = if "Case one". case
+    ?n 1 = if "Case two". case
+    "Case three". otherwise
+----
+but this is both inefficient and a pain to add new things to.
+This pattern occurs sufficiently frequently that it has its own
+syntax: the `random .. randcase .. endrandom` construction:
+----
+random
+    "Case one". randcase
+    "Case two". randcase
+    "Case three".
+endrandom
+----
+Note that the final shouldn't have `randcase` after it.
+
+
 
 == Phrase lists 
 You'll have seen these before in the link:README.adoc[main document].
@@ -478,7 +512,20 @@ We can use the name in action language to stack a random phrase:
     ^ok clean;
 ----
 This is useful, because sub-bots can override the lists to provide
-some variation to a generic chat.
+some variation to a generic chat. You can do the same thing, however,
+by providing bot-global variables and using `choose`:
+----
+global
+    ...
+    ["yes", "very good", "fine by me", "no problem"] !@ok
+;
+----
+and in an action block:
+----
++(open .* door ?please)
+    ?@ok choose clean;
+----
+Which ever way suits you.
 
 
 == Action language lists
@@ -674,8 +721,13 @@ in the right hand column:
 "Thin barry" ~human iscat       1
 "Thin barry smith" ~human iscat 0
 ----
-See also the <<README.adoc#subcats, main documentation>> documentation on `subcat` for finding strings which match
-categories inside other categories.
+Other useful words:
+
+- `iscat (string cat -- int)` see above
+- `subcat (string cat -- cat)` see <<README.adoc#subcats, main documentation>>: finds
+a subcategory of a category which matches
+- `cat2list (cat -- list of strings)` turns a category (and all subcategories) into a list of strings
+
 
 
 === Creating local categories

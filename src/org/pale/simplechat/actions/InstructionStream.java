@@ -1,7 +1,6 @@
 package org.pale.simplechat.actions;
 
 import java.io.IOException;
-import java.io.StreamTokenizer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
@@ -9,6 +8,7 @@ import org.pale.simplechat.Bot;
 import org.pale.simplechat.Conversation;
 import org.pale.simplechat.Logger;
 import org.pale.simplechat.ParserError;
+import org.pale.simplechat.Tokenizer;
 
 public class InstructionStream {
 	// limit on how many instructions can run
@@ -16,8 +16,8 @@ public class InstructionStream {
 	
 	private List<Instruction> insts;
 
-	public InstructionStream(Bot bot,StreamTokenizer toks) throws IOException, ParserError {
-		insts = new InstructionCompiler(bot,toks).insts;
+	public InstructionStream(Bot bot,Tokenizer toks) throws IOException, ParserError {
+		insts = new InstructionCompiler(bot,toks).getInsts();
 	}
 	
 	// if reset is true, will clear lots of things - do this for a top-level call. Otherwise it's a user function call.
@@ -31,10 +31,14 @@ public class InstructionStream {
 				Logger.log(Logger.ACTION, "    sb: "+c.getOutput());
 				
 			}
-			ActionLog.write("Running instruction at "+i+": "+insts.get(i).getClass().getSimpleName());
+			ActionLog.write("Running instruction at "+i+": "+insts.get(i).toString());
 
 			// each instruction returns the next execution address's offset (usually 1!)
-			i += insts.get(i).execute(c);
+			try {
+				i += insts.get(i).execute(c);
+			} catch(Exception e) {
+				throw new ActionException("Snark "+insts.get(i).getInfo()+" - "+e.getMessage());
+			}
 			if(c.totalinsts++ > LIMIT)throw new ActionException("Instruction limit exceeded");
 		}	
 	}

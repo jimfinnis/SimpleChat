@@ -2,8 +2,14 @@
 # catch-alls that run after everything.
 # 
 
++(debug on)
+    255 setlog
+    1 debug "On";
++(debug off)
+    0 setlog
+    0 debug "Off";
 
-+"$foo=.*"
++$foo=.*
     [      
     "I don't know how to respond to " $foo +,
     "I don't know what to say!",
@@ -14,3 +20,4 @@
     "Um.",
     "It's a lovely day!"
     ] choose;
+

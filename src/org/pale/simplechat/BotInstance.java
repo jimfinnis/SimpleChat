@@ -158,6 +158,8 @@ public class BotInstance  {
 			c.reset(); // reset (or create) the stacks etc.
 			return c.runFunc(s);
 		} catch (ActionException e) {
+			ActionLog.show();
+
 			Logger.log(Logger.FATAL,e.getMessage());
 			return "??"; // not ideal.
 		}

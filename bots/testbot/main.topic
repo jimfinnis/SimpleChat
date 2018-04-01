@@ -3,7 +3,17 @@
     "I like ${$s} too.".;
 
 +test
-    [8,4,5,8,6,8,50,3] dup sort
-    "," join.
-    ;
-       
+    "Doing ... ".
+    random
+        "Hello"
+    randcase
+        "I'm a " 6 rand +
+    randcase
+        "You're a lemon."
+    randcase
+        "Fish are nice."
+    endrandom
+    .
+    
+    "And it's done.".
+;      

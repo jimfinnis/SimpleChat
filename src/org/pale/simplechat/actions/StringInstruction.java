@@ -42,7 +42,7 @@ public class StringInstruction extends Instruction {
 					}
 					i.next();
 					// we got a block of code, compile it.
-					codels.add(new InstructionStream(bot,new Tokenizer(new StringReader(sb.toString()))));
+					codels.add(new InstructionStream(bot,new Tokenizer("embedded code",new StringReader(sb.toString()))));
 				} else {
 					sbtex.append('$');
 					sbtex.append(i.current());

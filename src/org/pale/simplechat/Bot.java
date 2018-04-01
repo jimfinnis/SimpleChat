@@ -50,7 +50,7 @@ public class Bot {
 	// Things in bot may also be used. It's set by using the "inherit" command.
 	public Bot parent=null;  
 	private Map<String,Topic> topicsByName;
-	private Map<String,Pattern> storedPats;
+	private Map<String,Pattern> storedPats = new HashMap<String,Pattern>();
 	private Map<String,Category> cats = new HashMap<String,Category>(); // bot's private categories
 	private Map<String,PhraseList> phraseLists = new HashMap<String,PhraseList>();
 	List<SubstitutionsInterface> subs;

@@ -190,7 +190,7 @@ some other things.
 - an optional `global` entry followed by a block of Action language (see below)
 which will set up values for bot-global variables, which are rather more
 system-friendly than instance variables but cannot be changed (see <<global,bot-global variables>> below)
-- category and list definitions (q.v.)
+- category and phrase list definitions (q.v.)
 - any number of action language functions, which can be called from action language or
 from your application code.
 - `include "filename"` lines to include subsidiary conf files
@@ -559,13 +559,14 @@ script from a https://github.com/jimfinnis/ChatCitizen2/blob/master/bots/root/ma
 You could write a similar thing in a more mainstream language fairly easily.
 ====
 
-== Lists
+== Phrase lists
 Lists are lists of strings which are accessible from
-that language. They are in many ways like categories, but cannot be 
+action language. They are in many ways like categories, but cannot be 
 matched on - instead they are intended for generating content and customising
-this content to sub-bots of a bot (see the section on Inheritance).
+this content to sub-bots of a bot, and so can be inherited
+(see the section on Inheritance).
 
-Lists are specified in a config file by data of the form:
+Phrase lists are specified in a config file by data of the form:
 ----
 ^listname = [word "a phrase" another_phrase]
 ----

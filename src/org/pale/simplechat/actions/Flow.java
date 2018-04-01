@@ -1,5 +1,9 @@
 package org.pale.simplechat.actions;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.pale.simplechat.Conversation;
 import org.pale.simplechat.actions.Runtime.LoopIterator;
 
@@ -127,6 +131,20 @@ public class Flow {
 			c.exitflag = true;
 			return 0;
 		}
+	}
+	
+	public static class RandBlockInstruction extends Instruction {
+		public List<Integer> addresses = new ArrayList<Integer>();
+		@Override
+		int execute(Conversation c) throws ActionException {
+			// If there are n clauses in the random block, there will be n-1 offsets (there's always offset 0, you see).
+			int n = ThreadLocalRandom.current().nextInt(addresses.size()+1);
+			if(n==0)
+				return 1;
+			else
+				return addresses.get(n-1);
+		}
+		
 	}
 	
 }

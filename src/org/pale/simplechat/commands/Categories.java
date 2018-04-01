@@ -55,6 +55,12 @@ public class Categories {
 		Category subcat = cat.getSubcat(arr);
 		c.push(new CatValue(subcat.name,subcat));
 	}
+	
+	// (cat -- list of strings) make a list out of all the category's words and lists, and all the categories of which it is made!
+	@Cmd public static void cat2list(Conversation c) throws ActionException {
+		List<Value> l = popCat(c).catToValueList();
+		c.push(new ListValue(l));
+	}
 
 	
 	
@@ -84,4 +90,5 @@ public class Categories {
 		}
 		return c;
 	}
+	
 }
