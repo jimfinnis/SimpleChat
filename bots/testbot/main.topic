@@ -17,3 +17,31 @@
     
     "And it's done.".
 ;      
+
+
+:dodialog
+    dup !@curnode
+    each loop
+    i . out
+    endloop
+;
+    
+    
+
+# dialog tree test, starts when you say "tree"
+
+# node
+:node1
+    [
+        [1, "Hello", "nodeh"],
+        [2, "Fight me", "nodefm"],
+        [3, "Are you OK?", "nodeyok"]
+    ] 
+    dodialog
+;
+
++tree
+    "node1" call
+;
+
+    

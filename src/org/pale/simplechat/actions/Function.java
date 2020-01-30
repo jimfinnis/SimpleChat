@@ -13,7 +13,12 @@ public class Function {
 	String name;
 	String[] args;	// argument names
 	String[] locals;	// local names
-	InstructionStream insts; // the function's instructions
+    InstructionStream insts; // the function's instructions
+    
+    public String getName(){
+        return name;
+    }
+    
 	
 	// by this point we should have parsed the function introducer and arguments
 	// and be ready to parse the instruction stream.

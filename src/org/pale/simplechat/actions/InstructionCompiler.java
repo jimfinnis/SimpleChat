@@ -26,6 +26,7 @@ import org.pale.simplechat.Tokenizer;
 import org.pale.simplechat.values.CatValue;
 import org.pale.simplechat.values.DoubleValue;
 import org.pale.simplechat.values.IntValue;
+import org.pale.simplechat.values.FunctionValue;
 import org.pale.simplechat.values.StringValue;
 import org.pale.simplechat.values.SubPatValue;
 
@@ -51,7 +52,9 @@ public class InstructionCompiler {
 	private List<Integer> leaveList = null;
 	// this is a stack of leave lists
 	private Stack<List<Integer>> loopStack = new Stack<List<Integer>>();
-
+    
+    // lambda counter for unique names
+    private static int lambdact=0;
 
 	// the registry of commands
 	private static Map<String,Method> cmds = new HashMap<String,Method>();
@@ -105,7 +108,7 @@ public class InstructionCompiler {
 		try {
 			for(;;){
 				int t = tok.nextToken();
-				if(t == ';' || t == StreamTokenizer.TT_EOF)
+				if(t == ';' || t == StreamTokenizer.TT_EOF || t==')')
 					break;
 				switch(t){
 				case '\"':
@@ -126,7 +129,15 @@ public class InstructionCompiler {
 							throw new ParserError("unknown category: "+tok.sval);
 						add(tok,new LiteralInstruction(new CatValue(tok.sval,c)));
 					}
-					break;
+                                    break;
+                                case '(':
+                                    {
+                                        String name = "lambda:"+String.valueOf(lambdact++);
+                                        Function f = parseFunction(bot,name,tok);
+                                        
+                                        add(tok,new LiteralInstruction(new FunctionValue(f)));
+                                    }
+                                    break;
 				case '^':
 					if(tok.nextToken()!=StreamTokenizer.TT_WORD)
 						throw new ParserError("expected a list name after ~");

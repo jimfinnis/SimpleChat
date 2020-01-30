@@ -115,9 +115,11 @@ public class MainWindow implements ActionListener, MenuListener {
 		i.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser c = new JFileChooser(FileSystemView.getFileSystemView());
-				c.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				if(c.showOpenDialog(frame)==JFileChooser.APPROVE_OPTION){
+                          File workingDirectory = new File(System.getProperty("user.dir"));
+                          JFileChooser c = new JFileChooser(FileSystemView.getFileSystemView());
+                          c.setCurrentDirectory(workingDirectory);
+                          c.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                          if(c.showOpenDialog(frame)==JFileChooser.APPROVE_OPTION){
 					File f = c.getSelectedFile();
 					loadBot(f);
 				}

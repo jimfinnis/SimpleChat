@@ -353,7 +353,7 @@ config file or a topic will be there for all subsequent topics.
 
 == Flow control
 
-### `if .. then .. else`
+### `if .. else .. then`
 This is the basic flow control statement. It might seem a bit odd if you're not used to
 languages of the FORTH family, but it works like this:
 ----
@@ -367,9 +367,9 @@ or
 <code that leaves integer on stack>
 if
 <part that runs if integer was true>
-then
-<part that runs if integer was false>
 else
+<part that runs if integer was false>
+then
 ----
 For example
 ----
@@ -461,6 +461,11 @@ work inside loops and other control structures.
 === Calling functions by name
 This is possible with the `call` function, which takes a function name
 on the stack, and any arguments that function may have.
+
+=== Anonymous functions
+Functions can also be stored anonymously on the stack using the
+`( ... )` structure, and can then be put in variables or called
+with the `call` function.
 
 == The `none` value
 Some operations may return this special value when they fail in some way,
@@ -654,7 +659,7 @@ this looks like
 
 === Other map operations
 
-- `in (key map -- int) ` will work to see if an key is defined in a map
+- `in (key map -- int)` will work to see if an key is defined in a map
 - `len (map -- int)` will give the number of defined keys
 - `keys (map -- list)` will return a list of the map's keys
 

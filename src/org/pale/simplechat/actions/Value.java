@@ -24,7 +24,7 @@ public abstract class Value implements Comparable<Value> {
 	}	
 	
 	// binops call this on their first operand.
-	public abstract Value binop(BinopInstruction.Type t,Value snd);
+	public abstract Value binop(BinopInstruction.Type t,Value snd) throws ActionException;
 
 	public LoopIterator makeIterator() throws ActionException {
 		throw new ActionException("Type "+this.getClass().getSimpleName()+" is not iterable");
