@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.xml.bind.JAXBElement.GlobalScope;
+//import javax.xml.bind.JAXBElement.GlobalScope;
 
 import org.pale.simplechat.actions.ActionException;
 import org.pale.simplechat.actions.Function;
@@ -161,7 +161,9 @@ public class Bot {
 	public PhraseList getPhraseList(String name) {
 		Bot b = this;
 		do {
-			if(b.phraseLists.containsKey(name))return b.phraseLists.get(name);
+			if(b.phraseLists.containsKey(name)) {
+				return b.phraseLists.get(name);
+			}
 			b = b.parent;
 		} while(b!=null);
 		return null;	
@@ -405,7 +407,7 @@ public class Bot {
 
 	/**
 	 * Use this to load a bot
-	 * @param name  name of the bot
+	 * @param n name of the bot
 	 * @return the bot, either pre-existing or a completely new one whose path name is found with the path provider.
 	 * @throws BotConfigException 
 	 */

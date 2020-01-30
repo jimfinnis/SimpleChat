@@ -131,10 +131,7 @@ public class InstructionCompiler {
 					if(tok.nextToken()!=StreamTokenizer.TT_WORD)
 						throw new ParserError("expected a list name after ~");
 					else {
-						PhraseList l = bot.getPhraseList(tok.sval);
-						if(l==null)
-							throw new ParserError("unknown phrase list: "+tok.sval);
-						add(tok,new RandomPhraseInstruction(l));
+						add(tok,new RandomPhraseInstruction(tok.sval));
 					}
 					break;				
 				case '$':
