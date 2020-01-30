@@ -23,8 +23,8 @@ public abstract class Value implements Comparable<Value> {
 		throw new ActionException("cannot convert value to double");
 	}	
 	
-	// binops call this on their first operand.
-	public abstract Value binop(BinopInstruction.Type t,Value snd) throws ActionException;
+	// binops call this on their first operand. Return NULL for bad combinations.
+	public abstract Value binop(BinopInstruction.Type t,Value snd);
 
 	public LoopIterator makeIterator() throws ActionException {
 		throw new ActionException("Type "+this.getClass().getSimpleName()+" is not iterable");

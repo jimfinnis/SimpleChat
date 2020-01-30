@@ -24,24 +24,30 @@ public class BinopInstruction extends Instruction {
 		Value a = c.pop();
 		Value r;
 
-		if(type == Type.ADD && (a instanceof StringValue || b instanceof StringValue )){
-			r = new StringValue(a.str()+b.str());
-		} else {
-
-			switch(type){
-			case EQUAL:r = new IntValue(a.equals(b));break;
-			case NEQUAL:r = new IntValue(!a.equals(b));break;
+		switch (type) {
+			case EQUAL:
+				r = new IntValue(a.equals(b));
+				break;
+			case NEQUAL:
+				r = new IntValue(!a.equals(b));
+				break;
 			default:
 				r = a.binop(type, b);
-				if(r==null)
-					throw new ActionException("binop "+type.name()+" is invalid for arguments "+
-							a.getClass().getSimpleName()+","+b.getClass().getSimpleName());
+				if (r == null)
+					throw new ActionException("binop " + type.name() + " is invalid for arguments " +
+							a.getClass().getSimpleName() + "," + b.getClass().getSimpleName());
 				break;
-			}
 		}
+
+		// if that didn't work, try string adding.
+
+		if (r == null && type == Type.ADD && (a instanceof StringValue || b instanceof StringValue))
+			r = new StringValue(a.str() + b.str());
+
 		c.push(r);
 		return 1;
 	}
+
 	
 	@Override public String toString(){
 		return "BinopInstruction:"+type.toString();

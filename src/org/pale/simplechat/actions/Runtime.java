@@ -47,7 +47,7 @@ public class Runtime {
 			throw new ActionException("stack underflow");
 		return stack.pop();
 	}
-	
+
 	public void push(Value v) throws ActionException {
 		if(stack.size()>100) // some kind of limit
 			throw new ActionException("stack overflow");
@@ -84,7 +84,15 @@ public class Runtime {
 	public String popString() throws ActionException {
 		return pop().str();
 	}
-	
+
+	public int popInt() throws ActionException {
+		return pop().toInt();
+	}
+
+	public boolean popBoolean() throws ActionException {
+		return pop().toInt() == 1;
+	}
+
 	
 	public String stackDump(){
 		StringBuilder sb = new StringBuilder();

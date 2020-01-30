@@ -23,7 +23,7 @@ public class FunctionValue extends Value {
     @Override public String str(){
         return f.getName();
     }
-    @Override public Value binop(Type t, Value snd) throws ActionException {
-        throw new ActionException("binary operations not valid for functions");
+    @Override public Value binop(Type t, Value snd)  {
+        return null;
     }
 }
