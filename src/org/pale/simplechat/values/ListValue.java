@@ -63,6 +63,7 @@ public class ListValue extends Value {
 
 	@Override public String str(){
 		StringBuilder sb = new StringBuilder();
+		sb.append('[');
 		boolean first=true;
 		for(Value v: list){
 			if(first)
@@ -72,6 +73,7 @@ public class ListValue extends Value {
 			sb.append(v.str());
 
 		}
+		sb.append(']');
 		return sb.toString();
 	}
 	@Override

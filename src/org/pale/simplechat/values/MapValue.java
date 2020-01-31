@@ -56,6 +56,7 @@ public class MapValue extends Value {
 	@Override public String str(){
 		StringBuilder sb = new StringBuilder();
 		boolean first=true;
+		sb.append("[%");
 		for(Map.Entry<String, Value> e: map.entrySet()){
 			if(first)
 				first = false;
@@ -65,6 +66,7 @@ public class MapValue extends Value {
 			sb.append("=");
 			sb.append(e.getValue().str());
 		}
+		sb.append(']');
 		return sb.toString();
 	}
 

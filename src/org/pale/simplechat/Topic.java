@@ -79,9 +79,9 @@ public class Topic {
 			Logger.log(Logger.FATAL,"syntax error in topic file "+e.getMessage());
 			throw e; // log and rethrow
 		} catch (IOException e) {
+			e.printStackTrace();
 			throw new BotConfigException(f,"Cannot read topic file");
 		} catch (ParserError e) {
-			e.printStackTrace();
 			Logger.log(Logger.FATAL,"syntax error in topic file - "+e.getMessage());
 			throw new BotConfigException(f,tok,e.getMessage());
 		}

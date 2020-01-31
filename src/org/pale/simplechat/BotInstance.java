@@ -35,6 +35,7 @@ public class BotInstance  {
 		bot = b;
 		this.data=null;
 		try {
+			Logger.log(Logger.ALWAYS,"Running bot init on "+name);
 			// go up the tree, running all the init instances
 			// during the init action, the instance is "talking to itself" as it were.
 			Conversation c = new Conversation(this,this);
