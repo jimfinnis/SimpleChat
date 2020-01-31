@@ -19,6 +19,7 @@ Jim Finnis <jim.finnis@gmail.com>
 - doc "stored patterns"
 - doc logger
 - random code blocks
+- lambdas (which can't be persisted, by the way)
 
 - relations (and check subbots work)
 - tidy up testbot and parent (and talk about them)
