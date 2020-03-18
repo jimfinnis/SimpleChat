@@ -40,6 +40,13 @@ public class Stubs {
         System.out.println(msg);
     }
 
+    // utter (string --) say something without using the input/response system, typically in response to a timer
+    @Cmd public static void utter(Conversation c) throws ActionException {
+        String msg = c.popString();
+        System.out.println(msg);
+    }
+
+
     // rain (-- boolean 1 or 0) is it raining/snowing
     @Cmd public static void rain(Conversation c) throws ActionException {
         c.push(new IntValue(0));
