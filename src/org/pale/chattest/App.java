@@ -41,18 +41,20 @@ public class App {
 			long startTime = System.currentTimeMillis();
 			System.out.print("> ");
 			String in = input.nextLine();
-			if (in.substring(0, 1).equals("@")) { // @ means special command
-				runCommand(in.substring(1));
-			} else if(instance == null) {
-				out = "no bot loaded";
-			} else if (in.substring(0, 1).equals(":")) { // :name means run a func
-				out = instance.runFunc(in.substring(1), source);
-			} else {
-				out = instance.handle(in, source);
+			if(in.length()>0) {
+				if (in.substring(0, 1).equals("@")) { // @ means special command
+					runCommand(in.substring(1));
+				} else if (instance == null) {
+					out = "no bot loaded";
+				} else if (in.substring(0, 1).equals(":")) { // :name means run a func
+					out = instance.runFunc(in.substring(1), source);
+				} else {
+					out = instance.handle(in, source);
+				}
+				long endTime = System.currentTimeMillis();
+				out = out + " [" + (endTime - startTime) + "ms]";
+				System.out.println(out);
 			}
-			long endTime = System.currentTimeMillis();
-			out = out + " [" + (endTime - startTime) + "ms]";
-			System.out.println(out);
 		}
 	}
 
