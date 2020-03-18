@@ -26,7 +26,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>org.pale.chattest.MainWindow</mainClass>
+              <mainClass>org.pale.chattest.App</mainClass>
             </manifest>
           </archive>
         </configuration>
