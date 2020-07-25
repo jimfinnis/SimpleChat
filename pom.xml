@@ -27,6 +27,8 @@
           <excludes>
             <exclude>**/src/org/pale/simplechat/*.java</exclude>
           </excludes>
+            <source>8</source>
+            <target>8</target>
         </configuration>
       </plugin>  
     </plugins>

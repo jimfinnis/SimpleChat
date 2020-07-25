@@ -91,7 +91,7 @@ instance.runInits();
 source = new Object(); // could be anything, it's for you to use.
 ----
 See the source of the test program
-`org.pale.chattest.MainWindow.java` to see some different code,
+`org.pale.chattest.App.java` to see some different code,
 which takes a bot directory from a dialog box and assumes any bots it might
 inherit live in sister directories to it.
 Typically a conversation
@@ -439,6 +439,21 @@ things. More complex reductions could be:
 + (do you think that $a=.+ is $b=.+)  "is ${$a} ${$b}" recurse;
 ----    
 Reductions typically live in a topic of their own.
+
+=== Stored patterns
+Sometimes it's useful to access the same pattern from lots of different places. We can do this using stored patterns,
+which are set up in a config file. Stored patterns have names which start with an ampersand:
+----
+&yes = (.* ~yes .*)
+&good = [(not ?~hedge ~bad) (?~hedge ~good)]
+----
+The first pattern here is any sequence containing a word in the "yes" category. The second is a little more complex, and
+is either
+
+- "not" perhaps followed by a "hedge" word (like "very" or "quite"), followed by a "bad" word, or
+- perhaps a hedge followed by a good word.
+
+This lets us respond to an utterance like "not that bad" correctly.
 
 === Actions
 These are in the form of a sequence of instructions in an RPN language,

@@ -35,10 +35,10 @@ public class Topic {
 	/**
 	 * Load the topic data, and add it to the given bot. May recurse, in that topics
 	 * may trigger the loading of other topics.
-	 * @param path
-	 * @param bot
-	 * @throws PatternParseException 
-	 * @throws IOException 
+	 * @param bot bot to load topic into
+	 * @param name name of file
+	 * @param f path of file
+	 * @throws IOException
 	 * @throws BotConfigException 
 	 */
 	public Topic(Bot bot,String name,Path f) throws BotConfigException {

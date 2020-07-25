@@ -14,7 +14,7 @@ import org.pale.simplechat.Logger;
 public class ActionLog {
 	private static Deque<String> data = new LinkedList<String>();
 	private static final int LIMIT = 32;
-	
+
 	static void write(String s){
 		data.addLast(s);
 		if(data.size()>LIMIT)
