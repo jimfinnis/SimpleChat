@@ -12,7 +12,7 @@ import org.pale.simplechat.Tokenizer;
 
 public class InstructionStream {
 	// limit on how many instructions can run
-	private static final int LIMIT = 10000;
+	private static final int LIMIT = 20000;
 	
 	private List<Instruction> insts;
 
