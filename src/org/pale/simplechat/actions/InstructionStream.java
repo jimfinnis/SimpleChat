@@ -37,7 +37,7 @@ public class InstructionStream {
 			try {
 				i += insts.get(i).execute(c);
 			} catch(Exception e) {
-				throw new ActionException("Snark "+insts.get(i).getInfo()+" - "+e.getMessage());
+				throw new ActionException("OOPS "+insts.get(i).getInfo()+" - "+e.toString());
 			}
 			if(c.totalinsts++ > LIMIT)throw new ActionException("Instruction limit exceeded");
 		}	

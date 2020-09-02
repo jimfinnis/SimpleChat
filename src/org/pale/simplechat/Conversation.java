@@ -143,7 +143,7 @@ public class Conversation extends Runtime {
 			} catch (IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | ActionException e) {
 				e.printStackTrace();
-				Logger.log(Logger.FATAL,"Error in run: "+e.getClass().getSimpleName()+","+e.getMessage());
+				Logger.log(Logger.FATAL,"Error in run: "+e.toString());
 				ActionLog.show();
 				return("ERROR in action");
 			}
@@ -163,7 +163,7 @@ public class Conversation extends Runtime {
 			return getResult();
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
-			throw new ActionException("error in running function "+s+": "+e.getMessage());
+			throw new ActionException("error in running function "+s+": "+e.toString());
 		}
 	}
 	

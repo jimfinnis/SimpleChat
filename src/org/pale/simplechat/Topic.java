@@ -76,14 +76,14 @@ public class Topic {
 			}
 		} catch (BotConfigException e){
 			e.printStackTrace();
-			Logger.log(Logger.FATAL,"syntax error in topic file "+e.getMessage());
+			Logger.log(Logger.FATAL,"syntax error in topic file "+e.toString());
 			throw e; // log and rethrow
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new BotConfigException(f,"Cannot read topic file");
 		} catch (ParserError e) {
-			Logger.log(Logger.FATAL,"syntax error in topic file - "+e.getMessage());
-			throw new BotConfigException(f,tok,e.getMessage());
+			Logger.log(Logger.FATAL,"syntax error in topic file - "+e.toString());
+			throw new BotConfigException(f,tok,e.toString());
 		}
 
 		Logger.log(Logger.CONFIG, "--------------------------------- topic file done, "+bot.getName()+":"+name);

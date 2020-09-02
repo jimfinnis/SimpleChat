@@ -43,10 +43,10 @@ public class BotInstance  {
 			b.runInits(c);
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
-			throw new BotConfigException("error running initialisation action: "+e.getMessage());
+			throw new BotConfigException("error running initialisation action: "+e.toString());
 		} catch (ActionException e) {
 			ActionLog.show();
-			throw new BotConfigException("error running initialisation action: "+e.getMessage());
+			throw new BotConfigException("error running initialisation action: "+e.toString());
 		}
 		bot.instances.add(this);
 	}
@@ -62,7 +62,7 @@ public class BotInstance  {
 			// during the init action, the instance is "talking to itself" as it were.
 			vars.put("botname",new StringValue(name));
 		} catch (IllegalArgumentException e) {
-			throw new BotConfigException("error running initialisation action: "+e.getMessage());
+			throw new BotConfigException("error running initialisation action: "+e.toString());
 		}
 		bot.instances.add(this);
 	}
@@ -79,10 +79,10 @@ public class BotInstance  {
 			bot.runInits(c);
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
-			throw new BotConfigException("error running initialisation action: "+e.getMessage());
+			throw new BotConfigException("error running initialisation action: "+e.toString());
 		} catch (ActionException e) {
 			ActionLog.show();
-			throw new BotConfigException("error running initialisation action: "+e.getMessage());
+			throw new BotConfigException("error running initialisation action: "+e.toString());
 		}
 		
 	}
@@ -161,7 +161,7 @@ public class BotInstance  {
 		} catch (ActionException e) {
 			ActionLog.show();
 
-			Logger.log(Logger.FATAL,e.getMessage());
+			Logger.log(Logger.FATAL,e.toString());
 			return "??"; // not ideal.
 		}
 	}

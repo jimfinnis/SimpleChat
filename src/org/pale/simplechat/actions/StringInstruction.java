@@ -77,7 +77,7 @@ public class StringInstruction extends Instruction {
 						sb.append(c.getResult());
 					} catch (IllegalAccessException | IllegalArgumentException
 							| InvocationTargetException e) {
-						throw new ActionException("problem with command in embedded code: "+e.getMessage());
+						throw new ActionException("problem with command in embedded code: "+e.toString());
 					}
 				}
 			}

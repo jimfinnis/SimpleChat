@@ -206,7 +206,7 @@ public class Bot {
 						try {
 							InstructionCompiler.parseNamedFunction(this,tok);
 						} catch (ParserError e){
-							throw new BotConfigException(p,tok,"error in a config file function: "+e.getMessage());
+							throw new BotConfigException(p,tok,"error in a config file function: "+e.toString());
 						}
 					} else if(t == '~'){
 						Category.parseCat(this, tok);
@@ -308,14 +308,14 @@ public class Bot {
 					} catch (IllegalAccessException | IllegalArgumentException
 							| InvocationTargetException | ActionException e) {
 						e.printStackTrace();
-						throw new BotConfigException("Error in global action "+e.getMessage());
+						throw new BotConfigException("Error in global action "+e.toString());
 					}
 				}
 				
 				
 				
 			} catch (ParserError e){
-				throw new BotConfigException(p,tok,"error in config "+fn+": "+e.getMessage());
+				throw new BotConfigException(p,tok,"error in config "+fn+": "+e.toString());
 
 			}
 		} catch (MalformedInputException e){

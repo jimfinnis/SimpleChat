@@ -28,7 +28,7 @@ public class Other {
             f.run(c);
         } catch (IllegalAccessException | IllegalArgumentException
                  | InvocationTargetException e) {
-            throw new ActionException("Error in "+v.str()+": "+e.getMessage());
+            throw new ActionException("Error in "+v.str()+" -  "+e.toString());
         }
     }
 }

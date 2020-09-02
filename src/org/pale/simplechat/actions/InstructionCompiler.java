@@ -263,7 +263,7 @@ public class InstructionCompiler {
 						str.run(c, true);
 						add(tok,new LiteralInstruction(c.pop()));
 					} catch (ActionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-						throw new ParserError("error in running constant expression: "+e.getMessage());
+						throw new ParserError("error in running constant expression: "+e.toString());
 					}
 				}
 				break;
